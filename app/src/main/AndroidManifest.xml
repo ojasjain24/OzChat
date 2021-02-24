@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.chatappv0">
+
+    <application
+        android:name=".applicationClass"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="OzChat"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".forwardMessage" />
+        <activity android:name=".forwardMessageGroup" />
+        <activity android:name=".addMember" />
+        <activity android:name=".groupVisit" />
+        <activity android:name=".profileVisit" />
+        <activity android:name=".groupChat" />
+        <activity android:name=".sendRequestToJoinGroup" />
+        <activity android:name=".allGroupActivity" />
+        <activity android:name=".groupNameActivity" />
+        <activity android:name=".dialogBox" />
+        <activity android:name=".displayUserForGroup" />
+        <activity android:name=".acceptRequest" />
+        <activity android:name=".allRequest" />
+        <activity android:name=".sendRequest" />
+        <activity android:name=".chatPage" />
+        <activity android:name=".allusersActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".profileActivity" />
+        <activity android:name=".signupActivity" />
+        <activity android:name=".loginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".splashScreen"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

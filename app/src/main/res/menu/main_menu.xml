@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/groupmenu"
+        android:title="New Group" />
+    <item
+        android:id="@+id/profilemenu"
+        android:title="@string/profle" />
+    <item
+        android:id="@+id/settingsmenu"
+        android:title="@string/settings" />
+    <item
+        android:id="@+id/allusers"
+        android:title="@string/all_users" />
+    <item
+        android:id="@+id/requests"
+        android:title="Requests" />
+    <item
+        android:id="@+id/allgroups"
+        android:title="All Groups" />
+    <item
+        android:id="@+id/loguotmenu"
+        android:title="@string/logout" />
+
+</menu>
