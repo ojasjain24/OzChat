@@ -3,6 +3,8 @@ package com.example.chatappv0.Adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -109,25 +112,26 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
 
                 //Improve this one
                 final FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
+                final int[] count = {0};
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("chats");
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        int count = 0;
+
                         for(DataSnapshot Snapshot : snapshot.getChildren()) {
                             chatModel chat = Snapshot.getValue(chatModel.class);
                             if (chat != null) {
                                 if (chat.getReceiverUid().equals(me.getUid())&&chat.getSenderUid().equals(userid.getUid())){
                                     if(chat.getIsseen().equals("false")){
-                                        count = count+1;
+                                        count[0] = count[0] +1;
                                     }
                                 }
                             }
                         }
-                        if(count!=0){
+                        if(count[0] !=0){
                             holder.countcard.setVisibility(View.VISIBLE);
                         }
-                        holder.messageCount.setText(count+"");
+                        holder.messageCount.setText(count[0] +"");
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
@@ -164,5 +168,35 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
             countcard=itemView.findViewById(R.id.countCard);
         }
     }
+//    public static void setBadge(Context context, int count) {
+//        String launcherClassName = getLauncherClassName(context);
+//        if (launcherClassName == null) {
+//            return;
+//        }
+//        Intent intent = new Intent("android.intent.action.BADGE_COUNT_UPDATE");
+//        intent.putExtra("badge_count", count);
+//        intent.putExtra("badge_count_package_name", context.getPackageName());
+//        intent.putExtra("badge_count_class_name", launcherClassName);
+//        context.sendBroadcast(intent);
+//    }
+//
+//    public static String getLauncherClassName(Context context) {
+//
+//        PackageManager pm = context.getPackageManager();
+//
+//        Intent intent = new Intent(Intent.ACTION_MAIN);
+//        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+//
+//        List<ResolveInfo> resolveInfos = pm.queryIntentActivities(intent, 0);
+//        for (ResolveInfo resolveInfo : resolveInfos) {
+//            String pkgName = resolveInfo.activityInfo.applicationInfo.packageName;
+//            if (pkgName.equalsIgnoreCase(context.getPackageName())) {
+//                String className = resolveInfo.activityInfo.name;
+//                return className;
+//            }
+//        }
+//        return null;
+//    }
+
 
 }

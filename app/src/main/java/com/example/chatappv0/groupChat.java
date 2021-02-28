@@ -313,7 +313,6 @@ public class groupChat extends AppCompatActivity {
         String decryptedString = string;
 
         byte[] decryption;
-
         try {
             decipher.init(cipher.DECRYPT_MODE, secretKeySpec);
             decryption = decipher.doFinal(EncryptedByte);

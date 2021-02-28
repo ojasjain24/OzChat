@@ -115,7 +115,6 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         if(count==0) {
                             copy.setVisibility(View.VISIBLE);
                         }
-                        Log.d("ojaslistoutside",list.size()+"");
                         final Boolean[] ok = {false};
                         delete.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -123,7 +122,6 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 for(int i=list.size()-1;i>=0;i--){
                                     if(list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                         final int finalI = i;
-                                        Log.d("ojasok", ok[0].toString());
                                         if (!ok[0]) {
                                             new AlertDialog.Builder(context)
                                                     .setTitle("Delete Messages?")
@@ -131,12 +129,9 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                                     .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int which) {
                                                             final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(finalI).getKey());
-                                                            Log.d("ojasfinali",finalI+"");
-                                                            Log.d("ojaslistkeyvalue",list.get(finalI).getKey()+"");
-                                                            Log.d("ojaslistsize",list.size()+"");
                                                             reference.setValue(null);
+                                                            Log.d("ojasmesagagedelete","deleted"+list.get(finalI).getKey());
                                                             ok[0] =true;
-                                                            Log.d("ojasokin", ok[0].toString());
                                                             nameText.setVisibility(View.VISIBLE);
                                                             dp.setVisibility(View.VISIBLE);
                                                             delete.setVisibility(View.INVISIBLE);
@@ -255,11 +250,9 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                                     .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int which) {
                                                             final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(finalI).getKey());
-                                                            Log.d("ojasfinali",finalI+"");
-                                                            Log.d("ojaslistsize",list.size()+"");
                                                             reference.setValue(null);
+                                                            Log.d("ojasmesagagedeletefile","deleted"+list.get(finalI).getKey());
                                                             ok[0] =true;
-                                                            Log.d("ojasokin", ok[0].toString());
                                                             nameText.setVisibility(View.VISIBLE);
                                                             dp.setVisibility(View.VISIBLE);
                                                             delete.setVisibility(View.INVISIBLE);

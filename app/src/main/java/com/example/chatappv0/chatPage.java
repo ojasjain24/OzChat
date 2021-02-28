@@ -209,7 +209,7 @@ public class chatPage extends AppCompatActivity {
                         if ((chat.getReceiverUid().equals(myuid)&&chat.getSenderUid().equals(receiveruid))||(chat.getReceiverUid().equals(receiveruid)&&
                                 chat.getSenderUid().equals(myuid))) {
                             try {
-                                chatList.add(new chatModel(chat.getSenderUid(),chat.getReceiverUid(),AESDecryptionMethod(chat.getMessage()),chat.getIsThisFile(),chat.getTime(),chat.getType(),chat.getKey(),chat.getIsseen()));
+                                chatList.add(new chatModel(chat.getSenderUid(),chat.getReceiverUid(),AESDecryptionMethod(chat.getMessage()),chat.getIsThisFile(),chat.getTime(),chat.getType(),chat.getIsseen(),chat.getKey()));
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
