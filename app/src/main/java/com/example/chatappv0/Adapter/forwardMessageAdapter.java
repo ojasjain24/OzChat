@@ -29,8 +29,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -41,6 +50,9 @@ public class forwardMessageAdapter extends RecyclerView.Adapter<forwardMessageAd
     ArrayList<friendsModel> data;
     ArrayList arrayList = new ArrayList();
     ArrayList<chatModel> chatModel;
+    private Cipher cipher, decipher;
+    private SecretKeySpec secretKeySpec;
+    private final byte[] encryptionKey ={5,15,-65,-56,3,45,-96,37,85,64,85,-92,-12,-5,64,-50};
     ArrayList<usersModel> usersModelArrayList = new ArrayList<>();
 
     public forwardMessageAdapter() {
@@ -61,6 +73,15 @@ public class forwardMessageAdapter extends RecyclerView.Adapter<forwardMessageAd
     @Override
     public void onBindViewHolder(@NonNull final Holder holder, final int position) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+        try {
+            cipher = Cipher.getInstance("AES");
+            decipher = Cipher.getInstance("AES");
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
+
+        secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
+
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -142,7 +163,7 @@ public class forwardMessageAdapter extends RecyclerView.Adapter<forwardMessageAd
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("chats").push();
                 HashMap<String, Object> hashMap = new HashMap<>();
                 hashMap.put("senderUid",FirebaseAuth.getInstance().getCurrentUser().getUid());
-                hashMap.put("message",chatModel.get(j).getMessage());
+                hashMap.put("message",AESEncryptionMethod(chatModel.get(j).getMessage()));
                 hashMap.put("isThisFile",chatModel.get(j).getIsThisFile());
                 hashMap.put("time",""+System.currentTimeMillis());
                 hashMap.put("type",chatModel.get(j).getType());
@@ -153,5 +174,50 @@ public class forwardMessageAdapter extends RecyclerView.Adapter<forwardMessageAd
                 Log.d("ojasinsidefunction","inside");
             }
         }
+    }
+    private String AESEncryptionMethod(String string){
+
+        byte[] stringByte = string.getBytes();
+        byte[] encryptedByte = new byte[stringByte.length];
+
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+            encryptedByte = cipher.doFinal(stringByte);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+
+        String returnString = null;
+
+        try {
+            returnString = new String(encryptedByte, "ISO-8859-1");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return returnString;
+    }
+
+    private String AESDecryptionMethod(String string) throws UnsupportedEncodingException {
+        byte[] EncryptedByte = string.getBytes("ISO-8859-1");
+        String decryptedString = string;
+
+        byte[] decryption;
+
+        try {
+            decipher.init(cipher.DECRYPT_MODE, secretKeySpec);
+            decryption = decipher.doFinal(EncryptedByte);
+            decryptedString = new String(decryption);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return decryptedString;
     }
 }
