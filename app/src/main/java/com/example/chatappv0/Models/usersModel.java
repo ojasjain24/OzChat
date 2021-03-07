@@ -10,6 +10,15 @@ public class usersModel {
     public String gender;
     public String profession;
     public String imageurl;
+    public String points;
+
+    public String getPoints() {
+        return points;
+    }
+
+    public void setPoints(String points) {
+        this.points = points;
+    }
 
     public String getImageurl() {
         return imageurl;
@@ -83,18 +92,6 @@ public class usersModel {
         this.userid = userid;
     }
 
-
     public usersModel() {
     }
-
-    public usersModel(String username, String s, String userId,String email,String imageurl) {
-        this.username = username;
-        this.status = s;
-        this.userid=userId;
-        this.email=email;
-        this.imageurl=imageurl;
-    }
-
-
-
 }

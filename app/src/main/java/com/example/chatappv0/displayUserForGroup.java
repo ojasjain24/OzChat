@@ -57,7 +57,7 @@ public class displayUserForGroup extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     usersModel user = snapshot.getValue(usersModel.class);
                     if(!user.getUserid().equals(me.getUid())) {
-                        userList.add(new usersModel(user.getUsername(), user.getStatus(), user.getUserid(), user.getEmail(), user.getImageurl()));
+                        userList.add(user);
                     }
                 }
                 selectUserForGroupAdapter = new selectUserForGroupAdapter(getApplicationContext(), userList);

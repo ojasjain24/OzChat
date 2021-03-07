@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.chatappv0">
     <application
+
         android:name=".applicationClass"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -42,5 +43,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1155879823920026~6202690891"/>
     </application>
 </manifest>

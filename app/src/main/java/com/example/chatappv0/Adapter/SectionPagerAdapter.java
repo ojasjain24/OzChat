@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.chatappv0.Fragments.callFragment;
+import com.example.chatappv0.Fragments.rewardsFragment;
 import com.example.chatappv0.Fragments.chatFragment;
 import com.example.chatappv0.Fragments.groupFragment;
 
@@ -24,7 +24,7 @@ public class SectionPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new groupFragment();
             case 2:
-                return new callFragment();
+                return new rewardsFragment();
             default:
                 return null;
         }
@@ -40,7 +40,7 @@ public class SectionPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return "Groups";
             case 2:
-                return "List";
+                return "Rewards";
             default:
                 return null;
         }

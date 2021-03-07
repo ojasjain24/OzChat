@@ -83,7 +83,6 @@ public class forwardMsgGroupAdapterG extends RecyclerView.Adapter<forwardMsgGrou
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
         }
-
         secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
         if(data.get(position).getGroupicon() != null) {
             Picasso.get().load(Uri.parse(data.get(position).getGroupicon())).into(holder.profile);
@@ -101,7 +100,6 @@ public class forwardMsgGroupAdapterG extends RecyclerView.Adapter<forwardMsgGrou
                 }
             }
         });
-
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,13 +112,11 @@ public class forwardMsgGroupAdapterG extends RecyclerView.Adapter<forwardMsgGrou
                 }
             }
         });
-
     }
     @Override
     public int getItemCount() {
         return data.size();
     }
-
     public class Holder extends RecyclerView.ViewHolder {
 
         TextView name;
