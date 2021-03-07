@@ -50,7 +50,7 @@ public class allusersActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     usersModel user = snapshot.getValue(usersModel.class);
                     if(!currentUser.getUid().equals(user.getUserid())){
-                        userList.add(new usersModel(user.getUsername(), user.getStatus(), user.getUserid(),user.getEmail(),user.getImageurl()));
+                        userList.add(user);
                     }
                 }
                 allUsersAdapter = new AllUsersAdapter(getApplicationContext(), userList);

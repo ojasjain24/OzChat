@@ -76,6 +76,7 @@ public class signupActivity extends AppCompatActivity {
                                 usermap.put("gender","Not Mentioned");
                                 usermap.put("language","Not Mentioned");
                                 usermap.put("country","Not Mentioned");
+                                usermap.put("points","100");
                                 userdata.setValue(usermap);
                                 startActivity(new Intent(signupActivity.this, loginActivity.class));
                                 finish();

@@ -18,6 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatappv0.Adapter.chatAdapter;
 import com.example.chatappv0.Models.chatModel;
 import com.example.chatappv0.Models.usersModel;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -58,9 +65,9 @@ public class chatPage extends AppCompatActivity {
     private Uri imageUri;
     private ImageView DP;
     private Cipher cipher, decipher;
+    private AdView mAdView;
     private SecretKeySpec secretKeySpec;
     private final byte[] encryptionKey ={5,15,-65,-56,3,45,-96,37,85,64,85,-92,-12,-5,64,-50};
-
     static String LastMessageTime;
     ImageView delete, copy,forward;
     public chatPage(){
@@ -79,9 +86,51 @@ public class chatPage extends AppCompatActivity {
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
         }
-
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
         secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
         setContentView(R.layout.activity_chat_page);
+        mAdView = findViewById(R.id.adView2);
+        final AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                // Code to be executed when an ad request fails.
+                super.onAdFailedToLoad(adError);
+                mAdView.loadAd(adRequest);
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
         delete=findViewById(R.id.deleteIcon);
         copy=findViewById(R.id.copyIcon);
         forward=findViewById(R.id.forwardIcon);
@@ -354,7 +403,7 @@ public class chatPage extends AppCompatActivity {
         byte[] decryption;
 
         try {
-            decipher.init(cipher.DECRYPT_MODE, secretKeySpec);
+            decipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
             decryption = decipher.doFinal(EncryptedByte);
             decryptedString = new String(decryption);
         } catch (InvalidKeyException e) {
