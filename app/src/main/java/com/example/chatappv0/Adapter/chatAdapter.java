@@ -35,11 +35,22 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
@@ -49,6 +60,9 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     TextView nameText;
     ImageView dp, delete, forward,copy;
     ClipboardManager clipboardManager;
+    private SecretKeySpec secretKeySpec;
+    private final byte[] encryptionKey ={5,15,-65,-56,3,45,-96,37,85,64,85,-92,-12,-5,64,-50};
+    private Cipher cipher, decipher;
     int count=0;
     final ArrayList<chatModel> list = new ArrayList<>();
     public static final int msgLeft = 0;
@@ -83,6 +97,16 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         final chatModel chat = mChat.get(position);
+        try {
+            cipher = Cipher.getInstance("AES");
+            decipher = Cipher.getInstance("AES");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
+        secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
+
         if (getItemViewType(position) == msgRight|| getItemViewType(position) == msgLeft) {
             final msgHolder msgholder = (msgHolder) holder;
             msgholder.message.setText(chat.getMessage());
@@ -130,7 +154,6 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                                         public void onClick(DialogInterface dialog, int which) {
                                                             final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(finalI).getKey());
                                                             reference.setValue(null);
-                                                            Log.d("ojasmesagagedelete","deleted"+list.get(finalI).getKey());
                                                             ok[0] =true;
                                                             nameText.setVisibility(View.VISIBLE);
                                                             dp.setVisibility(View.VISIBLE);
@@ -242,16 +265,22 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 for(int i=list.size()-1;i>=0;i--){
                                     if(list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                         final int finalI = i;
-                                        Log.d("ojasok", ok[0].toString());
                                         if (!ok[0]) {
                                             new AlertDialog.Builder(context)
                                                     .setTitle("Delete Messages?")
                                                     .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
                                                     .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int which) {
+                                                            StorageReference storageReference = null;
+                                                            try {
+                                                                Log.d("ojasdeletefile",AESDecryptionMethod(list.get(finalI).getMessage())+"");
+                                                                storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(list.get(finalI).getKey()).child(AESDecryptionMethod(list.get(finalI).getMessage()));
+                                                            } catch (UnsupportedEncodingException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                            storageReference.delete();
                                                             final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(finalI).getKey());
                                                             reference.setValue(null);
-                                                            Log.d("ojasmesagagedeletefile","deleted"+list.get(finalI).getKey());
                                                             ok[0] =true;
                                                             nameText.setVisibility(View.VISIBLE);
                                                             dp.setVisibility(View.VISIBLE);
@@ -345,5 +374,25 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else {
             return msgRight;
         }
+    }
+
+    private String AESDecryptionMethod(String string) throws UnsupportedEncodingException {
+        byte[] EncryptedByte = string.getBytes("ISO-8859-1");
+        String decryptedString = string;
+
+        byte[] decryption;
+
+        try {
+            decipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+            decryption = decipher.doFinal(EncryptedByte);
+            decryptedString = new String(decryption);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return decryptedString;
     }
 }

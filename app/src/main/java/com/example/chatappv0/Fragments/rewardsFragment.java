@@ -37,6 +37,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
+import static java.lang.Float.floatToIntBits;
+import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
 
 /**
@@ -247,11 +249,11 @@ public class rewardsFragment extends Fragment implements OnUserEarnedRewardListe
     public void showAd(int count,int close){
 
         if(rewardedInterstitialAd!=null) {
-            close =1;
+//            close =1;
             rewardedInterstitialAd.show(getActivity(), new OnUserEarnedRewardListener() {
                 @Override
                 public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-                    int pointsnew = parseInt(points) + 50;
+                    float pointsnew = parseFloat(points) + 25.00f;
                     reference.child("points").setValue(pointsnew+"");                }
             });
         }
