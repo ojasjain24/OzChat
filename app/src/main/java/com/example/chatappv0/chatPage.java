@@ -1,10 +1,12 @@
 package com.example.chatappv0;
-
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,18 +44,18 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import static java.lang.Float.parseFloat;
 
 public class chatPage extends AppCompatActivity {
     private TextView name;
@@ -86,12 +89,12 @@ public class chatPage extends AppCompatActivity {
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
         }
+        secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
-        secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
         setContentView(R.layout.activity_chat_page);
         mAdView = findViewById(R.id.adView2);
         final AdRequest adRequest = new AdRequest.Builder().build();
@@ -216,13 +219,39 @@ public class chatPage extends AppCompatActivity {
             }
         });
     }
-
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==imageRequest && resultCode==RESULT_OK){
             imageUri=data.getData();
-            uploadImage();
+            final int[] out = {0};
+            AssetFileDescriptor fileDescriptor = null;
+            try {
+                fileDescriptor = getApplicationContext().getContentResolver().openAssetFileDescriptor(imageUri , "r");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            final float fileSize = fileDescriptor.getLength()/(1024.00f*1024.00f);
+            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String points =snapshot.getValue(usersModel.class).getPoints();
+                    if(parseFloat(points)>=fileSize && out[0] ==0){
+                        uploadImage();
+                        float pointsnew = parseFloat(points) - fileSize;
+                        reference.child("points").setValue(pointsnew+"");
+                        out[0] =1;
+                    }else if(parseFloat(points)<fileSize){
+                        Toast.makeText(chatPage.this, "You have used all your data. Go to reward section to earn more", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
     }
 
@@ -259,6 +288,7 @@ public class chatPage extends AppCompatActivity {
                                 chat.getSenderUid().equals(myuid))) {
                             try {
                                 chatList.add(new chatModel(chat.getSenderUid(),chat.getReceiverUid(),AESDecryptionMethod(chat.getMessage()),chat.getIsThisFile(),chat.getTime(),chat.getType(),chat.getIsseen(),chat.getKey()));
+                            Log.d("ojaslearningabout","++");
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
@@ -359,7 +389,7 @@ public class chatPage extends AppCompatActivity {
     private void openImage() {
         Intent intent=new Intent();
         intent.setType("*/*");
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,false);
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent,imageRequest);
     }
@@ -415,4 +445,5 @@ public class chatPage extends AppCompatActivity {
         }
         return decryptedString;
     }
+
 }

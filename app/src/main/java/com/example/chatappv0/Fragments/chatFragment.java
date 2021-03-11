@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -139,6 +140,7 @@ public class  chatFragment extends Fragment {
     public void readusers() {
         FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("users").child(me.getUid()).child("friends");
+//        databaseReference.keepSynced(true);
         Query query = databaseReference.orderByChild("lastmsg");
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -147,6 +149,7 @@ public class  chatFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     friendsModel user = snapshot.getValue(friendsModel.class);
                     userList.add(user);
+                    Log.d("ojaslearningfragment","--");
                 }
                 acceptedUserAdapter = new acceptedUserAdapter(getContext(), userList);
                 LinearLayoutManager manager =new LinearLayoutManager(getContext());

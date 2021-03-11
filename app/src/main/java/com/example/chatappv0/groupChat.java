@@ -3,6 +3,7 @@ package com.example.chatappv0;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -43,6 +44,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -54,6 +56,8 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+
+import static java.lang.Float.parseFloat;
 
 public class groupChat extends AppCompatActivity {
     private TextView name;
@@ -206,7 +210,33 @@ public class groupChat extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==imageRequest && resultCode==RESULT_OK){
             imageUri=data.getData();
-            uploadImage();
+            final int[] out = {0};
+            AssetFileDescriptor fileDescriptor = null;
+            try {
+                fileDescriptor = getApplicationContext().getContentResolver().openAssetFileDescriptor(imageUri , "r");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            final float fileSize = fileDescriptor.getLength()/(1024.00f*1024.00f);
+            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String points =snapshot.getValue(usersModel.class).getPoints();
+                    if(parseFloat(points)>=fileSize && out[0] ==0){
+                        uploadImage();
+                        float pointsnew = parseFloat(points) - fileSize;
+                        reference.child("points").setValue(pointsnew+"");
+                        out[0] =1;
+                    }else if(parseFloat(points)<fileSize){
+                        Toast.makeText(groupChat.this, "You have used all your data. Go to reward section to earn more", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
 
         }
     }

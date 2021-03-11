@@ -40,8 +40,10 @@
         android:text="Reward"
         app:layout_constraintBottom_toTopOf="@+id/adViewaf"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adViewaf2" />
+        app:layout_constraintTop_toBottomOf="@+id/adViewaf2"
+        app:layout_constraintVertical_bias="0.588" />
 
     <TextView
         android:id="@+id/pointsText"
@@ -54,7 +56,21 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/adbutton"
         app:layout_constraintEnd_toEndOf="@+id/adbutton"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/adbutton"
-        app:layout_constraintTop_toBottomOf="@+id/adViewaf2" />
+        app:layout_constraintTop_toBottomOf="@+id/adViewaf2"
+        app:layout_constraintVertical_bias="0.621" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:textSize="24dp"
+        android:textColor="@color/colorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Watch Video to get 25 points."
+        app:layout_constraintBottom_toTopOf="@+id/adbutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pointsText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
