@@ -39,9 +39,6 @@ public class allGroupActivity extends AppCompatActivity {
         readusers();
     }
 
-
-
-
     private void readusers() {
         DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("groups");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -50,8 +47,9 @@ public class allGroupActivity extends AppCompatActivity {
                 userList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     groupDataModel group = snapshot.getValue(groupDataModel.class);
+                    if(group.getType().equals("Public")) {
                         userList.add(group);
-
+                    }
                 }
                 allGroupsadapter = new allGroupsAdapter(getApplicationContext(), userList);
                 recyclerView.setLayoutManager(new LinearLayoutManager(allGroupActivity.this));
