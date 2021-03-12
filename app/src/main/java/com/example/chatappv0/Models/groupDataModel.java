@@ -25,13 +25,6 @@ public class groupDataModel {
         this.groupicon = groupicon;
     }
 
-    public groupDataModel(String name, String description, String groupicon,String nodeid) {
-        this.name = name;
-        this.description = description;
-        this.groupicon = groupicon;
-        this.nodeid=nodeid;
-    }
-
     public groupDataModel(){
 
     }
@@ -40,6 +33,15 @@ public class groupDataModel {
     public String description;
     public String groupicon;
     public String nodeid;
+    public String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getNodeid() {
         return nodeid;

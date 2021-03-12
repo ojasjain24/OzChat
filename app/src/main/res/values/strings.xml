@@ -11,4 +11,9 @@
     <string name="all_users">All Users</string>
     <string name="profle">profle</string>
     <string name="new_group">new group</string>
+    <string-array name="Type">
+        <item>Private</item>
+        <item>Public</item>
+    </string-array>
+
 </resources>

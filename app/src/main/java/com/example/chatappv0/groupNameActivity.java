@@ -10,10 +10,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +41,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class groupNameActivity extends AppCompatActivity {
     EditText groupName, groupDescription;
@@ -44,7 +49,7 @@ public class groupNameActivity extends AppCompatActivity {
     private static final int imageRequest = 1;
     private Uri imageUri;
     private DatabaseReference userdata;
-    private FirebaseUser user;
+    private Spinner spinner;
     ImageView profilePic;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +64,6 @@ public class groupNameActivity extends AppCompatActivity {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 final String description = groupDescription.getText().toString();
                 final String name = groupName.getText().toString();
                 if((name.trim().equals(""))&&(description.trim().equals(""))){
@@ -68,6 +72,7 @@ public class groupNameActivity extends AppCompatActivity {
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(""+i.getStringExtra("nodeId"));
                     HashMap<String,Object> hashMap = new HashMap<>();
                     hashMap.put("name",name);
+                    hashMap.put("type",spinner.getSelectedItem().toString());
                     hashMap.put("description",description);
                     hashMap.put("nodeid",""+i.getStringExtra("nodeId"));
                     reference.updateChildren(hashMap);
@@ -75,14 +80,18 @@ public class groupNameActivity extends AppCompatActivity {
                 }
             }
         });
-
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openImage();
             }
         });
-
+        spinner = findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),
+                R.array.Type, R.layout.support_simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setGravity(Gravity.CENTER);
+        spinner.setAdapter(adapter);
     }
 
     @Override
@@ -95,17 +104,20 @@ public class groupNameActivity extends AppCompatActivity {
             uploadImage(i.getStringExtra("nodeId"));
         }
     }
+
     private void openImage() {
         Intent intent=new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent,imageRequest);
     }
+
     private String getfilextention(Uri uri){
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
+
     private void uploadImage(final String nodeId){
         final ProgressDialog pd= new ProgressDialog(this);
         pd.setMessage("uploading");
@@ -121,8 +133,6 @@ public class groupNameActivity extends AppCompatActivity {
                             public void onSuccess(Uri uri) {
                                 String url = uri.toString();
                                 pd.dismiss();
-                                usersModel model = new usersModel();
-                                user= FirebaseAuth.getInstance().getCurrentUser();
                                 userdata= FirebaseDatabase.getInstance().getReference().child("groups").child(nodeId);
                                 HashMap<String ,Object> usermap=new HashMap<>();
                                 usermap.put("groupicon", url);
@@ -136,13 +146,14 @@ public class groupNameActivity extends AppCompatActivity {
                             }
                         });
                     }else{
-                        Toast.makeText(groupNameActivity.this, "Error : " + task.getException().toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(groupNameActivity.this, "Error : " + Objects.requireNonNull(task.getException()).toString(), Toast.LENGTH_LONG).show();
                     }
 
                 }
             });
         }
     }
+
     public void setProfileImage(String nodeId){
         DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("groups").child(nodeId);
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -166,7 +177,6 @@ public class groupNameActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -178,6 +188,14 @@ public class groupNameActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        final Intent i= getIntent();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i.getStringExtra("nodeId"));
+        reference.setValue(null);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
         final Intent i= getIntent();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i.getStringExtra("nodeId"));
         reference.setValue(null);
