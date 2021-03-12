@@ -84,7 +84,7 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
                 if(userid.getUid().equals(user.getUid())){
                     holder.name.setText("Me");
                 }else{
-                    holder.name.setText(usersModelArrayList.get(position).getUsername());
+                    holder.name.setText((usersModelArrayList.get(position).getUsername()).substring(0,1).toUpperCase()+(usersModelArrayList.get(position).getUsername()).substring(1));
                 }
                 holder.status.setText(usersModelArrayList.get(position).getStatus());
                 if(usersModelArrayList.get(position).getImageurl() != null) {

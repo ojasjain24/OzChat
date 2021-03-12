@@ -274,7 +274,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                                             StorageReference storageReference = null;
                                                             try {
                                                                 Log.d("ojasdeletefile",AESDecryptionMethod(list.get(finalI).getMessage())+"");
-                                                                storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(list.get(finalI).getKey()).child(AESDecryptionMethod(list.get(finalI).getMessage()));
+                                                                storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(AESDecryptionMethod(list.get(finalI).getMessage()));
                                                             } catch (UnsupportedEncodingException e) {
                                                                 e.printStackTrace();
                                                             }

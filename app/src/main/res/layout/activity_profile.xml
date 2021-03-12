@@ -28,7 +28,7 @@
                 app:civ_border_width="2dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.496"
+                app:layout_constraintHorizontal_bias="0.347"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.041"
@@ -36,12 +36,14 @@
 
             <TextView
                 android:id="@+id/statusEditor"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:layout_marginRight="5dp"
                 android:text="status"
+                android:layout_marginHorizontal="10dp"
                 android:textSize="24sp"
+                android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/statusBtn"
                 app:layout_constraintHorizontal_bias="0.585"
@@ -51,8 +53,10 @@
 
             <TextView
                 android:id="@+id/professionEditor"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:gravity="center"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginRight="5dp"
                 android:text="profession"
@@ -66,7 +70,9 @@
 
             <TextView
                 android:id="@+id/countryEditor"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_marginHorizontal="10dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:layout_marginRight="5dp"
@@ -81,8 +87,10 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <TextView
+                android:layout_marginHorizontal="10dp"
                 android:id="@+id/languagesEditor"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:layout_marginRight="5dp"
@@ -97,7 +105,9 @@
 
             <TextView
                 android:id="@+id/genderEditor"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_marginHorizontal="10dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:layout_marginRight="5dp"
@@ -172,6 +182,20 @@
                 app:layout_constraintTop_toTopOf="@+id/genderEditor"
                 app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@android:drawable/ic_menu_edit" />
+
+            <TextView
+                android:id="@+id/namepa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:rotation="90"
+                android:text="Name"
+                android:textColor="@color/colorAccent"
+                android:textSize="36sp"
+                android:textStyle="bold|italic"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                app:layout_constraintEnd_toEndOf="@+id/statusBtn"
+                app:layout_constraintStart_toStartOf="@+id/statusBtn"
+                app:layout_constraintTop_toTopOf="@+id/imageView" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

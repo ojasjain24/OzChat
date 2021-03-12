@@ -1,5 +1,7 @@
 package com.example.chatappv0;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -19,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatappv0.Adapter.chatAdapter;
 import com.example.chatappv0.Adapter.groupChatAdapter;
+import com.example.chatappv0.Fragments.groupFragment;
 import com.example.chatappv0.Models.chatModel;
 import com.example.chatappv0.Models.groupChatModel;
 import com.example.chatappv0.Models.groupDataModel;
@@ -150,7 +153,7 @@ public class groupChat extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     final groupDataModel user = dataSnapshot.getValue(groupDataModel.class);
-                    name.setText(user.getName());
+                    name.setText((user.getName()).substring(0,1).toUpperCase()+(user.getName()).substring(1));
                     if (user.getGroupicon() != null) {
                         Picasso.get().load(Uri.parse(user.getGroupicon())).into(DP);
                     }else{
@@ -227,10 +230,10 @@ public class groupChat extends AppCompatActivity {
                         uploadImage();
                         float pointsnew = parseFloat(points) - fileSize;
                         reference.child("points").setValue(pointsnew+"");
-                        out[0] =1;
                     }else if(parseFloat(points)<fileSize){
                         Toast.makeText(groupChat.this, "You have used all your data. Go to reward section to earn more", Toast.LENGTH_SHORT).show();
                     }
+                    out[0] =1;
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
@@ -352,7 +355,7 @@ public class groupChat extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(groupChat.this,MainActivity.class));
+        finish();
 
     }
     private String AESEncryptionMethod(String string){

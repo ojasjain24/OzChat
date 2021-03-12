@@ -40,7 +40,7 @@ public class profileActivity extends AppCompatActivity {
     private Uri imageUri;
     private static final int imageRequest = 1;
     private CircleImageView profilePic;
-    private TextView statusEditor, professionEditor, countryEditor, genderEditor, languagesEditor;
+    private TextView statusEditor, professionEditor, countryEditor, genderEditor, languagesEditor , name;
     private ImageButton statusBtn, professionBtn, countryBtn, genderBtn, languagesBtn;
     private DatabaseReference userdata;
     private FirebaseUser user;
@@ -56,6 +56,7 @@ public class profileActivity extends AppCompatActivity {
         genderEditor = findViewById(R.id.genderEditor);
         languagesEditor = findViewById(R.id.languagesEditor);
         statusBtn=findViewById(R.id.statusBtn);
+        name=findViewById(R.id.namepa);
         user=FirebaseAuth.getInstance().getCurrentUser();
         setProfileImage();
         statusBtn.setOnClickListener(new View.OnClickListener() {
@@ -174,6 +175,7 @@ public class profileActivity extends AppCompatActivity {
                 countryEditor.setText(model.getCountry());
                 genderEditor.setText(model.getGender());
                 languagesEditor.setText(model.getLanguage());
+                name.setText((model.getUsername()).substring(0,1).toUpperCase()+(model.getUsername()).substring(1));
             }
 
             @Override
