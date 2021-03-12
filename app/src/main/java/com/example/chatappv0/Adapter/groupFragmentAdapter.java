@@ -39,7 +39,7 @@ public class groupFragmentAdapter extends RecyclerView.Adapter<groupFragmentAdap
 
     @Override
     public void onBindViewHolder(@NonNull final Holder holder, final int position) {
-        holder.name.setText(data.get(position).getName());
+        holder.name.setText((data.get(position).getName()).substring(0,1).toUpperCase()+(data.get(position).getName()).substring(1));
         holder.status.setText(data.get(position).getDescription());
         if(data.get(position).getGroupicon() != null) {
             Picasso.get().load(Uri.parse(data.get(position).getGroupicon())).into(holder.profile);

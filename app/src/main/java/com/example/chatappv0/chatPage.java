@@ -157,7 +157,7 @@ public class chatPage extends AppCompatActivity {
                     if(usermodel.getUserid().equals(firebaseUser.getUid())){
                         name.setText("Me");
                     }else{
-                        name.setText(usermodel.getUsername());
+                        name.setText((usermodel.getUsername()).substring(0,1).toUpperCase()+(usermodel.getUsername()).substring(1));
                     }
                     if (usermodel.getImageurl() != null) {
                         Picasso.get().load(Uri.parse(usermodel.getImageurl())).into(DP);
@@ -242,10 +242,10 @@ public class chatPage extends AppCompatActivity {
                         uploadImage();
                         float pointsnew = parseFloat(points) - fileSize;
                         reference.child("points").setValue(pointsnew+"");
-                        out[0] =1;
                     }else if(parseFloat(points)<fileSize){
                         Toast.makeText(chatPage.this, "You have used all your data. Go to reward section to earn more", Toast.LENGTH_SHORT).show();
                     }
+                    out[0] =1;
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
