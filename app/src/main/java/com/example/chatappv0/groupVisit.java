@@ -23,11 +23,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chatappv0.Adapter.acceptedUserAdapter;
+import com.example.chatappv0.Adapter.groupRequestAdapter;
 import com.example.chatappv0.Adapter.membersAdapter;
 import com.example.chatappv0.Fragments.groupFragment;
 import com.example.chatappv0.Models.friendsModel;
 import com.example.chatappv0.Models.groupDataModel;
 import com.example.chatappv0.Models.groupMemberModel;
+import com.example.chatappv0.Models.groupRequestsModel;
 import com.example.chatappv0.Models.usersModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -53,11 +55,15 @@ public class groupVisit extends AppCompatActivity {
     private DatabaseReference userdata;
     private FirebaseUser user;
     private ImageView pic,settingsIcon,leaveIcon, addMember,changeName,changeDescription;
-    private TextView name, description,leave,settings;
+    private TextView name, description,leave,settings, requestText;
     ArrayList<usersModel> userList = new ArrayList<>();
-    private static final int imageRequest = 1;
+    ArrayList<usersModel> userList2 = new ArrayList<>();
+    ArrayList<groupRequestsModel> requestList= new ArrayList<>();
     ArrayList<groupMemberModel> membersList = new ArrayList<>();
-    private RecyclerView recyclerView;
+    ArrayList<groupMemberModel> membersList2 = new ArrayList<>();
+    private static final int imageRequest = 1;
+    private RecyclerView recyclerView,recyclerView2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,10 +85,15 @@ public class groupVisit extends AppCompatActivity {
         recyclerView= findViewById(R.id.recyclerViewgv);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(groupVisit.this));
+        recyclerView2= findViewById(R.id.requestsRecyclerView);
+        recyclerView2.setHasFixedSize(true);
+        recyclerView2.setLayoutManager(new LinearLayoutManager(groupVisit.this));
         readusers(i.getStringExtra("nodeId"));
+        readrequests(i.getStringExtra("nodeId"));
         settings=findViewById(R.id.settingsgv);
         settingsIcon=findViewById(R.id.settingsIcongv);
         leave=findViewById(R.id.leaveGroupgv);
+        requestText=findViewById(R.id.textView24);
         leaveIcon=findViewById(R.id.leaveGroupIcon);
         final FirebaseUser me =FirebaseAuth.getInstance().getCurrentUser();
         leaveIcon.setOnClickListener(new View.OnClickListener() {
@@ -149,6 +160,7 @@ public class groupVisit extends AppCompatActivity {
         });
 
     }
+
     private void readusers(final String nodeId) {
         final FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
         final String[] myStatus = new String[1];
@@ -233,6 +245,7 @@ public class groupVisit extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent,imageRequest);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -242,11 +255,13 @@ public class groupVisit extends AppCompatActivity {
             uploadImage();
         }
     }
+
     private String getfilextention(Uri uri){
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
+
     private void uploadImage(){
         final ProgressDialog pd= new ProgressDialog(this);
         pd.setMessage("uploading");
@@ -284,6 +299,7 @@ public class groupVisit extends AppCompatActivity {
             });
         }
     }
+
     public void setProfileImage(String nodeId){
         DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("groups").child(nodeId);
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -316,4 +332,62 @@ public class groupVisit extends AppCompatActivity {
         i.putExtra("pic", getIntent().getStringExtra("pic"));
         startActivity(i);
     }
+
+    private void readrequests(final String nodeId) {
+        final FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
+        final String[] myStatus = new String[1];
+        final DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("requests");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userList2.clear();
+                requestList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    final groupRequestsModel user = snapshot.getValue(groupRequestsModel.class);
+                    requestList.add(user);
+                        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("members");
+                        databaseReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                    final groupMemberModel memberModel = snapshot1.getValue(groupMemberModel.class);
+                                    if (memberModel.getUid().equals(me.getUid())) {
+                                        myStatus[0] = memberModel.getStatus();
+                                        if (myStatus[0].equals("creator") || myStatus[0].equals("admin")) {
+                                            requestText.setVisibility(View.VISIBLE);
+                                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUserid());
+                                            reference.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    usersModel model = snapshot.getValue(usersModel.class);
+                                                    userList2.add(model);
+                                                    groupRequestAdapter groupRequestAdapter = new groupRequestAdapter(groupVisit.this, userList2, requestList, nodeId, myStatus[0]);
+                                                    recyclerView2.setLayoutManager(new LinearLayoutManager(groupVisit.this));
+                                                    recyclerView2.setAdapter(groupRequestAdapter);
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(groupVisit.this, "check your network connection", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
 }

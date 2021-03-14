@@ -13,7 +13,8 @@
     <string name="new_group">new group</string>
     <string-array name="Type">
         <item>Private</item>
-        <item>Public</item>
+        <item>Public-ask before joining</item>
+        <item>Public-join without asking</item>
     </string-array>
 
 </resources>

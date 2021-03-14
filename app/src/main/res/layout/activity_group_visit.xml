@@ -39,8 +39,12 @@
                 android:id="@+id/namegv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="5dp"
+                android:background="@drawable/curved_rectangle"
                 android:text="Name"
+                android:paddingStart="10dp"
                 android:textColor="#000000"
                 android:textSize="35sp"
                 android:textStyle="bold"
@@ -49,13 +53,16 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/groupIcongv"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintVertical_bias="1.0"
+                tools:ignore="RtlSymmetry" />
 
             <TextView
                 android:id="@+id/descriptiongv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginVertical="10dp"
+                android:layout_marginEnd="10sp"
+                android:layout_marginStart="15dp"
                 android:text="Description"
                 android:textColor="#020000"
                 android:textSize="23sp"
@@ -104,7 +111,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="members"
+                android:text="Members"
                 android:textColor="#000000"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -146,9 +153,10 @@
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="@+id/leaveGroupgv"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.025"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/settingsIcongv"
                 app:layout_constraintTop_toTopOf="@+id/leaveGroupgv"
+                app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@drawable/exit" />
 
             <TextView
@@ -177,6 +185,29 @@
                 app:layout_constraintStart_toStartOf="@+id/groupIcongv"
                 app:layout_constraintTop_toTopOf="@+id/groupIcongv"
                 app:srcCompat="@drawable/user" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/requestsRecyclerView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView24" />
+
+            <TextView
+                android:id="@+id/textView24"
+                android:visibility="invisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Requests"
+                android:textColor="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/leaveGroupIcon" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

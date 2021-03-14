@@ -67,7 +67,6 @@ public class membersAdapter extends RecyclerView.Adapter<membersAdapter.Holder> 
         final usersModel userid =data.get(position);
         holder.name.setText(data.get(position).getUsername());
         holder.status.setText(data.get(position).getStatus());
-        uidPos=model.get(position);
         if(data.get(position).getImageurl() != null) {
             Picasso.get().load(Uri.parse(data.get(position).getImageurl())).into(holder.profile);
         }else{
