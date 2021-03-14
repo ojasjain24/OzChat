@@ -3,7 +3,6 @@ package com.example.chatappv0.Models;
 public class acceptRequestModel {
     private String senderuid;
     private String receveruid;
-    private String status;
     private String requestid;
 
     public String getRequestid() {
@@ -34,17 +33,4 @@ public class acceptRequestModel {
         this.receveruid = receveruid;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public acceptRequestModel(String senderuid, String receveruid, String status) {
-        this.senderuid = senderuid;
-        this.receveruid = receveruid;
-        this.status = status;
-    }
 }

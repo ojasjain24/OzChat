@@ -47,7 +47,7 @@ public class allGroupActivity extends AppCompatActivity {
                 userList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     groupDataModel group = snapshot.getValue(groupDataModel.class);
-                    if(group.getType().equals("Public")) {
+                    if(group.getType().startsWith("Public")) {
                         userList.add(group);
                     }
                 }

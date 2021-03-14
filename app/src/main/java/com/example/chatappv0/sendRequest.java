@@ -83,7 +83,6 @@ public class sendRequest extends AppCompatActivity {
                                 HashMap<String, String> usermap = new HashMap<>();
                                 usermap.put("senderuid", user.getUid());
                                 usermap.put("receveruid", userId);
-                                usermap.put("status", "sent");
                                 userdata.push().setValue(usermap);
                             }
                         });

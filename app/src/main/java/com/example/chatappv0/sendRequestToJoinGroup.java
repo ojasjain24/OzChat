@@ -67,10 +67,9 @@ public class sendRequestToJoinGroup extends AppCompatActivity {
                     send.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
                             DatabaseReference userdata = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("requests").child(user.getUid());
                             HashMap<String, String> usermap = new HashMap<>();
-                            usermap.put("status", "requested");
+                            usermap.put("userid",user.getUid());
                             userdata.setValue(usermap);
                         }
                     });

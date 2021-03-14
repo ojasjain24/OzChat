@@ -73,8 +73,10 @@ public class chatPage extends AppCompatActivity {
     private final byte[] encryptionKey ={5,15,-65,-56,3,45,-96,37,85,64,85,-92,-12,-5,64,-50};
     static String LastMessageTime;
     ImageView delete, copy,forward;
+
     public chatPage(){
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -219,6 +221,7 @@ public class chatPage extends AppCompatActivity {
             }
         });
     }
+
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable final Intent data) {
@@ -273,6 +276,7 @@ public class chatPage extends AppCompatActivity {
         hashMap.put("key",fileRef.getKey());
         fileRef.setValue(hashMap);
     }
+
     private void readMsg(final String myuid, final String receiveruid){
         chatList = new ArrayList<>();
         reference = FirebaseDatabase.getInstance().getReference().child("chats");
@@ -326,6 +330,7 @@ public class chatPage extends AppCompatActivity {
             }
         });
     }
+
     //files sending
     private void sendFile(String me, String receiver, String fileAddr){
         name.setVisibility(View.VISIBLE);
@@ -345,6 +350,7 @@ public class chatPage extends AppCompatActivity {
         hashMap.put("key",reference.getKey());
         reference.setValue(hashMap);
     }
+
     private void uploadImage(){
         Intent intent = getIntent();
         final String userId= intent.getStringExtra("userId");
@@ -381,11 +387,13 @@ public class chatPage extends AppCompatActivity {
             });
         }
     }
+
     private String getFileExtension(Uri uri){
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
+
     private void openImage() {
         Intent intent=new Intent();
         intent.setType("*/*");
