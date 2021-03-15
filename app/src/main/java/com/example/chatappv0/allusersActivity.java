@@ -36,10 +36,6 @@ public class allusersActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         readusers();
     }
-
-
-
-
     private void readusers() {
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("users");
@@ -48,14 +44,26 @@ public class allusersActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    usersModel user = snapshot.getValue(usersModel.class);
+                    final usersModel user = snapshot.getValue(usersModel.class);
                     if(!currentUser.getUid().equals(user.getUserid())){
-                        userList.add(user);
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid()).child("friends");
+                        reference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(!snapshot.hasChild(user.getUserid())) {
+                                    userList.add(user);
+                                }
+                                allUsersAdapter = new AllUsersAdapter(getApplicationContext(), userList);
+                                recyclerView.setLayoutManager(new LinearLayoutManager(allusersActivity.this));
+                                recyclerView.setAdapter(allUsersAdapter);
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     }
                 }
-                allUsersAdapter = new AllUsersAdapter(getApplicationContext(), userList);
-                recyclerView.setLayoutManager(new LinearLayoutManager(allusersActivity.this));
-                recyclerView.setAdapter(allUsersAdapter);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

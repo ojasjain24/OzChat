@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class allGroupActivity extends AppCompatActivity {
     private allGroupsAdapter allGroupsadapter;
@@ -40,20 +41,33 @@ public class allGroupActivity extends AppCompatActivity {
     }
 
     private void readusers() {
-        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("groups");
+        final DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("groups");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    groupDataModel group = snapshot.getValue(groupDataModel.class);
+                    final groupDataModel group = snapshot.getValue(groupDataModel.class);
                     if(group.getType().startsWith("Public")) {
-                        userList.add(group);
+                        final DatabaseReference reference =databaseReference.child(group.getNodeid()).child("members");
+                        reference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(!snapshot.hasChild(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())) {
+                                    userList.add(group);
+                                }
+                                allGroupsadapter = new allGroupsAdapter(getApplicationContext(), userList);
+                                recyclerView.setLayoutManager(new LinearLayoutManager(allGroupActivity.this));
+                                recyclerView.setAdapter(allGroupsadapter);
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
                     }
                 }
-                allGroupsadapter = new allGroupsAdapter(getApplicationContext(), userList);
-                recyclerView.setLayoutManager(new LinearLayoutManager(allGroupActivity.this));
-                recyclerView.setAdapter(allGroupsadapter);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

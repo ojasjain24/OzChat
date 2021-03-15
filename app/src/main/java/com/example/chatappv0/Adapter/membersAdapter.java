@@ -43,7 +43,6 @@ public class membersAdapter extends RecyclerView.Adapter<membersAdapter.Holder> 
     ArrayList<usersModel> data;
     ArrayList<groupMemberModel> model;
     String nodeId;
-    groupMemberModel uidPos;
     String myStatus;
     public membersAdapter() {
     }
@@ -91,99 +90,99 @@ public class membersAdapter extends RecyclerView.Adapter<membersAdapter.Holder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    final AlertDialog.Builder alert= new AlertDialog.Builder(context);
-                    View view = LayoutInflater.from(context).inflate(R.layout.members_dialog,null);
-                    TextView profile, message, admin, remove;
-                    profile=view.findViewById(R.id.textView14);
-                    message=view.findViewById(R.id.textView17);
-                    admin=view.findViewById(R.id.textView18);
-                    remove=view.findViewById(R.id.textView19);
-                    alert.setView(view);
-                    final AlertDialog alertDialog = alert.create();
-                    alertDialog.setCanceledOnTouchOutside(true);
+                final AlertDialog.Builder alert= new AlertDialog.Builder(context);
+                View view = LayoutInflater.from(context).inflate(R.layout.members_dialog,null);
+                TextView profile, message, admin, remove;
+                profile=view.findViewById(R.id.textView14);
+                message=view.findViewById(R.id.textView17);
+                admin=view.findViewById(R.id.textView18);
+                remove=view.findViewById(R.id.textView19);
+                alert.setView(view);
+                final AlertDialog alertDialog = alert.create();
+                alertDialog.setCanceledOnTouchOutside(true);
 
-                    profile.setOnClickListener(new View.OnClickListener() {
+                profile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(context, profileVisit.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.putExtra("userId", userid.getUserid());
+                        i.putExtra("name",userid.getUsername());
+                        i.putExtra("status", userid.getStatus());
+                        i.putExtra("profession", userid.getProfession());
+                        i.putExtra("gender", userid.getGender());
+                        i.putExtra("language", userid.getLanguage());
+                        i.putExtra("country", userid.getCountry());
+                        i.putExtra("pic", userid.getImageurl());
+                        context.startActivity(i);
+                    }
+                });
+                if(myStatus.equals("creator")&&(!model.get(position).getStatus().equals("creator"))) {
+                    remove.setVisibility(View.VISIBLE);
+                    remove.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i = new Intent(context, profileVisit.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.putExtra("userId", userid.getUserid());
-                            i.putExtra("name",userid.getUsername());
-                            i.putExtra("status", userid.getStatus());
-                            i.putExtra("profession", userid.getProfession());
-                            i.putExtra("gender", userid.getGender());
-                            i.putExtra("language", userid.getLanguage());
-                            i.putExtra("country", userid.getCountry());
-                            i.putExtra("pic", userid.getImageurl());
-                            context.startActivity(i);
+                            new AlertDialog.Builder(context)
+                                    .setMessage("Remove " + data.get(position).getUsername() + " from the group?")
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("members").child(model.get(position).getUid());
+                                            reference.setValue(null);
+                                            alertDialog.dismiss();
+                                        }
+                                    })
+                                    .setNegativeButton(android.R.string.no, null)
+                                    .show();
                         }
                     });
-                    if(myStatus.equals("creator")&&(!model.get(position).getStatus().equals("creator"))) {
-                        remove.setVisibility(View.VISIBLE);
-                        remove.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                new AlertDialog.Builder(context)
-                                        .setMessage("Remove " + data.get(position).getUsername() + " from the group?")
-                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("members").child(model.get(position).getUid());
-                                                reference.setValue(null);
-                                                alertDialog.dismiss();
+                }
+            if((myStatus.equals("creator")||myStatus.equals("admin"))&&(!model.get(position).getStatus().equals("creator"))) {
+                admin.setVisibility(View.VISIBLE);
+                if(model.get(position).getStatus().equals("admin")){
+                    admin.setText("    Remove Admin");
+                    admin.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            new AlertDialog.Builder(context)
+                                    .setTitle("Remove from Admin?")
+                                    .setMessage("Are you sure you want to Remove participant from Admin?")
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("members").child(model.get(position).getUid());
+                                            HashMap<String, Object> hashMap = new HashMap<>();
+                                            hashMap.put("status", "member");
+                                            reference.updateChildren(hashMap);
+                                            alertDialog.dismiss();
                                             }
-                                        })
-                                        .setNegativeButton(android.R.string.no, null)
-                                        .show();
-                            }
-                        });
-                    }
-                if((myStatus.equals("creator")||myStatus.equals("admin"))&&(!model.get(position).getStatus().equals("creator"))) {
-                    admin.setVisibility(View.VISIBLE);
-                    if(model.get(position).getStatus().equals("admin")){
-                        admin.setText("    Remove Admin");
-                        admin.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                new AlertDialog.Builder(context)
-                                        .setTitle("Remove from Admin?")
-                                        .setMessage("Are you sure you want to Remove participant from Admin?")
-                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("members").child(model.get(position).getUid());
-                                                HashMap<String, Object> hashMap = new HashMap<>();
-                                                hashMap.put("status", "member");
-                                                reference.updateChildren(hashMap);
-                                                alertDialog.dismiss();
-                                                }
-                                        })
-                                        .setNegativeButton(android.R.string.no, null)
-                                        .setIcon(R.drawable.logo)
-                                        .show();
-                            }
-                        });
-                    }else {
-                        admin.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("members").child(model.get(position).getUid());
-                                HashMap<String, Object> hashMap = new HashMap<>();
-                                hashMap.put("status", "admin");
-                                reference.updateChildren(hashMap);
-                                alertDialog.dismiss();
-                            }
-                        });
-                    }
-
+                                    })
+                                    .setNegativeButton(android.R.string.no, null)
+                                    .setIcon(R.drawable.logo)
+                                    .show();
+                        }
+                    });
+                }else {
+                    admin.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("members").child(model.get(position).getUid());
+                            HashMap<String, Object> hashMap = new HashMap<>();
+                            hashMap.put("status", "admin");
+                            reference.updateChildren(hashMap);
+                            alertDialog.dismiss();
+                        }
+                    });
                 }
 
-                    message.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Toast.makeText(context, "This feature is under Development Phase", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            }
 
-                    alertDialog.show();
+                message.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(context, "This feature is under Development Phase", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                alertDialog.show();
             }
         });
     }

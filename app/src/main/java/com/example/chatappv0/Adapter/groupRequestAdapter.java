@@ -21,9 +21,14 @@ import com.example.chatappv0.Models.groupMemberModel;
 import com.example.chatappv0.Models.groupRequestsModel;
 import com.example.chatappv0.Models.usersModel;
 import com.example.chatappv0.R;
+import com.example.chatappv0.acceptRequest;
+import com.example.chatappv0.allRequest;
 import com.example.chatappv0.profileVisit;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -92,13 +97,20 @@ public class groupRequestAdapter extends RecyclerView.Adapter<groupRequestAdapte
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("members").child(userid.getUserid());
+                HashMap<String,String> hashMap = new HashMap<>();
+                hashMap.put("status","member");
+                hashMap.put("uid",userid.getUserid());
+                databaseReference.setValue(hashMap);
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("requests");
+                reference.child(userid.getUserid()).setValue(null);
             }
         });
         holder.reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("requests");
+                reference.child(userid.getUserid()).setValue(null);
             }
         });
     }
