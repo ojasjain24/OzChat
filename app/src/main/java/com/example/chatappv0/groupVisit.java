@@ -345,47 +345,43 @@ public class groupVisit extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     final groupRequestsModel user = snapshot.getValue(groupRequestsModel.class);
                     requestList.add(user);
-                        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("members");
-                        databaseReference.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                                    final groupMemberModel memberModel = snapshot1.getValue(groupMemberModel.class);
-                                    if (memberModel.getUid().equals(me.getUid())) {
-                                        myStatus[0] = memberModel.getStatus();
-                                        if (myStatus[0].equals("creator") || myStatus[0].equals("admin")) {
-                                            requestText.setVisibility(View.VISIBLE);
-                                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUserid());
-                                            reference.addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    usersModel model = snapshot.getValue(usersModel.class);
-                                                    userList2.add(model);
-                                                    groupRequestAdapter groupRequestAdapter = new groupRequestAdapter(groupVisit.this, userList2, requestList, nodeId, myStatus[0]);
-                                                    recyclerView2.setLayoutManager(new LinearLayoutManager(groupVisit.this));
-                                                    recyclerView2.setAdapter(groupRequestAdapter);
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-                                                }
-                                            });
-                                        }
+                    DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("members");
+                    databaseReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                final groupMemberModel memberModel = snapshot1.getValue(groupMemberModel.class);
+                                if (memberModel.getUid().equals(me.getUid())) {
+                                    myStatus[0] = memberModel.getStatus();
+                                    if (myStatus[0].equals("creator") || myStatus[0].equals("admin")) {
+                                        requestText.setVisibility(View.VISIBLE);
+                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUserid());
+                                        reference.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                usersModel model = snapshot.getValue(usersModel.class);
+                                                userList2.add(model);
+                                                groupRequestAdapter groupRequestAdapter = new groupRequestAdapter(groupVisit.this, userList2, requestList, nodeId, myStatus[0]);
+                                                recyclerView2.setLayoutManager(new LinearLayoutManager(groupVisit.this));
+                                                recyclerView2.setAdapter(groupRequestAdapter);
+                                            }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                            }
+                                        });
                                     }
                                 }
                             }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
                 }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(groupVisit.this, "check your network connection", Toast.LENGTH_SHORT).show();
-
             }
         });
     }
