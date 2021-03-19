@@ -31,6 +31,13 @@ import com.example.chatappv0.Models.groupDataModel;
 import com.example.chatappv0.Models.groupMemberModel;
 import com.example.chatappv0.Models.groupRequestsModel;
 import com.example.chatappv0.Models.usersModel;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,6 +61,7 @@ public class groupVisit extends AppCompatActivity {
     private Uri imageUri;
     private DatabaseReference userdata;
     private FirebaseUser user;
+    private AdView mAdView;
     private ImageView pic,settingsIcon,leaveIcon, addMember,changeName,changeDescription;
     private TextView name, description,leave,settings, requestText;
     ArrayList<usersModel> userList = new ArrayList<>();
@@ -68,6 +76,49 @@ public class groupVisit extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_visit);
+        MobileAds.initialize(groupVisit.this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        mAdView = findViewById(R.id.adView4);
+        final AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                // Code to be executed when an ad request fails.
+                super.onAdFailedToLoad(adError);
+                mAdView.loadAd(adRequest);
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
         final Intent i =getIntent();
         addMember=findViewById(R.id.addMember);
         name=findViewById(R.id.namegv);
@@ -89,7 +140,7 @@ public class groupVisit extends AppCompatActivity {
         recyclerView2.setHasFixedSize(true);
         recyclerView2.setLayoutManager(new LinearLayoutManager(groupVisit.this));
         readusers(i.getStringExtra("nodeId"));
-        readrequests(i.getStringExtra("nodeId"));
+        readrequests(i.getStringExtra("nodeId"),i.getStringExtra("name"),i.getStringExtra("description"),i.getStringExtra("pic"));
         settings=findViewById(R.id.settingsgv);
         settingsIcon=findViewById(R.id.settingsIcongv);
         leave=findViewById(R.id.leaveGroupgv);
@@ -214,6 +265,7 @@ public class groupVisit extends AppCompatActivity {
             }
         });
     }
+
     public void ShowDialog(final String line, final String nodeId){
         final AlertDialog.Builder alert= new AlertDialog.Builder(groupVisit.this);
         View view = getLayoutInflater().inflate(R.layout.status_dialog,null);
@@ -333,7 +385,7 @@ public class groupVisit extends AppCompatActivity {
         startActivity(i);
     }
 
-    private void readrequests(final String nodeId) {
+    private void readrequests(final String nodeId,final String name, final String description,final String Pic) {
         final FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
         final String[] myStatus = new String[1];
         final DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("requests");
@@ -361,7 +413,7 @@ public class groupVisit extends AppCompatActivity {
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                 usersModel model = snapshot.getValue(usersModel.class);
                                                 userList2.add(model);
-                                                groupRequestAdapter groupRequestAdapter = new groupRequestAdapter(groupVisit.this, userList2, requestList, nodeId, myStatus[0]);
+                                                groupRequestAdapter groupRequestAdapter = new groupRequestAdapter(groupVisit.this, userList2, requestList, nodeId, myStatus[0],name,description,Pic);
                                                 recyclerView2.setLayoutManager(new LinearLayoutManager(groupVisit.this));
                                                 recyclerView2.setAdapter(groupRequestAdapter);
                                             }

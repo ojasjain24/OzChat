@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.chatappv0">
-    <application
 
+    <application
         android:name=".applicationClass"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,6 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".AboutUsActivity"></activity>
         <activity android:name=".forwardMessage" />
         <activity android:name=".forwardMessageGroup" />
         <activity android:name=".addMember" />
@@ -32,6 +33,7 @@
         <activity android:name=".loginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -40,11 +42,14 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1155879823920026~6202690891"/>
+            android:value="ca-app-pub-1155879823920026~6202690891" />
     </application>
+
 </manifest>
