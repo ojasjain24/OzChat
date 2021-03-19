@@ -23,6 +23,7 @@ import com.example.chatappv0.Models.usersModel;
 import com.example.chatappv0.R;
 import com.example.chatappv0.acceptRequest;
 import com.example.chatappv0.allRequest;
+import com.example.chatappv0.groupVisit;
 import com.example.chatappv0.profileVisit;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,15 +45,19 @@ public class groupRequestAdapter extends RecyclerView.Adapter<groupRequestAdapte
     String nodeId;
     groupRequestsModel uidPos;
     String myStatus;
+    String groupName,groupDescrption,groupPic;
     public groupRequestAdapter() {
     }
 
-    public groupRequestAdapter(Context context, ArrayList<usersModel> data,ArrayList<groupRequestsModel> model,String nodeId,String myStatus) {
+    public groupRequestAdapter(Context context, ArrayList<usersModel> data,ArrayList<groupRequestsModel> model,String nodeId,String myStatus, String groupName,String groupDescrption,String groupPic) {
         this.context = context;
         this.data = data;
         this.model=model;
         this.nodeId=nodeId;
         this.myStatus=myStatus;
+        this.groupDescrption=groupDescrption;
+        this.groupName=groupName;
+        this.groupPic=groupPic;
     }
 
     @NonNull
@@ -104,6 +109,12 @@ public class groupRequestAdapter extends RecyclerView.Adapter<groupRequestAdapte
                 databaseReference.setValue(hashMap);
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("requests");
                 reference.child(userid.getUserid()).setValue(null);
+                Intent i = new Intent(context, groupVisit.class);
+                i.putExtra("name",groupName);
+                i.putExtra("description",groupDescrption);
+                i.putExtra("pic",groupPic);
+                i.putExtra("nodeId",nodeId);
+                context.startActivity(i);
             }
         });
         holder.reject.setOnClickListener(new View.OnClickListener() {
@@ -111,6 +122,12 @@ public class groupRequestAdapter extends RecyclerView.Adapter<groupRequestAdapte
             public void onClick(View v) {
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("requests");
                 reference.child(userid.getUserid()).setValue(null);
+                Intent i = new Intent(context, groupVisit.class);
+                i.putExtra("name",groupName);
+                i.putExtra("description",groupDescrption);
+                i.putExtra("pic",groupPic);
+                i.putExtra("nodeId",nodeId);
+                context.startActivity(i);
             }
         });
     }

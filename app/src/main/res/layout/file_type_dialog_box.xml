@@ -3,40 +3,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    app:behavior_hideable="true"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:id="@+id/bottomSheetLayout"
     android:background="@drawable/btn_background">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton5"
+        android:id="@+id/docfb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:clickable="true"
-        app:layout_constraintEnd_toStartOf="@+id/floatingActionButton6"
+        app:layout_constraintEnd_toStartOf="@+id/imgfb"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/floatingActionButton7"
+        app:layout_constraintStart_toEndOf="@+id/audiofb"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/document" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton6"
+        android:id="@+id/imgfb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/floatingActionButton5"
+        app:layout_constraintStart_toEndOf="@+id/docfb"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/gallery" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton7"
+        android:id="@+id/audiofb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:clickable="true"
-        app:layout_constraintEnd_toStartOf="@+id/floatingActionButton5"
+        app:layout_constraintEnd_toStartOf="@+id/docfb"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -48,19 +53,21 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Audio"
-        app:layout_constraintEnd_toEndOf="@+id/floatingActionButton7"
-        app:layout_constraintStart_toStartOf="@+id/floatingActionButton7"
-        app:layout_constraintTop_toBottomOf="@+id/floatingActionButton7" />
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="@+id/audiofb"
+        app:layout_constraintStart_toStartOf="@+id/audiofb"
+        app:layout_constraintTop_toBottomOf="@+id/audiofb" />
 
     <TextView
         android:id="@+id/textView21"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Document"
         android:layout_marginTop="10dp"
-        app:layout_constraintEnd_toEndOf="@+id/floatingActionButton5"
-        app:layout_constraintStart_toStartOf="@+id/floatingActionButton5"
-        app:layout_constraintTop_toBottomOf="@+id/floatingActionButton5" />
+        android:text="Document"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="@+id/docfb"
+        app:layout_constraintStart_toStartOf="@+id/docfb"
+        app:layout_constraintTop_toBottomOf="@+id/docfb" />
 
     <TextView
         android:id="@+id/textView22"
@@ -68,7 +75,34 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Photo"
-        app:layout_constraintEnd_toEndOf="@+id/floatingActionButton6"
-        app:layout_constraintStart_toStartOf="@+id/floatingActionButton6"
-        app:layout_constraintTop_toBottomOf="@+id/floatingActionButton6" />
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="@+id/imgfb"
+        app:layout_constraintStart_toStartOf="@+id/imgfb"
+        app:layout_constraintTop_toBottomOf="@+id/imgfb" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/vidfb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        app:layout_constraintEnd_toEndOf="@+id/audiofb"
+        app:layout_constraintStart_toStartOf="@+id/audiofb"
+        app:layout_constraintTop_toBottomOf="@+id/textView20"
+        app:srcCompat="@drawable/video" />
+
+    <TextView
+        android:id="@+id/textView25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+
+        android:text="Video"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/vidfb"
+        app:layout_constraintStart_toStartOf="@+id/vidfb"
+        app:layout_constraintTop_toBottomOf="@+id/vidfb"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

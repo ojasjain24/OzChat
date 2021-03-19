@@ -1,12 +1,14 @@
 package com.example.chatappv0;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +35,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -217,7 +221,42 @@ public class chatPage extends AppCompatActivity {
         attach.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openImage();
+                openFile();
+//                final AlertDialog.Builder alert= new AlertDialog.Builder(chatPage.this);
+//                View view = LayoutInflater.from(chatPage.this).inflate(R.layout.file_type_dialog_box,null);
+//                FloatingActionButton photo, video, file, audio;
+//                photo=view.findViewById(R.id.imgfb);
+//                video=view.findViewById(R.id.vidfb);
+//                file=view.findViewById(R.id.docfb);
+//                audio=view.findViewById(R.id.audiofb);
+//                alert.setView(view);
+//                final AlertDialog alertDialog = alert.create();
+//                alertDialog.setCanceledOnTouchOutside(true);
+//                photo.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        openImage();
+//                    }
+//                });
+//                video.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        openVideo();
+//                    }
+//                });
+//                file.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        openFile();
+//                    }
+//                });
+//                audio.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        openAudio();
+//                    }
+//                });
+//                alertDialog.show();
             }
         });
     }
@@ -236,6 +275,7 @@ public class chatPage extends AppCompatActivity {
                 e.printStackTrace();
             }
             final float fileSize = fileDescriptor.getLength()/(1024.00f*1024.00f);
+
             final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -292,7 +332,7 @@ public class chatPage extends AppCompatActivity {
                                 chat.getSenderUid().equals(myuid))) {
                             try {
                                 chatList.add(new chatModel(chat.getSenderUid(),chat.getReceiverUid(),AESDecryptionMethod(chat.getMessage()),chat.getIsThisFile(),chat.getTime(),chat.getType(),chat.getIsseen(),chat.getKey()));
-                            Log.d("ojaslearningabout","++");
+//                                String fileType = MimeTypeMap.getFileExtensionFromUrl(AESDecryptionMethod(chat.getMessage()));
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
@@ -394,13 +434,35 @@ public class chatPage extends AppCompatActivity {
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    private void openImage() {
-        Intent intent=new Intent();
-        intent.setType("*/*");
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,false);
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent,imageRequest);
-    }
+//    private void openImage() {
+//        Intent intent=new Intent();
+//        intent.setType("image/*");
+//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,false);
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        startActivityForResult(intent,imageRequest);
+//    }
+//    private void openVideo() {
+//        Intent intent=new Intent();
+//        intent.setType("video/*");
+//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,false);
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        startActivityForResult(intent,imageRequest);
+//    }
+//    private void openAudio() {
+//        Intent intent=new Intent();
+//        intent.setType("audio/*");
+//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,false);
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        startActivityForResult(intent,imageRequest);
+//    }
+private void openFile() {
+    Intent intent=new Intent();
+    intent.setType("*/*");
+    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,false);
+    intent.setAction(Intent.ACTION_GET_CONTENT);
+    startActivityForResult(intent,imageRequest);
+}
+
 
     @Override
     public void onBackPressed() {

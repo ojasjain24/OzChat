@@ -159,6 +159,9 @@ public class MainActivity extends AppCompatActivity {
         if(item.getItemId()==R.id.settingsmenu){
             Toast.makeText(this, "This feature is under development phase", Toast.LENGTH_SHORT).show();
         }
+        if(item.getItemId()==R.id.aboutus){
+            startActivity(new Intent(MainActivity.this,AboutUsActivity.class));
+        }
         return true;
     }
 

@@ -58,6 +58,9 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     FirebaseUser firebaseUser;
     String userId;
     TextView nameText;
+    ArrayList<String> imageTypes = new ArrayList<>();
+    ArrayList<String> videoTypes = new ArrayList<>();
+    ArrayList<String> audioTypes = new ArrayList<>();
     ImageView dp, delete, forward,copy;
     ClipboardManager clipboardManager;
     private SecretKeySpec secretKeySpec;
@@ -360,13 +363,30 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             layout=itemView.findViewById(R.id.background);
         }
     }
-
-
     @Override
     public int getItemViewType(int position) {
+//        //ArrayLists
+//        imageTypes.add("bmp");
+//        imageTypes.add("gif");
+//        imageTypes.add("jpg");
+//        imageTypes.add("png");
+//        imageTypes.add("webp");
+//        videoTypes.add("mp4");
+//        videoTypes.add("mkv");
+//        videoTypes.add("webm");
+//        audioTypes.add("3gp");
+//        audioTypes.add("mp3");
+//        audioTypes.add("wav");
+//        audioTypes.add("ogg");
+
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mChat.get(position).getIsThisFile().equals("true") && mChat.get(position).getSenderUid().equals(firebaseUser.getUid())) {
-            return fileLeft;
+//            if(imageTypes.contains(mChat.get(position).getType())){return fileLeft;}
+//            else if(videoTypes.contains(mChat.get(position).getType())){return fileLeft;}
+//            else if(audioTypes.contains(mChat.get(position).getType())){return fileLeft;}
+//            else {
+                return fileLeft;
+//            }
         } else if (mChat.get(position).getIsThisFile().equals("true") && (!mChat.get(position).getSenderUid().equals(firebaseUser.getUid()))) {
             return fileRight;
         } else if ((mChat.get(position).getIsThisFile().equals("false") && mChat.get(position).getSenderUid().equals(firebaseUser.getUid()))) {
