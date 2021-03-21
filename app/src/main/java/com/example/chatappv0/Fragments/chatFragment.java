@@ -1,5 +1,6 @@
 package com.example.chatappv0.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -10,10 +11,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.chatappv0.Models.friendsModel;
 import com.example.chatappv0.R;
 import com.example.chatappv0.Adapter.acceptedUserAdapter;
+import com.example.chatappv0.allusersActivity;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -30,6 +35,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+
+import static java.lang.Thread.sleep;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,6 +56,8 @@ public class  chatFragment extends Fragment {
     private com.example.chatappv0.Adapter.acceptedUserAdapter acceptedUserAdapter;
     private RecyclerView recyclerView;
     private AdView mAdView;
+    private LottieAnimationView empty,loading;
+    private TextView noFriends,loadingText;
     ArrayList<friendsModel> userList = new ArrayList<>();
 
     public chatFragment() {
@@ -91,6 +100,10 @@ public class  chatFragment extends Fragment {
         recyclerView= view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        empty=view.findViewById(R.id.empty);
+        noFriends=view.findViewById(R.id.noFriendsText);
+        loading=view.findViewById(R.id.loading);
+        loadingText=view.findViewById(R.id.loadingText);
         readusers();
         MobileAds.initialize(getContext(), new OnInitializationCompleteListener() {
             @Override
@@ -138,6 +151,8 @@ public class  chatFragment extends Fragment {
         return view;
     }
     public void readusers() {
+        loading.setSpeed(1);
+        loading.playAnimation();
         FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("users").child(me.getUid()).child("friends");
 //        databaseReference.keepSynced(true);
@@ -149,14 +164,20 @@ public class  chatFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     friendsModel user = snapshot.getValue(friendsModel.class);
                     userList.add(user);
-                    Log.d("ojaslearningfragment","--");
                 }
+                loadingText.setVisibility(View.INVISIBLE);
+                loading.setVisibility(View.INVISIBLE);
                 acceptedUserAdapter = new acceptedUserAdapter(getContext(), userList);
                 LinearLayoutManager manager =new LinearLayoutManager(getContext());
                 manager.setReverseLayout(true);
                 manager.setStackFromEnd(true);
                 recyclerView.setLayoutManager(manager);
                 recyclerView.setAdapter(acceptedUserAdapter);
+                try {
+                    EmptyListAnimation();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -165,5 +186,30 @@ public class  chatFragment extends Fragment {
             }
         });
 
+    }
+
+    private void EmptyListAnimation() throws InterruptedException {
+        sleep(1100);
+        if (userList.isEmpty()) {
+            empty.setVisibility(View.VISIBLE);
+            noFriends.setVisibility(View.VISIBLE);
+            empty.setSpeed(1);
+            empty.playAnimation();
+            empty.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getContext(), allusersActivity.class));
+                }
+            });
+            noFriends.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getContext(), allusersActivity.class));
+                }
+            });
+        } else {
+            empty.setVisibility(View.GONE);
+            noFriends.setVisibility(View.GONE);
+        }
     }
 }

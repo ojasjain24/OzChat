@@ -56,10 +56,9 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/adbutton"
         app:layout_constraintEnd_toEndOf="@+id/adbutton"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/adbutton"
         app:layout_constraintTop_toBottomOf="@+id/adViewaf2"
-        app:layout_constraintVertical_bias="0.621" />
+        app:layout_constraintVertical_bias="0.60" />
 
     <TextView
         android:id="@+id/textView8"
