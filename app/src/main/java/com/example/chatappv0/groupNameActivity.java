@@ -183,7 +183,7 @@ public class groupNameActivity extends AppCompatActivity {
         final Intent i= getIntent();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i.getStringExtra("nodeId"));
         reference.setValue(null);
-    }
+        }
 
     @Override
     protected void onDestroy() {
@@ -191,6 +191,7 @@ public class groupNameActivity extends AppCompatActivity {
         final Intent i= getIntent();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i.getStringExtra("nodeId"));
         reference.setValue(null);
+        startActivity(new Intent(groupNameActivity.this,MainActivity.class));
     }
 
     @Override
@@ -199,5 +200,24 @@ public class groupNameActivity extends AppCompatActivity {
         final Intent i= getIntent();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i.getStringExtra("nodeId"));
         reference.setValue(null);
+        startActivity(new Intent(groupNameActivity.this,MainActivity.class));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        final Intent i= getIntent();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i.getStringExtra("nodeId"));
+        reference.setValue(null);
+        startActivity(new Intent(groupNameActivity.this,MainActivity.class));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        final Intent i= getIntent();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i.getStringExtra("nodeId"));
+        reference.setValue(null);
+        startActivity(new Intent(groupNameActivity.this,MainActivity.class));
     }
 }
