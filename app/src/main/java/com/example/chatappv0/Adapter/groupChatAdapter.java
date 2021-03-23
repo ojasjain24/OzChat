@@ -337,7 +337,7 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public static class msgHolder extends RecyclerView.ViewHolder {
         TextView message, name;
         TextView time;
-        ImageView border;
+        ConstraintLayout border;
         ConstraintLayout layout;
 
         public msgHolder(@NonNull View itemView) {

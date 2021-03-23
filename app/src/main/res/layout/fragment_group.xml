@@ -32,5 +32,60 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loadinggf"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/loading_content" />
+
+    <TextView
+        android:id="@+id/loadingTextgf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loading..."
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="@+id/adViewgf"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/loadinggf"
+        app:layout_constraintVertical_bias="0.71" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/emptygf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/loadinggf"
+        app:layout_constraintEnd_toEndOf="@+id/loadinggf"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/loadinggf"
+        app:layout_constraintTop_toTopOf="@+id/loadinggf"
+        app:layout_constraintVertical_bias="0.0"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/empty_list" />
+
+    <TextView
+        android:id="@+id/noFriendsTextgf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center"
+        android:text="Join Public Groups"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/loadingTextgf" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

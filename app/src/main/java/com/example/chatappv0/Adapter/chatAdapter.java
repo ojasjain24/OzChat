@@ -117,7 +117,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
             Date resultdate = new Date(Long.parseLong(time));
             msgholder.time.setText(sdf.format(resultdate));
-            msgholder.border.setOnLongClickListener(new View.OnLongClickListener() {
+            msgholder.layout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                 int color;
@@ -128,7 +128,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         color = R.color.nullColor;
                         list.remove(chat);
                     }
-                    msgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
+                    msgholder.border.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
                     if(list.size()!=0) {
                         nameText = ((chatPage) context).findViewById(R.id.name);
                         nameText.setVisibility(View.INVISIBLE);
@@ -339,7 +339,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static class msgHolder extends RecyclerView.ViewHolder {
         TextView message;
         TextView time;
-        ImageView border;
+        ConstraintLayout border;
         ConstraintLayout layout;
         public msgHolder(@NonNull View itemView) {
             super(itemView);

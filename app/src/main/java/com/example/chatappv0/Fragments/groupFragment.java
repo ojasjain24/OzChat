@@ -1,5 +1,6 @@
 package com.example.chatappv0.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -9,11 +10,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.chatappv0.Adapter.groupFragmentAdapter;
 import com.example.chatappv0.Models.groupDataModel;
 import com.example.chatappv0.Models.groupMemberModel;
 import com.example.chatappv0.R;
+import com.example.chatappv0.allGroupActivity;
+import com.example.chatappv0.allusersActivity;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -31,6 +37,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
+import static java.lang.Thread.sleep;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link groupFragment#newInstance} factory method to
@@ -44,6 +52,8 @@ public class groupFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     public static final String TAG = "groupfragment";
     private AdView mAdView;
+    private LottieAnimationView empty,loading;
+    private TextView noFriends,loadingText;
     private groupFragmentAdapter groupfragmentAdapter;
     private RecyclerView recyclerView;
 
@@ -79,6 +89,10 @@ public class groupFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_group,container,false);
         recyclerView= view.findViewById(R.id.recyclerViewgf);
+        empty=view.findViewById(R.id.emptygf);
+        noFriends=view.findViewById(R.id.noFriendsTextgf);
+        loading=view.findViewById(R.id.loadinggf);
+        loadingText=view.findViewById(R.id.loadingTextgf);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         readusers();
@@ -128,6 +142,8 @@ public class groupFragment extends Fragment {
         return view;
     }
     private void readusers() {
+        loading.setSpeed(1);
+        loading.playAnimation();
         final FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("groups");
         Query query=databaseReference.orderByChild("lastmsg");
@@ -149,12 +165,17 @@ public class groupFragment extends Fragment {
                                         userList.add(user);
                                     }
                                 }
+                                loadingText.setVisibility(View.INVISIBLE);
+                                loading.setVisibility(View.INVISIBLE);
                                 groupfragmentAdapter = new groupFragmentAdapter(getContext(), userList);
                                 LinearLayoutManager manager=new LinearLayoutManager(getContext());
                                 manager.setStackFromEnd(true);
                                 manager.setReverseLayout(true);
                                 recyclerView.setLayoutManager(manager);
                                 recyclerView.setAdapter(groupfragmentAdapter);
+
+                                    EmptyListAnimation(userList);
+
                             }
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
@@ -172,5 +193,27 @@ public class groupFragment extends Fragment {
         });
 
     }
-
+    private void EmptyListAnimation(ArrayList<groupDataModel> userList) {
+        if (userList.isEmpty()) {
+            empty.setVisibility(View.VISIBLE);
+            noFriends.setVisibility(View.VISIBLE);
+            empty.setSpeed(1);
+            empty.playAnimation();
+            empty.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getContext(), allGroupActivity.class));
+                }
+            });
+            noFriends.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getContext(), allGroupActivity.class));
+                }
+            });
+        } else {
+            empty.setVisibility(View.GONE);
+            noFriends.setVisibility(View.GONE);
+        }
+    }
 }

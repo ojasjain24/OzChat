@@ -173,11 +173,8 @@ public class  chatFragment extends Fragment {
                 manager.setStackFromEnd(true);
                 recyclerView.setLayoutManager(manager);
                 recyclerView.setAdapter(acceptedUserAdapter);
-                try {
-                    EmptyListAnimation();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                EmptyListAnimation();
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -188,8 +185,7 @@ public class  chatFragment extends Fragment {
 
     }
 
-    private void EmptyListAnimation() throws InterruptedException {
-        sleep(1100);
+    private void EmptyListAnimation() {
         if (userList.isEmpty()) {
             empty.setVisibility(View.VISIBLE);
             noFriends.setVisibility(View.VISIBLE);

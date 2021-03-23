@@ -54,17 +54,31 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messageList"
+        android:elevation="1dp"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginHorizontal="3dp"
-        android:background="@color/backGround"
         app:layout_constraintBottom_toTopOf="@+id/messageCardc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adView2" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adView2"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:scaleType="fitXY"
+        app:lottie_rawRes="@raw/train"/>
+
     <androidx.cardview.widget.CardView
+        android:elevation="10dp"
         android:id="@+id/messageCardc"
         android:layout_width="0dp"
         android:layout_marginHorizontal="5dp"
@@ -96,6 +110,7 @@
     </androidx.cardview.widget.CardView>
 
     <ImageView
+        android:elevation="10dp"
         android:id="@+id/sendMSG"
         android:layout_width="33dp"
         android:layout_height="0dp"
@@ -108,6 +123,7 @@
         app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
     <ImageView
+        android:elevation="10dp"
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -164,3 +180,4 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
