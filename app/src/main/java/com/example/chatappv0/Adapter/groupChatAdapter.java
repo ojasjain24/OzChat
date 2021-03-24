@@ -1,5 +1,6 @@
 package com.example.chatappv0.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -34,6 +35,7 @@ import com.example.chatappv0.chatPage;
 import com.example.chatappv0.forwardMessage;
 import com.example.chatappv0.forwardMessageGroup;
 import com.example.chatappv0.groupChat;
+import com.example.chatappv0.profileVisit;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -92,20 +94,34 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                usersModel usersModel = snapshot.getValue(com.example.chatappv0.Models.usersModel.class);
+                final usersModel usersModel = snapshot.getValue(com.example.chatappv0.Models.usersModel.class);
                 Random rnd = new Random();
                 int color = Color.argb(255, rnd.nextInt(180), rnd.nextInt(180), rnd.nextInt(180));
                 if (getItemViewType(position) == msgRight|| getItemViewType(position) == msgLeft) {
                     final msgHolder msgholder = (msgHolder) holder;
                     msgholder.message.setText(chat.getMessage());
                     String time = chat.getTime();
-                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
                     Date resultdate = new Date(Long.parseLong(time));
                     msgholder.time.setText(sdf.format(resultdate));
                     msgholder.name.setText(usersModel.getUsername());
                     msgholder.name.setTextColor(color);
+                    msgholder.name.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(context, profileVisit.class);
+                            i.putExtra("name",usersModel.getUsername());
+                            i.putExtra("status",usersModel.getStatus());
+                            i.putExtra("pic",usersModel.getImageurl());
+                            i.putExtra("gender",usersModel.getGender());
+                            i.putExtra("profession",usersModel.getProfession());
+                            i.putExtra("country",usersModel.getCountry());
+                            i.putExtra("language",usersModel.getLanguage());
+                            context.startActivity(i);
+                        }
+                    });
 
-                    msgholder.border.setOnLongClickListener(new View.OnLongClickListener() {
+                    msgholder.layout.setOnLongClickListener(new View.OnLongClickListener() {
                         @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
                         public boolean onLongClick(View v) {
@@ -229,7 +245,7 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     fileholder.time.setText(sdf.format(resultdate));
                     fileholder.name.setTextColor(color);
                     fileholder.type.setText(chat.getType());
-                    fileholder.border.setOnLongClickListener(new View.OnLongClickListener() {
+                    fileholder.layout.setOnLongClickListener(new View.OnLongClickListener() {
                         @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
                         public boolean onLongClick(View v) {

@@ -128,7 +128,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         color = R.color.nullColor;
                         list.remove(chat);
                     }
-                    msgholder.border.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
+                    msgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
                     if(list.size()!=0) {
                         nameText = ((chatPage) context).findViewById(R.id.name);
                         nameText.setVisibility(View.INVISIBLE);
@@ -235,7 +235,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
             Date resultdate = new Date(Long.parseLong(time));
             fileholder.time.setText(sdf.format(resultdate));
-            fileholder.border.setOnLongClickListener(new View.OnLongClickListener() {
+            fileholder.layout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     int color;
