@@ -11,6 +11,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
+        android:elevation="1dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/adView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,17 +35,30 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/loading"
+        android:elevation="2dp"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"
+        app:layout_constraintVertical_bias="0.0"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/loading_content" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/adView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
+        android:scaleType="fitXY"
+        app:lottie_rawRes="@raw/train"/>
 
     <TextView
         android:id="@+id/loadingText"
@@ -60,6 +74,7 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/empty"
+        android:elevation="2dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
@@ -74,6 +89,7 @@
 
     <TextView
         android:id="@+id/noFriendsText"
+        android:elevation="2dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
