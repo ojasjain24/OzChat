@@ -44,10 +44,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
@@ -58,6 +63,9 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     ClipboardManager clipboardManager;
     int count=0;
     String nodeId;
+    private SecretKeySpec secretKeySpec;
+    private final byte[] encryptionKey ={5,15,-65,-56,3,45,-96,37,85,64,85,-92,-12,-5,64,-50};
+    private Cipher cipher, decipher;
     final ArrayList<groupChatModel> list = new ArrayList<>();
     public static final int msgLeft = 0;
     public static final int msgRight = 1;
@@ -87,262 +95,282 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
+    @SuppressLint("GetInstance")
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         final groupChatModel chat = mChat.get(position);
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(chat.getSenderUid());
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                final usersModel usersModel = snapshot.getValue(com.example.chatappv0.Models.usersModel.class);
-                Random rnd = new Random();
-                int color = Color.argb(255, rnd.nextInt(180), rnd.nextInt(180), rnd.nextInt(180));
-                if (getItemViewType(position) == msgRight|| getItemViewType(position) == msgLeft) {
-                    final msgHolder msgholder = (msgHolder) holder;
-                    msgholder.message.setText(chat.getMessage());
-                    String time = chat.getTime();
-                    @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
-                    Date resultdate = new Date(Long.parseLong(time));
-                    msgholder.time.setText(sdf.format(resultdate));
-                    msgholder.name.setText(usersModel.getUsername());
-                    msgholder.name.setTextColor(color);
-                    msgholder.name.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(context, profileVisit.class);
-                            i.putExtra("name",usersModel.getUsername());
-                            i.putExtra("status",usersModel.getStatus());
-                            i.putExtra("pic",usersModel.getImageurl());
-                            i.putExtra("gender",usersModel.getGender());
-                            i.putExtra("profession",usersModel.getProfession());
-                            i.putExtra("country",usersModel.getCountry());
-                            i.putExtra("language",usersModel.getLanguage());
-                            context.startActivity(i);
-                        }
-                    });
+        try {
+            cipher = Cipher.getInstance("AES");
+            decipher = Cipher.getInstance("AES");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
+        secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
+//  names of msg sender
 
-                    msgholder.layout.setOnLongClickListener(new View.OnLongClickListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.M)
-                        @Override
-                        public boolean onLongClick(View v) {
-                            int color;
-                            if(!list.contains(chat)) {
-                                color = R.color.transpirent;
-                                list.add(chat);
-                            }else{
-                                color = R.color.nullColor;
-                                list.remove(chat);
-                            }
-                            msgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
-                            if(list.size()!=0) {
-                                nameText = ((groupChat) context).findViewById(R.id.chatPageName);
-                                nameText.setVisibility(View.INVISIBLE);
-                                dp = ((groupChat) context).findViewById(R.id.chatPageDp);
-                                dp.setVisibility(View.INVISIBLE);
-                                delete=((groupChat) context).findViewById(R.id.deleteIcong);
-                                delete.setVisibility(View.VISIBLE);
-                                forward=((groupChat) context).findViewById(R.id.forwardIcong);
-                                forward.setVisibility(View.VISIBLE);
-                                copy=((groupChat) context).findViewById(R.id.copyIcong);
-                                if(count==0) {
-                                    copy.setVisibility(View.VISIBLE);
+//            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(chat.getSenderUid());
+//            reference.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    final usersModel usersModel = snapshot.getValue(com.example.chatappv0.Models.usersModel.class);
+//                    Random rnd = new Random();
+//                    int color = Color.argb(255, rnd.nextInt(180), rnd.nextInt(180), rnd.nextInt(180));
+//                    if (getItemViewType(position) == msgRight|| getItemViewType(position) == msgLeft) {
+//                        final msgHolder msgholder = (msgHolder) holder;
+//                        msgholder.message.setText(chat.getMessage());
+//                        String time = chat.getTime();
+//                        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+//                        Date resultdate = new Date(Long.parseLong(time));
+//                        msgholder.time.setText(sdf.format(resultdate));
+//                        msgholder.name.setText(usersModel.getUsername());
+//                        msgholder.name.setTextColor(color);
+//                        msgholder.name.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                Intent i = new Intent(context, profileVisit.class);
+//                                i.putExtra("name",usersModel.getUsername());
+//                                i.putExtra("status",usersModel.getStatus());
+//                                i.putExtra("pic",usersModel.getImageurl());
+//                                i.putExtra("gender",usersModel.getGender());
+//                                i.putExtra("profession",usersModel.getProfession());
+//                                i.putExtra("country",usersModel.getCountry());
+//                                i.putExtra("language",usersModel.getLanguage());
+//                                context.startActivity(i);
+//                            }
+//                        });
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+
+        if (getItemViewType(position) == msgRight|| getItemViewType(position) == msgLeft) {
+            final msgHolder msgholder = (msgHolder) holder;
+            msgholder.message.setText(chat.getMessage());
+            String time = chat.getTime();
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+            Date resultdate = new Date(Long.parseLong(time));
+            msgholder.time.setText(sdf.format(resultdate));
+
+            msgholder.layout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int color;
+                    if(!list.contains(chat)) {
+                        color = R.color.transpirent;
+                        list.add(chat);
+                    }else{
+                        color = R.color.nullColor;
+                        list.remove(chat);
+                    }
+                    msgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
+                    if(list.size()!=0) {
+                        nameText = ((groupChat) context).findViewById(R.id.chatPageName);
+                        nameText.setVisibility(View.INVISIBLE);
+                        dp = ((groupChat) context).findViewById(R.id.chatPageDp);
+                        dp.setVisibility(View.INVISIBLE);
+                        delete=((groupChat) context).findViewById(R.id.deleteIcong);
+                        delete.setVisibility(View.VISIBLE);
+                        forward=((groupChat) context).findViewById(R.id.forwardIcong);
+                        forward.setVisibility(View.VISIBLE);
+                        copy=((groupChat) context).findViewById(R.id.copyIcong);
+                        if(count==0) {
+                            copy.setVisibility(View.VISIBLE);
+                        }
+                        final Boolean[] ok = {false};
+                        delete.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                for(int i=list.size()-1;i>=0;i--){
+                                    if(list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                        final int finalI = i;
+                                        if (!ok[0]) {
+                                            new AlertDialog.Builder(context)
+                                                    .setTitle("Delete Messages?")
+                                                    .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
+                                                    .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").child(list.get(finalI).getKey());
+                                                            reference.setValue(null);
+                                                            ok[0] =true;
+                                                            nameText.setVisibility(View.VISIBLE);
+                                                            dp.setVisibility(View.VISIBLE);
+                                                            delete.setVisibility(View.INVISIBLE);
+                                                            forward.setVisibility(View.INVISIBLE);
+                                                            copy.setVisibility(View.INVISIBLE);
+                                                        }
+                                                    })
+                                                    .setNegativeButton(android.R.string.no, null)
+                                                    .setIcon(R.drawable.logo)
+                                                    .show();
+                                        }else{
+                                            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").child(list.get(finalI).getKey());
+                                            reference.setValue(null);
+                                        }
+                                    }
                                 }
-                                Log.d("ojaslistoutside",list.size()+"");
-                                final Boolean[] ok = {false};
-                                delete.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        for(int i=list.size()-1;i>=0;i--){
-                                            if(list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                                final int finalI = i;
-                                                Log.d("ojasok", ok[0].toString());
-                                                if (!ok[0]) {
-                                                    new AlertDialog.Builder(context)
-                                                            .setTitle("Delete Messages?")
-                                                            .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
-                                                            .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                                                                public void onClick(DialogInterface dialog, int which) {
-                                                                    final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").child(list.get(finalI).getKey());
-                                                                    reference.setValue(null);
-                                                                    ok[0] =true;
-                                                                    nameText.setVisibility(View.VISIBLE);
-                                                                    dp.setVisibility(View.VISIBLE);
-                                                                    delete.setVisibility(View.INVISIBLE);
-                                                                    forward.setVisibility(View.INVISIBLE);
-                                                                    copy.setVisibility(View.INVISIBLE);
-                                                                }
-                                                            })
-                                                            .setNegativeButton(android.R.string.no, null)
-                                                            .setIcon(R.drawable.logo)
-                                                            .show();
-                                                }else{
-                                                    final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").child(list.get(finalI).getKey());
-                                                    reference.setValue(null);
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
-
-                                clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                                copy.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        String data="";
-                                        for(int i=list.size()-1;i>=0;i--){
-                                            data=data+list.get(i).getMessage()+"\n";
-                                            ClipData clipData = ClipData.newPlainText("text"+i,data);
-                                            clipboardManager.setPrimaryClip(clipData);
-                                            msgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, R.color.nullColor)));
-                                        }
-                                        Toast.makeText(context, "Copied to Clipboard !", Toast.LENGTH_SHORT).show();
-                                        Intent i = new Intent(context,groupChat.class);
-                                        i.putExtra("nodeId",nodeId);
-                                        context.startActivity(i);
-                                    }
-                                });
-                                forward.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent i =new Intent(context, forwardMessageGroup.class);
-                                        Bundle args = new Bundle();
-                                        args.putSerializable("arrayList",list);
-                                        i.putExtra("BUNDLE",args);
-                                        context.startActivity(i);
-                                    }
-                                });
-                            }else{
-                                nameText = ((groupChat) context).findViewById(R.id.chatPageName);
-                                nameText.setVisibility(View.VISIBLE);
-                                dp = ((groupChat) context).findViewById(R.id.chatPageDp);
-                                dp.setVisibility(View.VISIBLE);
-                                delete=((groupChat) context).findViewById(R.id.deleteIcong);
-                                delete.setVisibility(View.INVISIBLE);
-                                forward=((groupChat) context).findViewById(R.id.forwardIcong);
-                                forward.setVisibility(View.INVISIBLE);
-                                copy=((groupChat) context).findViewById(R.id.copyIcong);
-                                copy.setVisibility(View.INVISIBLE);
-
                             }
-                            return false;
-                        }
-                    });
+                        });
 
-                }else{
-                    final fileHolder fileholder = (fileHolder) holder;
-                    fileholder.openBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent I = new Intent(Intent.ACTION_VIEW);
-                            I.setData(Uri.parse(chat.getMessage()));
-                            context.startActivity(I);
-                        }
-                    });
-                    fileholder.name.setText(usersModel.getUsername());
-                    String time = chat.getTime();
-                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
-                    Date resultdate = new Date(Long.parseLong(time));
-                    fileholder.time.setText(sdf.format(resultdate));
-                    fileholder.name.setTextColor(color);
-                    fileholder.type.setText(chat.getType());
-                    fileholder.layout.setOnLongClickListener(new View.OnLongClickListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.M)
-                        @Override
-                        public boolean onLongClick(View v) {
-                            int color;
-                            if(!list.contains(chat)) {
-                                color = R.color.transpirent;
-                                list.add(chat);
-                                count+=1;
-                            }else{
-                                color = R.color.nullColor;
-                                list.remove(chat);
-                                count-=1;
+                        clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                        copy.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String data="";
+                                for(int i=list.size()-1;i>=0;i--){
+                                    data=data+list.get(i).getMessage()+"\n";
+                                    ClipData clipData = ClipData.newPlainText("text"+i,data);
+                                    clipboardManager.setPrimaryClip(clipData);
+                                    msgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, R.color.nullColor)));
+                                }
+                                Toast.makeText(context, "Copied to Clipboard !", Toast.LENGTH_SHORT).show();
+                                Intent i = new Intent(context,groupChat.class);
+                                i.putExtra("nodeId",nodeId);
+                                context.startActivity(i);
                             }
-                            fileholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
-                            if(list.size()!=0) {
-                                nameText = ((groupChat) context).findViewById(R.id.chatPageName);
-                                nameText.setVisibility(View.INVISIBLE);
-                                dp = ((groupChat) context).findViewById(R.id.chatPageDp);
-                                dp.setVisibility(View.INVISIBLE);
-                                delete=((groupChat) context).findViewById(R.id.deleteIcong);
-                                delete.setVisibility(View.VISIBLE);
-                                forward=((groupChat) context).findViewById(R.id.forwardIcong);
-                                forward.setVisibility(View.VISIBLE);
-                                copy=((groupChat) context).findViewById(R.id.copyIcong);
-                                copy.setVisibility(View.GONE);
-                                Log.d("ojaslistoutside",list.size()+"");
-                                final Boolean[] ok = {false};
-                                delete.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        for(int i=list.size()-1;i>=0;i--){
-                                            if(list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                                final int finalI = i;
-                                                if (!ok[0]) {
-                                                    new AlertDialog.Builder(context)
-                                                            .setTitle("Delete Messages?")
-                                                            .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
-                                                            .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                                                                public void onClick(DialogInterface dialog, int which) {
-                                                                    final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").child(list.get(finalI).getKey());
-                                                                    reference.setValue(null);
-                                                                    ok[0] =true;
-                                                                    Log.d("ojasokin", ok[0].toString());
-                                                                    nameText.setVisibility(View.VISIBLE);
-                                                                    dp.setVisibility(View.VISIBLE);
-                                                                    delete.setVisibility(View.INVISIBLE);
-                                                                    forward.setVisibility(View.INVISIBLE);
-                                                                    copy.setVisibility(View.INVISIBLE);
-                                                                }
-                                                            })
-                                                            .setNegativeButton(android.R.string.no, null)
-                                                            .setIcon(R.drawable.logo)
-                                                            .show();
-                                                }else{
-                                                    final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(finalI).getKey());
-                                                    reference.setValue(null);
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
-                                forward.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent i =new Intent(context, forwardMessage.class);
-                                        Bundle args = new Bundle();
-                                        args.putSerializable("arrayList",list);
-                                        i.putExtra("BUNDLE",args);
-                                        context.startActivity(i);
-                                    }
-                                });
-                            }else{
-                                nameText = ((groupChat) context).findViewById(R.id.chatPageName);
-                                nameText.setVisibility(View.VISIBLE);
-                                dp = ((groupChat) context).findViewById(R.id.chatPageDp);
-                                dp.setVisibility(View.VISIBLE);
-                                delete=((groupChat) context).findViewById(R.id.deleteIcong);
-                                delete.setVisibility(View.INVISIBLE);
-                                forward=((groupChat) context).findViewById(R.id.forwardIcong);
-                                forward.setVisibility(View.INVISIBLE);
-                                copy=((groupChat) context).findViewById(R.id.copyIcong);
-                                copy.setVisibility(View.INVISIBLE);
+                        });
+                        forward.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i =new Intent(context, forwardMessage.class);
+                                Bundle args = new Bundle();
+                                args.putSerializable("arrayList",list);
+                                i.putExtra("BUNDLE",args);
+                                context.startActivity(i);
                             }
-                            return false;
-                        }
-                    });
+                        });
+                    }else{
+                        nameText = ((groupChat) context).findViewById(R.id.chatPageName);
+                        nameText.setVisibility(View.VISIBLE);
+                        dp = ((groupChat) context).findViewById(R.id.chatPageDp);
+                        dp.setVisibility(View.VISIBLE);
+                        delete=((groupChat) context).findViewById(R.id.deleteIcong);
+                        delete.setVisibility(View.INVISIBLE);
+                        forward=((groupChat) context).findViewById(R.id.forwardIcong);
+                        forward.setVisibility(View.INVISIBLE);
+                        copy=((groupChat) context).findViewById(R.id.copyIcong);
+                        copy.setVisibility(View.INVISIBLE);
 
-
+                    }
+                    return false;
                 }
-            }
+            });
+        }else{
+            final groupChatAdapter.fileHolder fileholder = (groupChatAdapter.fileHolder) holder;
+            fileholder.openBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent I = new Intent(Intent.ACTION_VIEW);
+                    I.setData(Uri.parse(chat.getMessage()));
+                    context.startActivity(I);
+                }
+            });
+            fileholder.type.setText(chat.getType());
+            String time = chat.getTime();
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+            Date resultdate = new Date(Long.parseLong(time));
+            fileholder.time.setText(sdf.format(resultdate));
+            fileholder.layout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int color;
+                    if(!list.contains(chat)) {
+                        color = R.color.transpirent;
+                        list.add(chat);
+                        count+=1;
+                    }else{
+                        color = R.color.nullColor;
+                        list.remove(chat);
+                        count-=1;
+                    }
+                    fileholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
+                    if(list.size()!=0) {
+                        nameText = ((groupChat) context).findViewById(R.id.chatPageName);
+                        nameText.setVisibility(View.INVISIBLE);
+                        dp = ((groupChat) context).findViewById(R.id.chatPageDp);
+                        dp.setVisibility(View.INVISIBLE);
+                        delete=((groupChat) context).findViewById(R.id.deleteIcong);
+                        delete.setVisibility(View.VISIBLE);
+                        forward=((groupChat) context).findViewById(R.id.forwardIcong);
+                        forward.setVisibility(View.VISIBLE);
+                        copy=((groupChat) context).findViewById(R.id.copyIcong);
+                        copy.setVisibility(View.GONE);
+                        Log.d("ojaslistoutside",list.size()+"");
+                        final Boolean[] ok = {false};
+                        delete.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                for(int i=list.size()-1;i>=0;i--){
+                                    if(list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                        final int finalI = i;
+                                        if (!ok[0]) {
+                                            new AlertDialog.Builder(context)
+                                                    .setTitle("Delete Messages?")
+                                                    .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
+                                                    .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+//                                                            StorageReference storageReference = null;
+//                                                            try {
+//                                                                Log.d("ojasdeletefile",AESDecryptionMethod(list.get(finalI).getMessage())+"");
+//                                                                storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(AESDecryptionMethod(list.get(finalI).getMessage()));
+//                                                            } catch (UnsupportedEncodingException e) {
+//                                                                e.printStackTrace();
+//                                                            }
+//                                                            storageReference.delete();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
+                                                            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").child(list.get(finalI).getKey());
+                                                            reference.setValue(null);
+                                                            ok[0] =true;
+                                                            nameText.setVisibility(View.VISIBLE);
+                                                            dp.setVisibility(View.VISIBLE);
+                                                            delete.setVisibility(View.INVISIBLE);
+                                                            forward.setVisibility(View.INVISIBLE);
+                                                            copy.setVisibility(View.INVISIBLE);
+                                                        }
+                                                    })
+                                                    .setNegativeButton(android.R.string.no, null)
+                                                    .setIcon(R.drawable.logo)
+                                                    .show();
+                                        }else{
+                                            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").child(list.get(finalI).getKey());
+                                            reference.setValue(null);
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        forward.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i =new Intent(context, forwardMessage.class);
+                                Bundle args = new Bundle();
+                                args.putSerializable("arrayList",list);
+                                i.putExtra("BUNDLE",args);
+                                context.startActivity(i);
+                            }
+                        });
+                    }else{
+                        nameText = ((groupChat) context).findViewById(R.id.chatPageName);
+                        nameText.setVisibility(View.VISIBLE);
+                        dp = ((groupChat) context).findViewById(R.id.chatPageDp);
+                        dp.setVisibility(View.VISIBLE);
+                        delete=((groupChat) context).findViewById(R.id.deleteIcong);
+                        delete.setVisibility(View.INVISIBLE);
+                        forward=((groupChat) context).findViewById(R.id.forwardIcong);
+                        forward.setVisibility(View.INVISIBLE);
+                        copy=((groupChat) context).findViewById(R.id.copyIcong);
+                        copy.setVisibility(View.INVISIBLE);
+                    }
+                    return false;
+                }
+            });
+        }
     }
 
     @Override

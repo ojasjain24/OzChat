@@ -274,14 +274,14 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                                     .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
                                                     .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int which) {
-                                                            StorageReference storageReference = null;
-                                                            try {
-                                                                Log.d("ojasdeletefile",AESDecryptionMethod(list.get(finalI).getMessage())+"");
-                                                                storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(AESDecryptionMethod(list.get(finalI).getMessage()));
-                                                            } catch (UnsupportedEncodingException e) {
-                                                                e.printStackTrace();
-                                                            }
-                                                            storageReference.delete();
+//                                                            StorageReference storageReference = null;
+//                                                            try {
+//                                                                Log.d("ojasdeletefile",AESDecryptionMethod(list.get(finalI).getMessage())+"");
+//                                                                storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(AESDecryptionMethod(list.get(finalI).getMessage()));
+//                                                            } catch (UnsupportedEncodingException e) {
+//                                                                e.printStackTrace();
+//                                                            }
+//                                                            storageReference.delete();
                                                             final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(finalI).getKey());
                                                             reference.setValue(null);
                                                             ok[0] =true;

@@ -45,7 +45,7 @@ public class loginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String usernameInput=username.getText().toString();
                 String passwordInput=password.getText().toString();
-                if(!(usernameInput.trim().equals("")&&passwordInput.trim().equals(""))) {
+                if(!(usernameInput.trim().equals("")||passwordInput.trim().equals(""))) {
                     loginUser(usernameInput, passwordInput);
                 }else{
                     Toast.makeText(loginActivity.this, "please fill all the information", Toast.LENGTH_SHORT).show();
