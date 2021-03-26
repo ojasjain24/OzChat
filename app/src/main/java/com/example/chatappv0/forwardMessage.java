@@ -41,7 +41,7 @@ public class forwardMessage extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forward_message_actvity);
-        nextBtn=findViewById(R.id.floatingActionButton);
+        nextBtn=findViewById(R.id.floatingActionButtonfma);
         recyclerView=findViewById(R.id.making_group_list);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
