@@ -10,8 +10,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AboutUsActivity"></activity>
+        <activity android:name=".AboutUsActivity" />
         <activity android:name=".forwardMessage" />
+        <activity android:name=".forwardMessageGrp" />
         <activity android:name=".forwardMessageGroup" />
         <activity android:name=".addMember" />
         <activity android:name=".groupVisit" />

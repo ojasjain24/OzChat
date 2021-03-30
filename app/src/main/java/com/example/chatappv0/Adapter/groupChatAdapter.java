@@ -34,6 +34,7 @@ import com.example.chatappv0.Models.chatModel;
 import com.example.chatappv0.chatPage;
 import com.example.chatappv0.forwardMessage;
 import com.example.chatappv0.forwardMessageGroup;
+import com.example.chatappv0.forwardMessageGrp;
 import com.example.chatappv0.groupChat;
 import com.example.chatappv0.profileVisit;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,6 +49,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Random;
 
 import javax.crypto.Cipher;
@@ -238,7 +240,7 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         forward.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Intent i =new Intent(context, forwardMessage.class);
+                                Intent i =new Intent(context, forwardMessageGrp.class);
                                 Bundle args = new Bundle();
                                 args.putSerializable("arrayList",list);
                                 i.putExtra("BUNDLE",args);
@@ -348,7 +350,7 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         forward.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Intent i =new Intent(context, forwardMessage.class);
+                                Intent i =new Intent(context, forwardMessageGrp.class);
                                 Bundle args = new Bundle();
                                 args.putSerializable("arrayList",list);
                                 i.putExtra("BUNDLE",args);
