@@ -100,8 +100,8 @@ public class  chatFragment extends Fragment {
         recyclerView= view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        empty=view.findViewById(R.id.empty);
         noFriends=view.findViewById(R.id.noFriendsText);
+        empty=view.findViewById(R.id.empty);
         loading=view.findViewById(R.id.loading);
         loadingText=view.findViewById(R.id.loadingText);
         readusers();

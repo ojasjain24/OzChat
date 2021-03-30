@@ -2,6 +2,8 @@ package com.example.chatappv0;
 
 import android.content.Intent;
 import  android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -9,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.chatappv0.Adapter.AllUsersAdapter;
 import com.example.chatappv0.Adapter.allGroupsAdapter;
 import com.example.chatappv0.Models.groupDataModel;
@@ -27,13 +30,18 @@ import java.util.Objects;
 public class allGroupActivity extends AppCompatActivity {
     private allGroupsAdapter allGroupsadapter;
     private RecyclerView recyclerView;
-
+    private LottieAnimationView empty,loading;
+    private TextView noFriends,loadingText;
     ArrayList<groupDataModel> userList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_allusers);
+        noFriends=findViewById(R.id.noFriendsTextaau);
+        empty=findViewById(R.id.emptyaau);
+        loading=findViewById(R.id.loadingaau);
+        loadingText=findViewById(R.id.loadingTextaau);
         recyclerView=findViewById(R.id.userslist);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -41,6 +49,8 @@ public class allGroupActivity extends AppCompatActivity {
     }
 
     private void readusers() {
+        loading.setSpeed(1);
+        loading.playAnimation();
         final DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("groups");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -56,9 +66,12 @@ public class allGroupActivity extends AppCompatActivity {
                                 if(!snapshot.hasChild(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())) {
                                     userList.add(group);
                                 }
+                                loadingText.setVisibility(View.INVISIBLE);
+                                loading.setVisibility(View.INVISIBLE);
                                 allGroupsadapter = new allGroupsAdapter(getApplicationContext(), userList);
                                 recyclerView.setLayoutManager(new LinearLayoutManager(allGroupActivity.this));
                                 recyclerView.setAdapter(allGroupsadapter);
+                                EmptyListAnimation();
                             }
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
@@ -82,5 +95,17 @@ public class allGroupActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(allGroupActivity.this,MainActivity.class));
+    }
+    private void EmptyListAnimation() {
+        if (userList.isEmpty()) {
+            empty.setVisibility(View.VISIBLE);
+            noFriends.setVisibility(View.VISIBLE);
+            noFriends.setText("WOW! You are in every public group");
+            empty.setSpeed(1);
+            empty.playAnimation();
+        } else {
+            empty.setVisibility(View.GONE);
+            noFriends.setVisibility(View.GONE);
+        }
     }
 }

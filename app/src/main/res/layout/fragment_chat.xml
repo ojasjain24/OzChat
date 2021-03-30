@@ -59,19 +59,6 @@
         app:lottie_autoPlay="true"
         android:scaleType="fitXY"
         app:lottie_rawRes="@raw/train"/>
-
-    <TextView
-        android:id="@+id/loadingText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Loading..."
-        android:textSize="25sp"
-        app:layout_constraintBottom_toBottomOf="@+id/adView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/loading"
-        app:layout_constraintVertical_bias="0.71" />
-
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/empty"
         android:elevation="2dp"
@@ -86,6 +73,18 @@
         app:layout_constraintVertical_bias="0.0"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/empty_list" />
+
+    <TextView
+        android:id="@+id/loadingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loading..."
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="@+id/adView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/loading"
+        app:layout_constraintVertical_bias="0.71" />
 
     <TextView
         android:id="@+id/noFriendsText"

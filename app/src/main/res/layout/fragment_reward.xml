@@ -32,6 +32,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/adViewaf"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adbutton"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
+        android:scaleType="centerCrop"
+        app:lottie_rawRes="@raw/gift_light_purple"/>
+
     <Button
         android:id="@+id/adbutton"
         android:layout_width="wrap_content"
@@ -43,7 +55,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adViewaf2"
-        app:layout_constraintVertical_bias="0.588" />
+        app:layout_constraintVertical_bias="0.343" />
 
     <TextView
         android:id="@+id/pointsText"
@@ -56,20 +68,22 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/adbutton"
         app:layout_constraintEnd_toEndOf="@+id/adbutton"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/adbutton"
         app:layout_constraintTop_toBottomOf="@+id/adViewaf2"
-        app:layout_constraintVertical_bias="0.60" />
+        app:layout_constraintVertical_bias="0.338" />
 
     <TextView
         android:id="@+id/textView8"
-        android:textSize="24dp"
-        android:textColor="@color/colorAccent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Watch Video to get 25 points."
+        android:textColor="@color/colorAccent"
+        android:textSize="24dp"
         app:layout_constraintBottom_toTopOf="@+id/adbutton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pointsText" />
+        app:layout_constraintTop_toBottomOf="@+id/pointsText"
+        app:layout_constraintVertical_bias="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
