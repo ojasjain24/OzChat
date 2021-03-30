@@ -11,6 +11,7 @@
     <string name="all_users">All Users</string>
     <string name="profle">profle</string>
     <string name="new_group">new group</string>
+    <string name="who_are_we">I am a IndieDev i.e. Individual Developer. I work as a freelancer, Android developer, Game developer. Aims to be in \"Forbes 30 under 30\" while being useful for the world.</string>
     <string-array name="Type">
         <item>Private</item>
         <item>Public-ask before joining</item>

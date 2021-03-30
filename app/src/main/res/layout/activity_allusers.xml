@@ -18,4 +18,60 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loadingaau"
+        android:elevation="2dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/loading_content" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/emptyaau"
+        android:elevation="2dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/loadingaau"
+        app:layout_constraintEnd_toEndOf="@+id/loadingaau"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/loadingaau"
+        app:layout_constraintTop_toTopOf="@+id/loadingaau"
+        app:layout_constraintVertical_bias="0.2"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/multi_community_friends" />
+    <TextView
+        android:id="@+id/loadingTextaau"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loading..."
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.71" />
+
+    <TextView
+        android:id="@+id/noFriendsTextaau"
+        android:elevation="2dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center"
+        android:text="WOW! You are friends with everyone"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/loadingTextaau" />
 </androidx.constraintlayout.widget.ConstraintLayout>
