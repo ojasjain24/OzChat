@@ -2,7 +2,10 @@ package com.example.chatappv0;
 
 import android.content.Intent;
 import  android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -102,5 +106,59 @@ public class allusersActivity extends AppCompatActivity {
             empty.setVisibility(View.GONE);
             noFriends.setVisibility(View.GONE);
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_menu,menu);
+        MenuItem item = menu.findItem(R.id.search);
+        final android.widget.SearchView searchView = (android.widget.SearchView) item.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchEmployee(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (searchView.getQuery().toString().trim().length() != 0) {
+                    searchEmployee(newText);
+                }
+                else{
+                    searchEmployee("");
+                }
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void searchEmployee(String query) {
+        ArrayList<usersModel> searchList = new ArrayList<>();
+        loading.setSpeed(1);
+        loading.playAnimation();
+        for(int i = 0; i < userList.size(); i++) {
+            if(userList.get(i).getUsername().toLowerCase().startsWith(query.toLowerCase().trim())){
+                searchList.add(userList.get(i));
+            }
+            loadingText.setVisibility(View.INVISIBLE);
+            loading.setVisibility(View.INVISIBLE);
+            allUsersAdapter = new AllUsersAdapter(getApplicationContext(), searchList);
+            recyclerView.setLayoutManager(new LinearLayoutManager(allusersActivity.this));
+            recyclerView.setAdapter(allUsersAdapter);
+            EmptyListAnimation();
+            if(query.equals("")){
+                allUsersAdapter = new AllUsersAdapter(getApplicationContext(), userList);
+                recyclerView.setLayoutManager(new LinearLayoutManager(allusersActivity.this));
+                recyclerView.setAdapter(allUsersAdapter);
+            }
+        }
+
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
     }
 }
