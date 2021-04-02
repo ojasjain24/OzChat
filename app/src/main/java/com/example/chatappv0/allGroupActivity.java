@@ -2,7 +2,10 @@ package com.example.chatappv0;
 
 import android.content.Intent;
 import  android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -107,5 +110,59 @@ public class allGroupActivity extends AppCompatActivity {
             empty.setVisibility(View.GONE);
             noFriends.setVisibility(View.GONE);
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_menu,menu);
+        MenuItem item = menu.findItem(R.id.search);
+        final android.widget.SearchView searchView = (android.widget.SearchView) item.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchEmployee(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (searchView.getQuery().toString().trim().length() != 0) {
+                    searchEmployee(newText);
+                }
+                else{
+                    searchEmployee("");
+                }
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void searchEmployee(String query) {
+        ArrayList<groupDataModel> searchList = new ArrayList<>();
+        loading.setSpeed(1);
+        loading.playAnimation();
+        for(int i = 0; i < userList.size(); i++) {
+            if(userList.get(i).getName().toLowerCase().startsWith(query.toLowerCase().trim())){
+                searchList.add(userList.get(i));
+            }
+            loadingText.setVisibility(View.INVISIBLE);
+            loading.setVisibility(View.INVISIBLE);
+            allGroupsadapter = new allGroupsAdapter(getApplicationContext(), searchList);
+            recyclerView.setLayoutManager(new LinearLayoutManager(allGroupActivity.this));
+            recyclerView.setAdapter(allGroupsadapter);
+            EmptyListAnimation();
+            if(query.equals("")){
+                allGroupsadapter = new allGroupsAdapter(getApplicationContext(), userList);
+                recyclerView.setLayoutManager(new LinearLayoutManager(allGroupActivity.this));
+                recyclerView.setAdapter(allGroupsadapter);
+            }
+        }
+
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
     }
 }

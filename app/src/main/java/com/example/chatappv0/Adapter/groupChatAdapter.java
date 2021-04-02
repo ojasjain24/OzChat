@@ -111,46 +111,47 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             e.printStackTrace();
         }
         secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
-//  names of msg sender
+//      names of msg sender
 
-//            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(chat.getSenderUid());
-//            reference.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    final usersModel usersModel = snapshot.getValue(com.example.chatappv0.Models.usersModel.class);
-//                    Random rnd = new Random();
-//                    int color = Color.argb(255, rnd.nextInt(180), rnd.nextInt(180), rnd.nextInt(180));
-//                    if (getItemViewType(position) == msgRight|| getItemViewType(position) == msgLeft) {
-//                        final msgHolder msgholder = (msgHolder) holder;
-//                        msgholder.message.setText(chat.getMessage());
-//                        String time = chat.getTime();
-//                        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
-//                        Date resultdate = new Date(Long.parseLong(time));
-//                        msgholder.time.setText(sdf.format(resultdate));
-//                        msgholder.name.setText(usersModel.getUsername());
-//                        msgholder.name.setTextColor(color);
-//                        msgholder.name.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                Intent i = new Intent(context, profileVisit.class);
-//                                i.putExtra("name",usersModel.getUsername());
-//                                i.putExtra("status",usersModel.getStatus());
-//                                i.putExtra("pic",usersModel.getImageurl());
-//                                i.putExtra("gender",usersModel.getGender());
-//                                i.putExtra("profession",usersModel.getProfession());
-//                                i.putExtra("country",usersModel.getCountry());
-//                                i.putExtra("language",usersModel.getLanguage());
-//                                context.startActivity(i);
-//                            }
-//                        });
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(chat.getSenderUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                final usersModel usersModel = snapshot.getValue(com.example.chatappv0.Models.usersModel.class);
+                Random rnd = new Random();
+                int color = Color.argb(255, rnd.nextInt(180), rnd.nextInt(180), rnd.nextInt(180));
+
+                if (getItemViewType(position) == msgRight|| getItemViewType(position) == msgLeft) {
+                    final msgHolder msgholder = (msgHolder) holder;
+                    msgholder.message.setText(chat.getMessage());
+                    String time = chat.getTime();
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+                    Date resultdate = new Date(Long.parseLong(time));
+                    msgholder.time.setText(sdf.format(resultdate));
+                    msgholder.name.setText(usersModel.getUsername());
+                    msgholder.name.setTextColor(color);
+                    msgholder.name.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(context, profileVisit.class);
+                            i.putExtra("name",usersModel.getUsername());
+                            i.putExtra("status",usersModel.getStatus());
+                            i.putExtra("pic",usersModel.getImageurl());
+                            i.putExtra("gender",usersModel.getGender());
+                            i.putExtra("profession",usersModel.getProfession());
+                            i.putExtra("country",usersModel.getCountry());
+                            i.putExtra("language",usersModel.getLanguage());
+                            context.startActivity(i);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         if (getItemViewType(position) == msgRight|| getItemViewType(position) == msgLeft) {
             final msgHolder msgholder = (msgHolder) holder;
@@ -159,7 +160,6 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
             Date resultdate = new Date(Long.parseLong(time));
             msgholder.time.setText(sdf.format(resultdate));
-
             msgholder.layout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -325,7 +325,6 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //                                                                e.printStackTrace();
 //                                                            }
 //                                                            storageReference.delete();
-
                                                             final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").child(list.get(finalI).getKey());
                                                             reference.setValue(null);
                                                             ok[0] =true;
