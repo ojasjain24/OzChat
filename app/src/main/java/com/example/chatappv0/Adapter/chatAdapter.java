@@ -40,6 +40,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -142,40 +143,35 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         if(count==0) {
                             copy.setVisibility(View.VISIBLE);
                         }
-                        final Boolean[] ok = {false};
                         delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                for(int i=list.size()-1;i>=0;i--){
-                                    if(list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                        final int finalI = i;
-                                        if (!ok[0]) {
-                                            new AlertDialog.Builder(context)
-                                                    .setTitle("Delete Messages?")
-                                                    .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
-                                                    .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(finalI).getKey());
-                                                            reference.setValue(null);
-                                                            ok[0] =true;
-                                                            nameText.setVisibility(View.VISIBLE);
-                                                            dp.setVisibility(View.VISIBLE);
-                                                            delete.setVisibility(View.INVISIBLE);
-                                                            forward.setVisibility(View.INVISIBLE);
-                                                            copy.setVisibility(View.INVISIBLE);
-                                                        }
-                                                    })
-                                                    .setNegativeButton(android.R.string.no, null)
-                                                    .setIcon(R.drawable.logo)
-                                                    .show();
-                                        }else{
-                                            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(finalI).getKey());
-                                            reference.setValue(null);
-                                        }
-                                    }
-                                }
+                                new AlertDialog.Builder(context)
+                                        .setTitle("Delete Messages?")
+                                        .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
+                                        .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                for(int i=list.size()-1;i>=0;i--) {
+                                                    if (list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(i).getKey());
+                                                        reference.setValue(null);
+                                                        nameText.setVisibility(View.VISIBLE);
+                                                        dp.setVisibility(View.VISIBLE);
+                                                        delete.setVisibility(View.INVISIBLE);
+                                                        forward.setVisibility(View.INVISIBLE);
+                                                        copy.setVisibility(View.INVISIBLE);
+                                                    }else {
+                                                        Toast.makeText(context, "You can not delete messages sent by others", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.no, null)
+                                        .setIcon(R.drawable.logo)
+                                        .show();
                             }
                         });
+
 
                         clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                         copy.setOnClickListener(new View.OnClickListener() {
@@ -265,44 +261,32 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                for(int i=list.size()-1;i>=0;i--){
-                                    if(list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                        final int finalI = i;
-                                        if (!ok[0]) {
-                                            new AlertDialog.Builder(context)
-                                                    .setTitle("Delete Messages?")
-                                                    .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
-                                                    .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                                                        public void onClick(DialogInterface dialog, int which) {
-//                                                            StorageReference storageReference = null;
-//                                                            try {
-//                                                                Log.d("ojasdeletefile",AESDecryptionMethod(list.get(finalI).getMessage())+"");
-//                                                                storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(AESDecryptionMethod(list.get(finalI).getMessage()));
-//                                                            } catch (UnsupportedEncodingException e) {
-//                                                                e.printStackTrace();
-//                                                            }
-//                                                            storageReference.delete();
-                                                            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(finalI).getKey());
-                                                            reference.setValue(null);
-                                                            ok[0] =true;
-                                                            nameText.setVisibility(View.VISIBLE);
-                                                            dp.setVisibility(View.VISIBLE);
-                                                            delete.setVisibility(View.INVISIBLE);
-                                                            forward.setVisibility(View.INVISIBLE);
-                                                            copy.setVisibility(View.INVISIBLE);
-                                                        }
-                                                    })
-                                                    .setNegativeButton(android.R.string.no, null)
-                                                    .setIcon(R.drawable.logo)
-                                                    .show();
-                                        }else{
-                                            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(finalI).getKey());
-                                            reference.setValue(null);
-                                        }
-                                    }
-                                }
+                                new AlertDialog.Builder(context)
+                                        .setTitle("Delete Messages?")
+                                        .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
+                                        .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                for(int i=list.size()-1;i>=0;i--) {
+                                                    if (list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(i).getKey());
+                                                        reference.setValue(null);
+                                                        nameText.setVisibility(View.VISIBLE);
+                                                        dp.setVisibility(View.VISIBLE);
+                                                        delete.setVisibility(View.INVISIBLE);
+                                                        forward.setVisibility(View.INVISIBLE);
+                                                        copy.setVisibility(View.INVISIBLE);
+                                                    }else {
+                                                        Toast.makeText(context, "You can not delete messages sent by others", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.no, null)
+                                        .setIcon(R.drawable.logo)
+                                        .show();
                             }
                         });
+
                         forward.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -397,7 +381,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private String AESDecryptionMethod(String string) throws UnsupportedEncodingException {
-        byte[] EncryptedByte = string.getBytes("ISO-8859-1");
+        byte[] EncryptedByte = string.getBytes(StandardCharsets.ISO_8859_1);
         String decryptedString = string;
 
         byte[] decryption;

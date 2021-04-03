@@ -396,6 +396,7 @@ public class chatPage extends AppCompatActivity {
         final String userId= intent.getStringExtra("userId");
         final ProgressDialog pd= new ProgressDialog(this);
         pd.setMessage("uploading");
+        pd.setCanceledOnTouchOutside(false);
         pd.show();
         if(imageUri != null){
             final StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploads").child(System.currentTimeMillis()+"."+ getFileExtension(imageUri));

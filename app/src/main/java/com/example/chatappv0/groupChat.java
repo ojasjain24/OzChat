@@ -309,6 +309,7 @@ public class groupChat extends AppCompatActivity {
         final Intent intent = getIntent();
         final ProgressDialog pd= new ProgressDialog(this);
         pd.setMessage("uploading");
+        pd.setCanceledOnTouchOutside(false);
         pd.show();
         if(imageUri != null){
             final StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploads").child(System.currentTimeMillis()+"."+ getFileExtension(imageUri));
