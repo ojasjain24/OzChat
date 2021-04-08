@@ -21,7 +21,6 @@
         <activity android:name=".sendRequestToJoinGroup" />
         <activity android:name=".allGroupActivity" />
         <activity android:name=".groupNameActivity" />
-        <activity android:name=".dialogBox" />
         <activity android:name=".displayUserForGroup" />
         <activity android:name=".acceptRequest" />
         <activity android:name=".allRequest" />
