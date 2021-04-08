@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="backGround">#F3F6E3</color>
-    <color name="colorPrimary">#D7E69D</color>
-    <color name="colorPrimaryDark">#8B9C52</color>
-    <color name="colorAccent">#556A07</color>
+    <color name="backGround">#F6E7F0</color>
+    <color name="colorPrimary">#CA9BEC</color>
+    <color name="colorPrimaryDark">#78499A</color>
+    <color name="colorAccent">#320360</color>
     <color name="transpirent">#66EDC0C1</color>
     <color name="nullColor">#00FFFFFF</color>
+    <color name="text">#000000</color>
+
+<!--    <color name="backGround">#F3F6E3</color>-->
+<!--    <color name="colorPrimary">#D7E69D</color>-->
+<!--    <color name="colorPrimaryDark">#8B9C52</color>-->
+<!--    <color name="colorAccent">#556A07</color>-->
+<!--    <color name="transpirent">#66EDC0C1</color>-->
+<!--    <color name="nullColor">#00FFFFFF</color>-->
 </resources>

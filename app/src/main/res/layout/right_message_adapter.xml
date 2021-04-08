@@ -23,18 +23,18 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/imageView3"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="2dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/light_message_background">
+            android:background="@drawable/light_message_background"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="2dp">
 
             <TextView
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="time-is-long"
-                android:textColor="#000000"
+                android:textColor="@color/text"
                 android:textSize="8sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1"
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="hi"
-                android:textColor="#000000"
+                android:textColor="@color/text"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView3"
                 app:layout_constraintEnd_toEndOf="@+id/imageView3"
