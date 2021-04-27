@@ -27,7 +27,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="5dp"
-        android:src="@drawable/blue"
+        android:src="@drawable/profile_user"
         app:civ_border_color="#FF000000"
         app:civ_border_width="1dp"
         android:foreground="?selectableItemBackground"

@@ -30,10 +30,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatappv0.Models.groupChatModel;
 import com.example.chatappv0.Models.usersModel;
 import com.example.chatappv0.R;
-import com.example.chatappv0.Models.chatModel;
-import com.example.chatappv0.chatPage;
-import com.example.chatappv0.forwardMessage;
-import com.example.chatappv0.forwardMessageGroup;
 import com.example.chatappv0.forwardMessageGrp;
 import com.example.chatappv0.groupChat;
 import com.example.chatappv0.profileVisit;
@@ -49,7 +45,6 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Random;
 
 import javax.crypto.Cipher;
@@ -87,13 +82,13 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == msgRight) {
-            return new msgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_message_group_adapter, parent, false));
+            return new msgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_msg_grp_adapter, parent, false));
         } else if(viewType == msgLeft){
-            return new msgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_message_group_adapter, parent, false));
+            return new msgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_msg_grp_adapter, parent, false));
         }else if(viewType == fileRight){
-            return new fileHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_file_group_adapter, parent, false));
+            return new fileHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_file_grp_adapter, parent, false));
         }else{
-            return new fileHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_file_group_adapter, parent, false));
+            return new fileHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_file_grp_adapter, parent, false));
         }
     }
 
