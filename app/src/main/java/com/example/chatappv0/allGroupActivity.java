@@ -61,7 +61,7 @@ public class allGroupActivity extends AppCompatActivity {
                 userList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     final groupDataModel group = snapshot.getValue(groupDataModel.class);
-                    if(group.getType().startsWith("Public")) {
+                    if(group.getType().toLowerCase().startsWith("public")) {
                         final DatabaseReference reference =databaseReference.child(group.getNodeid()).child("members");
                         reference.addValueEventListener(new ValueEventListener() {
                             @Override

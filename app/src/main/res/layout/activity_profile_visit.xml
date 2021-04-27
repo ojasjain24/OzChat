@@ -19,7 +19,7 @@
                 android:layout_height="350dp"
                 android:background="@color/backGround"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/ic_launcher_background"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -107,19 +107,22 @@
 
     <TextView
         android:id="@+id/textView14pv"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="name"
-        android:gravity="center"
+        android:text="Name"
+        android:paddingStart="20dp"
+        android:background="@drawable/curved_rectangle"
         android:textColor="#000000"
-        android:textSize="40dp"
+        android:gravity="center_vertical"
+        android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="@+id/DPpv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="RtlSymmetry" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

@@ -1,4 +1,5 @@
 package com.example.chatappv0;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
@@ -73,6 +74,8 @@ public class chatPage extends AppCompatActivity {
     private ImageView DP;
     private Cipher cipher, decipher;
     private AdView mAdView;
+    private Boolean isuploading = false;
+    private Boolean inActivity = false;
     private SecretKeySpec secretKeySpec;
     private final byte[] encryptionKey ={5,15,-65,-56,3,45,-96,37,85,64,85,-92,-12,-5,64,-50};
     static String LastMessageTime;
@@ -155,6 +158,7 @@ public class chatPage extends AppCompatActivity {
         final String userId= intent.getStringExtra("userId");
         reference = FirebaseDatabase.getInstance().getReference("users").child(userId);
         reference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
@@ -337,7 +341,7 @@ public class chatPage extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                        if ((chat.getReceiverUid().equals(myuid)&&chat.getSenderUid().equals(receiveruid))){
+                        if ((chat.getReceiverUid().equals(myuid)&&chat.getSenderUid().equals(receiveruid))&& inActivity){
                             HashMap<String,Object> hashMap = new HashMap<>();
                             hashMap.put("isseen","true");
                             Snapshot.getRef().updateChildren(hashMap);
@@ -393,6 +397,7 @@ public class chatPage extends AppCompatActivity {
 
     private void uploadImage(){
         Intent intent = getIntent();
+        isuploading=true;
         final String userId= intent.getStringExtra("userId");
         final ProgressDialog pd= new ProgressDialog(this);
         pd.setMessage("uploading");
@@ -409,6 +414,7 @@ public class chatPage extends AppCompatActivity {
                             public void onSuccess(Uri uri) {
                                 String url = uri.toString();
                                 pd.dismiss();
+                                isuploading=false;
                                 Toast.makeText(chatPage.this, "upload successful", Toast.LENGTH_LONG).show();
                                 StorageReference filePath= FirebaseStorage.getInstance().getReference().child("uploads");
                                 sendFile(user.getUid(),userId,url);
@@ -417,11 +423,13 @@ public class chatPage extends AppCompatActivity {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 pd.dismiss();
+                                isuploading=false;
                                 Toast.makeText(chatPage.this, "Error : " + e.toString(), Toast.LENGTH_LONG).show();
                             }
                         });
                     }else{
                         pd.dismiss();
+                        isuploading=false;
                         Toast.makeText(chatPage.this, "Error : " + task.getException().toString(), Toast.LENGTH_LONG).show();
                     }
                 }
@@ -456,6 +464,7 @@ public class chatPage extends AppCompatActivity {
 //        intent.setAction(Intent.ACTION_GET_CONTENT);
 //        startActivityForResult(intent,imageRequest);
 //    }
+
 private void openFile() {
     Intent intent=new Intent();
     intent.setType("*/*");
@@ -468,7 +477,32 @@ private void openFile() {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(chatPage.this,MainActivity.class));
+        if (!isuploading) {
+            inActivity=false;
+            finish();
+            Intent intent = new Intent(chatPage.this, MainActivity.class);
+            startActivity(intent);
+        }else{
+            Toast.makeText(this, "Please wait until file gets uploaded", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        inActivity=true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        inActivity=true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        inActivity=false;
     }
 
     private String AESEncryptionMethod(String string){

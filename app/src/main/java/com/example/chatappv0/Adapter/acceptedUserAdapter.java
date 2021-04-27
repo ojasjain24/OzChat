@@ -67,11 +67,12 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
         reference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Integer size=data.size();
+                int size=data.size();
                 final friendsModel userid =data.get(position);
-                for(Integer i=0; i <size;i++){
+                for(int i = 0; i <size; i++){
                     for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                         usersModel usersModel=dataSnapshot.getValue(usersModel.class);
                         if(data.get(i).getUid().equals(usersModel.getUserid())){
@@ -115,6 +116,7 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
                 final int[] count = {0};
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("chats");
                 reference.addValueEventListener(new ValueEventListener() {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -168,6 +170,7 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
             countcard=itemView.findViewById(R.id.countCard);
         }
     }
+
 //    public static void setBadge(Context context, int count) {
 //        String launcherClassName = getLauncherClassName(context);
 //        if (launcherClassName == null) {

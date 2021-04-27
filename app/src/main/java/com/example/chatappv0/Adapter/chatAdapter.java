@@ -10,7 +10,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,14 +30,13 @@ import com.example.chatappv0.R;
 import com.example.chatappv0.Models.chatModel;
 import com.example.chatappv0.chatPage;
 import com.example.chatappv0.forwardMessage;
+import com.example.chatappv0.imageViewActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -73,6 +71,8 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int msgRight = 1;
     public static final int fileLeft = 2;
     public static final int fileRight = 3;
+    public static final int imgLeft = 4;
+    public static final int imgRight = 5;
 
     public chatAdapter() {
     }
@@ -86,14 +86,20 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == msgRight) {
-            return new msgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_message_adapter, parent, false));
-        } else if(viewType == msgLeft){
-            return new msgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_message_adapter, parent, false));
-        }else if(viewType == fileRight){
-            return new fileHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_file_adapter, parent, false));
-        }else{
+        if (viewType == msgLeft) {
+            return new msgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_msg_adapter, parent, false));
+        } else if(viewType == msgRight){
+            return new msgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_msg_adapter, parent, false));
+        }else if(viewType == fileLeft){
             return new fileHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_file_adapter, parent, false));
+        }else if(viewType==imgLeft){
+            return new imgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_img_adapter, parent, false));
+        }else if(viewType==imgRight){
+            return new imgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_img_adapter, parent, false));
+        }
+
+        else{
+            return new fileHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_file_adapter, parent, false));
         }
     }
 
@@ -216,7 +222,117 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     return false;
                 }
             });
-        }else{
+        }
+        else if(getItemViewType(position) == imgRight|| getItemViewType(position) == imgLeft){
+            final imgHolder imgholder = (imgHolder) holder;
+            imgholder.layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, imageViewActivity.class);
+                    intent.putExtra("image", chat.getMessage());
+                    context.startActivity(intent);
+                }
+            });
+            try {
+                if(chat.getMessage() != null) {
+                    Picasso.get().load(Uri.parse(chat.getMessage())).into(imgholder.img);
+                }else{
+                    imgholder.img.setImageResource(R.drawable.ic_launcher_foreground);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(context, "Too Large to Load", Toast.LENGTH_SHORT).show();
+            }
+
+
+            String time = chat.getTime();
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+            Date resultdate = new Date(Long.parseLong(time));
+            imgholder.time.setText(sdf.format(resultdate));
+            imgholder.layout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int color;
+                    if(!list.contains(chat)) {
+                        color = R.color.transpirent;
+                        list.add(chat);
+                        count+=1;
+                    }else{
+                        color = R.color.nullColor;
+                        list.remove(chat);
+                        count-=1;
+                    }
+                    imgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
+                    if(list.size()!=0) {
+                        nameText = ((chatPage) context).findViewById(R.id.name);
+                        nameText.setVisibility(View.INVISIBLE);
+                        dp = ((chatPage) context).findViewById(R.id.DP);
+                        dp.setVisibility(View.INVISIBLE);
+                        delete=((chatPage) context).findViewById(R.id.deleteIcon);
+                        delete.setVisibility(View.VISIBLE);
+                        forward=((chatPage) context).findViewById(R.id.forwardIcon);
+                        forward.setVisibility(View.VISIBLE);
+                        copy=((chatPage) context).findViewById(R.id.copyIcon);
+                        copy.setVisibility(View.GONE);
+                        Log.d("ojaslistoutside",list.size()+"");
+                        final Boolean[] ok = {false};
+                        delete.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                new AlertDialog.Builder(context)
+                                        .setTitle("Delete Messages?")
+                                        .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
+                                        .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                for(int i=list.size()-1;i>=0;i--) {
+                                                    if (list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(i).getKey());
+                                                        reference.setValue(null);
+                                                        nameText.setVisibility(View.VISIBLE);
+                                                        dp.setVisibility(View.VISIBLE);
+                                                        delete.setVisibility(View.INVISIBLE);
+                                                        forward.setVisibility(View.INVISIBLE);
+                                                        copy.setVisibility(View.INVISIBLE);
+                                                    }else {
+                                                        Toast.makeText(context, "You can not delete messages sent by others", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.no, null)
+                                        .setIcon(R.drawable.logo)
+                                        .show();
+                            }
+                        });
+
+                        forward.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i =new Intent(context, forwardMessage.class);
+                                Bundle args = new Bundle();
+                                args.putSerializable("arrayList",list);
+                                i.putExtra("BUNDLE",args);
+                                context.startActivity(i);
+                            }
+                        });
+                    }else{
+                        nameText = ((chatPage) context).findViewById(R.id.name);
+                        nameText.setVisibility(View.VISIBLE);
+                        dp = ((chatPage) context).findViewById(R.id.DP);
+                        dp.setVisibility(View.VISIBLE);
+                        delete=((chatPage) context).findViewById(R.id.deleteIcon);
+                        delete.setVisibility(View.INVISIBLE);
+                        forward=((chatPage) context).findViewById(R.id.forwardIcon);
+                        forward.setVisibility(View.INVISIBLE);
+                        copy=((chatPage) context).findViewById(R.id.copyIcon);
+                        copy.setVisibility(View.INVISIBLE);
+                    }
+                    return false;
+                }
+            });
+
+        }
+        else{
             final fileHolder fileholder = (fileHolder) holder;
             fileholder.openBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -347,14 +463,28 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             layout=itemView.findViewById(R.id.background);
         }
     }
+
+    public static class imgHolder extends RecyclerView.ViewHolder {
+        TextView time;
+        ConstraintLayout border;
+        ConstraintLayout layout;
+        ImageView img;
+        public imgHolder(@NonNull View itemView) {
+            super(itemView);
+            time = itemView.findViewById(R.id.time);
+            border=itemView.findViewById(R.id.imageView3);
+            layout=itemView.findViewById(R.id.background);
+            img=itemView.findViewById(R.id.showMessageFile);
+        }
+    }
     @Override
     public int getItemViewType(int position) {
 //        //ArrayLists
-//        imageTypes.add("bmp");
-//        imageTypes.add("gif");
-//        imageTypes.add("jpg");
-//        imageTypes.add("png");
-//        imageTypes.add("webp");
+        imageTypes.add("bmp");
+        imageTypes.add("gif");
+        imageTypes.add("jpg");
+        imageTypes.add("png");
+        imageTypes.add("webp");
 //        videoTypes.add("mp4");
 //        videoTypes.add("mkv");
 //        videoTypes.add("webm");
@@ -365,18 +495,24 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mChat.get(position).getIsThisFile().equals("true") && mChat.get(position).getSenderUid().equals(firebaseUser.getUid())) {
-//            if(imageTypes.contains(mChat.get(position).getType())){return fileLeft;}
+            if(imageTypes.contains(mChat.get(position).getType())){
+                return imgRight;
+            }
 //            else if(videoTypes.contains(mChat.get(position).getType())){return fileLeft;}
 //            else if(audioTypes.contains(mChat.get(position).getType())){return fileLeft;}
-//            else {
-                return fileLeft;
-//            }
+            else {
+                return fileRight;
+            }
         } else if (mChat.get(position).getIsThisFile().equals("true") && (!mChat.get(position).getSenderUid().equals(firebaseUser.getUid()))) {
-            return fileRight;
+            if(imageTypes.contains(mChat.get(position).getType())){
+                return imgLeft;
+            }else {
+                return fileLeft;
+            }
         } else if ((mChat.get(position).getIsThisFile().equals("false") && mChat.get(position).getSenderUid().equals(firebaseUser.getUid()))) {
-            return msgLeft;
-        } else {
             return msgRight;
+        } else {
+            return msgLeft;
         }
     }
 
