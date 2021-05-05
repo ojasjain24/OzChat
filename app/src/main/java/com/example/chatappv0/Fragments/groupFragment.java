@@ -128,10 +128,10 @@ public class groupFragment extends Fragment {
                 // Code to be executed when the user clicks on an ad.
             }
 
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
+//            @Override
+//            public void onAdLeftApplication() {
+//                // Code to be executed when the user has left the app.
+//            }
 
             @Override
             public void onAdClosed() {

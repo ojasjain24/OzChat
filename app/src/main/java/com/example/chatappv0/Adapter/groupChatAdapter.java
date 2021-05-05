@@ -32,6 +32,7 @@ import com.example.chatappv0.Models.usersModel;
 import com.example.chatappv0.R;
 import com.example.chatappv0.forwardMessageGrp;
 import com.example.chatappv0.groupChat;
+import com.example.chatappv0.imageViewActivity;
 import com.example.chatappv0.profileVisit;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,6 +41,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -56,6 +58,7 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     ArrayList<groupChatModel> mChat;
     FirebaseUser firebaseUser;
     TextView nameText;
+    ArrayList<String> imageTypes = new ArrayList<>();
     ImageView dp, delete, forward,copy;
     ClipboardManager clipboardManager;
     int count=0;
@@ -68,7 +71,8 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public static final int msgRight = 1;
     public static final int fileLeft = 2;
     public static final int fileRight = 3;
-
+    public static final int imgLeft = 4;
+    public static final int imgRight = 5;
     public groupChatAdapter() {
     }
 
@@ -82,13 +86,18 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == msgRight) {
-            return new msgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_msg_grp_adapter, parent, false));
-        } else if(viewType == msgLeft){
             return new msgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_msg_grp_adapter, parent, false));
+        } else if(viewType == msgLeft){
+            return new msgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_msg_grp_adapter, parent, false));
         }else if(viewType == fileRight){
-            return new fileHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_file_grp_adapter, parent, false));
-        }else{
             return new fileHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_file_grp_adapter, parent, false));
+        }else if(viewType==imgLeft){
+            return new imgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_img_grp_adapter, parent, false));
+        }else if(viewType==imgRight){
+            return new imgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_img_grp_adapter, parent, false));
+        }
+        else{
+            return new fileHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_file_grp_adapter, parent, false));
         }
     }
 
@@ -106,8 +115,8 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             e.printStackTrace();
         }
         secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
-//      names of msg sender
 
+//      names of msg sender
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(chat.getSenderUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -120,6 +129,44 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     msgholder.name.setText(usersModel.getUsername());
                     msgholder.name.setTextColor(color);
                     msgholder.name.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(context, profileVisit.class);
+                            i.putExtra("name",usersModel.getUsername());
+                            i.putExtra("status",usersModel.getStatus());
+                            i.putExtra("pic",usersModel.getImageurl());
+                            i.putExtra("gender",usersModel.getGender());
+                            i.putExtra("profession",usersModel.getProfession());
+                            i.putExtra("country",usersModel.getCountry());
+                            i.putExtra("language",usersModel.getLanguage());
+                            context.startActivity(i);
+                        }
+                    });
+                }
+                if (getItemViewType(position) == fileRight|| getItemViewType(position) == fileLeft) {
+                    final fileHolder fileholder = (fileHolder) holder;
+                    fileholder.name.setText(usersModel.getUsername());
+                    fileholder.name.setTextColor(color);
+                    fileholder.name.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(context, profileVisit.class);
+                            i.putExtra("name",usersModel.getUsername());
+                            i.putExtra("status",usersModel.getStatus());
+                            i.putExtra("pic",usersModel.getImageurl());
+                            i.putExtra("gender",usersModel.getGender());
+                            i.putExtra("profession",usersModel.getProfession());
+                            i.putExtra("country",usersModel.getCountry());
+                            i.putExtra("language",usersModel.getLanguage());
+                            context.startActivity(i);
+                        }
+                    });
+                }
+                if (getItemViewType(position) == imgRight|| getItemViewType(position) == imgLeft) {
+                    final imgHolder imgholder = (imgHolder) holder;
+                    imgholder.name.setText(usersModel.getUsername());
+                    imgholder.name.setTextColor(color);
+                    imgholder.name.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent i = new Intent(context, profileVisit.class);
@@ -244,7 +291,114 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     return false;
                 }
             });
-        }else{
+        }
+        else if (getItemViewType(position) == imgRight|| getItemViewType(position) == imgLeft){
+            final groupChatAdapter.imgHolder imgholder = (groupChatAdapter.imgHolder) holder;
+            imgholder.img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, imageViewActivity.class);
+                    intent.putExtra("image", chat.getMessage());
+                    context.startActivity(intent);
+                }
+            });
+            try {
+                if(chat.getMessage() != null) {
+                    Picasso.get().load(Uri.parse(chat.getMessage())).fit().centerCrop().into(imgholder.img);
+                }else{
+                    imgholder.img.setImageResource(R.drawable.ic_launcher_foreground);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(context, "Too Large to Load", Toast.LENGTH_SHORT).show();
+                Log.d("ojaserror",""+e);
+            }
+            String time = chat.getTime();
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+            Date resultdate = new Date(Long.parseLong(time));
+            imgholder.time.setText(sdf.format(resultdate));
+            imgholder.layout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int color;
+                    if(!list.contains(chat)) {
+                        color = R.color.transpirent;
+                        list.add(chat);
+                        count+=1;
+                    }else{
+                        color = R.color.nullColor;
+                        list.remove(chat);
+                        count-=1;
+                    }
+                    imgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
+                    if(list.size()!=0) {
+                        nameText = ((groupChat) context).findViewById(R.id.chatPageName);
+                        nameText.setVisibility(View.INVISIBLE);
+                        dp = ((groupChat) context).findViewById(R.id.chatPageDp);
+                        dp.setVisibility(View.INVISIBLE);
+                        delete=((groupChat) context).findViewById(R.id.deleteIcong);
+                        delete.setVisibility(View.VISIBLE);
+                        forward=((groupChat) context).findViewById(R.id.forwardIcong);
+                        forward.setVisibility(View.VISIBLE);
+                        copy=((groupChat) context).findViewById(R.id.copyIcong);
+                        copy.setVisibility(View.GONE);
+                        Log.d("ojaslistoutside",list.size()+"");
+                        final Boolean[] ok = {false};
+                        delete.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                new AlertDialog.Builder(context)
+                                        .setTitle("Delete Messages?")
+                                        .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
+                                        .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                for(int i=list.size()-1;i>=0;i--) {
+                                                    if (list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                                        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").child(list.get(i).getKey());
+                                                        reference.setValue(null);
+                                                        nameText.setVisibility(View.VISIBLE);
+                                                        dp.setVisibility(View.VISIBLE);
+                                                        delete.setVisibility(View.INVISIBLE);
+                                                        forward.setVisibility(View.INVISIBLE);
+                                                        copy.setVisibility(View.INVISIBLE);
+                                                    }else {
+                                                        Toast.makeText(context, "You can not delete messages sent by others", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.no, null)
+                                        .setIcon(R.drawable.logo)
+                                        .show();
+                            }
+                        });
+                        forward.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i =new Intent(context, forwardMessageGrp.class);
+                                Bundle args = new Bundle();
+                                args.putSerializable("arrayList",list);
+                                i.putExtra("BUNDLE",args);
+                                context.startActivity(i);
+                            }
+                        });
+                    }else{
+                        nameText = ((groupChat) context).findViewById(R.id.chatPageName);
+                        nameText.setVisibility(View.VISIBLE);
+                        dp = ((groupChat) context).findViewById(R.id.chatPageDp);
+                        dp.setVisibility(View.VISIBLE);
+                        delete=((groupChat) context).findViewById(R.id.deleteIcong);
+                        delete.setVisibility(View.INVISIBLE);
+                        forward=((groupChat) context).findViewById(R.id.forwardIcong);
+                        forward.setVisibility(View.INVISIBLE);
+                        copy=((groupChat) context).findViewById(R.id.copyIcong);
+                        copy.setVisibility(View.INVISIBLE);
+                    }
+                    return false;
+                }
+            });
+        }
+        else {
             final groupChatAdapter.fileHolder fileholder = (groupChatAdapter.fileHolder) holder;
             fileholder.openBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -378,17 +532,53 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             layout=itemView.findViewById(R.id.background);
         }
     }
+    public static class imgHolder extends RecyclerView.ViewHolder {
+        TextView time, name;
+        ConstraintLayout border;
+        ConstraintLayout layout;
+        ImageView img;
+        public imgHolder(@NonNull View itemView) {
+            super(itemView);
+            time = itemView.findViewById(R.id.time);
+            border=itemView.findViewById(R.id.imageView3);
+            layout=itemView.findViewById(R.id.background);
+            img=itemView.findViewById(R.id.showMessageFile);
+            name=itemView.findViewById(R.id.textView13);
+        }
+    }
+
     @Override
     public int getItemViewType(int position) {
+//        ArrayLists
+        imageTypes.add("bmp");
+        imageTypes.add("gif");
+        imageTypes.add("jpg");
+        imageTypes.add("png");
+        imageTypes.add("webp");
+//        videoTypes.add("mp4");
+//        videoTypes.add("mkv");
+//        videoTypes.add("webm");
+//        audioTypes.add("3gp");
+//        audioTypes.add("mp3");
+//        audioTypes.add("wav");
+//        audioTypes.add("ogg");
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mChat.get(position).getIsThisFile().equals("true") && mChat.get(position).getSenderUid().equals(firebaseUser.getUid())) {
-            return fileLeft;
+            if(imageTypes.contains(mChat.get(position).getType())){
+                return imgRight;
+            }else {
+                return fileRight;
+            }
         } else if (mChat.get(position).getIsThisFile().equals("true") && (!mChat.get(position).getSenderUid().equals(firebaseUser.getUid()))) {
-            return fileRight;
+            if(imageTypes.contains(mChat.get(position).getType())){
+                return imgLeft;
+            }else {
+                return fileLeft;
+            }
         } else if ((mChat.get(position).getIsThisFile().equals("false") && mChat.get(position).getSenderUid().equals(firebaseUser.getUid()))) {
-            return msgLeft;
-        } else {
             return msgRight;
+        } else {
+            return msgLeft;
         }
     }
 }

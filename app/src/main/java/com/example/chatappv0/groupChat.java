@@ -72,6 +72,7 @@ public class groupChat extends AppCompatActivity {
     private static final int imageRequest = 1;
     private Uri imageUri;
     private AdView mAdView;
+    private ImageView videoCall,audioCall;
     private Cipher cipher, decipher;
     private SecretKeySpec secretKeySpec;
     private final byte[] encryptionKey ={5,15,-65,-56,3,45,-96,37,85,64,85,-92,-12,-5,64,-50};
@@ -96,6 +97,8 @@ public class groupChat extends AppCompatActivity {
 
         secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
         setContentView(R.layout.activity_group_chat);
+        Intent intent = getIntent();
+        final String nodeId= intent.getStringExtra("nodeId");
         mAdView = findViewById(R.id.adView3);
         final AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
@@ -123,10 +126,10 @@ public class groupChat extends AppCompatActivity {
                 // Code to be executed when the user clicks on an ad.
             }
 
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
+//            @Override
+//            public void onAdLeftApplication() {
+//                // Code to be executed when the user has left the app.
+//            }
 
             @Override
             public void onAdClosed() {
@@ -140,13 +143,30 @@ public class groupChat extends AppCompatActivity {
         delete=findViewById(R.id.deleteIcong);
         copy=findViewById(R.id.copyIcong);
         forward=findViewById(R.id.forwardIcong);
+        videoCall=findViewById(R.id.videoCall);
+        videoCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i =new Intent(groupChat.this,videoCallActivity.class);
+                DatabaseReference meetData = FirebaseDatabase.getInstance().getReference().child("groups").child(nodeId).child("meetings").push();
+                HashMap<String ,String>usermap=new HashMap<>();
+                usermap.put("key",meetData.getKey());
+                usermap.put("endTime","live");
+                usermap.put("hostUid",user.getUid());
+                usermap.put("startTime",System.currentTimeMillis()+"");
+                meetData.setValue(usermap);
+                i.putExtra("key", meetData.getKey()+"");
+                i.putExtra("groupUid", nodeId);
+                startActivity(i);
+            }
+        });
+        audioCall=findViewById(R.id.call);
         messageList = findViewById(R.id.chatPageMessageList);
         messageList.setHasFixedSize(true);
         final TextView message = findViewById(R.id.chatPageMessage);
         ImageView send = findViewById(R.id.sendMSGg);
         user= FirebaseAuth.getInstance().getCurrentUser();
-        Intent intent = getIntent();
-        final String nodeId= intent.getStringExtra("nodeId");
+
         reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId);
         reference.addValueEventListener(new ValueEventListener() {
             @Override

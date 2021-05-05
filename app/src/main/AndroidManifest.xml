@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.chatappv0">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <application
         android:name=".applicationClass"
@@ -9,8 +14,12 @@
         android:label="OzChat"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".imageViewActivity"></activity>
+        android:theme="@style/AppTheme"
+        tools:replace="android:label">
+        <activity android:name=".videoCallActivity" />
+        <activity
+            android:name=".imageViewActivity"
+            android:theme="@style/Widget.AppCompat.Toolbar" />
         <activity android:name=".AboutUsActivity" />
         <activity android:name=".forwardMessage" />
         <activity android:name=".forwardMessageGrp" />
