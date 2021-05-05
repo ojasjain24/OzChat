@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatappv0.Adapter.chatAdapter;
@@ -49,8 +50,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import org.jitsi.meet.sdk.JitsiMeet;
+import org.jitsi.meet.sdk.JitsiMeetActivity;
+import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
+
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -69,11 +77,13 @@ public class chatPage extends AppCompatActivity {
     private DatabaseReference reference;
     private ArrayList<chatModel> chatList;
     private ImageView attach;
+    private ImageView videoCall,audioCall;
     private static final int imageRequest = 1;
     private Uri imageUri;
     private ImageView DP;
     private Cipher cipher, decipher;
     private AdView mAdView;
+    private CardView meetingCard;
     private Boolean isuploading = false;
     private Boolean inActivity = false;
     private SecretKeySpec secretKeySpec;
@@ -131,11 +141,11 @@ public class chatPage extends AppCompatActivity {
             public void onAdClicked() {
                 // Code to be executed when the user clicks on an ad.
             }
-
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
+//
+//            @Override
+//            public void onAdLeftApplication() {
+//                // Code to be executed when the user has left the app.
+//            }
 
             @Override
             public void onAdClosed() {
@@ -149,6 +159,15 @@ public class chatPage extends AppCompatActivity {
         DP = findViewById(R.id.DP);
         attach=findViewById(R.id.imageView2);
         name = findViewById(R.id.name);
+        meetingCard=findViewById(R.id.include);
+        videoCall=findViewById(R.id.videoCall);
+        audioCall=findViewById(R.id.call);
+        videoCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(chatPage.this,videoCallActivity.class));
+            }
+        });
         messageList = findViewById(R.id.messageList);
         messageList.setHasFixedSize(true);
         final TextView message = findViewById(R.id.message);
@@ -226,41 +245,6 @@ public class chatPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openFile();
-//                final AlertDialog.Builder alert= new AlertDialog.Builder(chatPage.this);
-//                View view = LayoutInflater.from(chatPage.this).inflate(R.layout.file_type_dialog_box,null);
-//                FloatingActionButton photo, video, file, audio;
-//                photo=view.findViewById(R.id.imgfb);
-//                video=view.findViewById(R.id.vidfb);
-//                file=view.findViewById(R.id.docfb);
-//                audio=view.findViewById(R.id.audiofb);
-//                alert.setView(view);
-//                final AlertDialog alertDialog = alert.create();
-//                alertDialog.setCanceledOnTouchOutside(true);
-//                photo.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        openImage();
-//                    }
-//                });
-//                video.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        openVideo();
-//                    }
-//                });
-//                file.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        openFile();
-//                    }
-//                });
-//                audio.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        openAudio();
-//                    }
-//                });
-//                alertDialog.show();
             }
         });
     }
@@ -473,38 +457,6 @@ private void openFile() {
     startActivityForResult(intent,imageRequest);
 }
 
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (!isuploading) {
-            inActivity=false;
-            finish();
-            Intent intent = new Intent(chatPage.this, MainActivity.class);
-            startActivity(intent);
-        }else{
-            Toast.makeText(this, "Please wait until file gets uploaded", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        inActivity=true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        inActivity=true;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        inActivity=false;
-    }
-
     private String AESEncryptionMethod(String string){
 
         byte[] stringByte = string.getBytes();
@@ -551,4 +503,34 @@ private void openFile() {
         return decryptedString;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (!isuploading) {
+            inActivity=false;
+            finish();
+            Intent intent = new Intent(chatPage.this, MainActivity.class);
+            startActivity(intent);
+        }else{
+            Toast.makeText(this, "Please wait until file gets uploaded", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        inActivity=true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        inActivity=true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        inActivity=false;
+    }
 }

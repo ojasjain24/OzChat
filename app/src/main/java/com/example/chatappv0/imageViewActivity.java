@@ -1,7 +1,11 @@
 package com.example.chatappv0;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.app.Activity;
@@ -11,7 +15,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import androidx.annotation.NonNull;
 import com.squareup.picasso.Picasso;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class imageViewActivity extends Activity implements OnTouchListener
 {
@@ -178,8 +186,69 @@ public class imageViewActivity extends Activity implements OnTouchListener
             if (i + 1 < event.getPointerCount())
                 sb.append(";");
         }
-
         sb.append("]");
         Log.d("Touch Events ---------", sb.toString());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.image_view_menu,menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if(item.getItemId() == R.id.download){
+
+            getImage(getIntent().getStringExtra("image"));
+
+        }
+        return true;
+    }
+
+    private Bitmap getImage(String imageUrl)
+    {
+        Bitmap image = null;
+        int inSampleSize = 0;
+
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+
+        options.inJustDecodeBounds = true;
+
+        options.inSampleSize = inSampleSize;
+
+        try
+        {
+            URL url = new URL(imageUrl);
+
+            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+
+            InputStream stream = connection.getInputStream();
+
+            image = BitmapFactory.decodeStream(stream, null, options);
+
+
+                options.inJustDecodeBounds = false;
+
+                connection = (HttpURLConnection)url.openConnection();
+
+                stream = connection.getInputStream();
+
+                image = BitmapFactory.decodeStream(stream, null, options);
+
+                return image;
+
+        }
+
+        catch(Exception e)
+        {
+            Log.e("getImage", e.toString());
+        }
+
+        return image;
     }
 }

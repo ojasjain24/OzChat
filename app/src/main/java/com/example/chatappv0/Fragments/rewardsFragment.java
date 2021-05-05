@@ -142,10 +142,10 @@ public class rewardsFragment extends Fragment implements OnUserEarnedRewardListe
                 // Code to be executed when the user clicks on an ad.
             }
 
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
+//            @Override
+//            public void onAdLeftApplication() {
+//                // Code to be executed when the user has left the app.
+//            }
 
             @Override
             public void onAdClosed() {
@@ -178,10 +178,10 @@ public class rewardsFragment extends Fragment implements OnUserEarnedRewardListe
                 // Code to be executed when the user clicks on an ad.
             }
 
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
+//            @Override
+//            public void onAdLeftApplication() {
+//                // Code to be executed when the user has left the app.
+//            }
 
             @Override
             public void onAdClosed() {

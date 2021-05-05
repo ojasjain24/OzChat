@@ -60,7 +60,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     ArrayList<String> imageTypes = new ArrayList<>();
     ArrayList<String> videoTypes = new ArrayList<>();
     ArrayList<String> audioTypes = new ArrayList<>();
-    ImageView dp, delete, forward,copy;
+    ImageView dp, delete, forward,copy, videoCallBtn, callBtn;
     ClipboardManager clipboardManager;
     private SecretKeySpec secretKeySpec;
     private final byte[] encryptionKey ={5,15,-65,-56,3,45,-96,37,85,64,85,-92,-12,-5,64,-50};
@@ -146,6 +146,11 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         forward=((chatPage) context).findViewById(R.id.forwardIcon);
                         forward.setVisibility(View.VISIBLE);
                         copy=((chatPage) context).findViewById(R.id.copyIcon);
+                        videoCallBtn = ((chatPage) context).findViewById(R.id.videoCall);
+                        videoCallBtn.setVisibility(View.INVISIBLE);
+                        callBtn = ((chatPage) context).findViewById(R.id.call);
+                        callBtn.setVisibility(View.INVISIBLE);
+
                         if(count==0) {
                             copy.setVisibility(View.VISIBLE);
                         }
@@ -163,6 +168,8 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                                         reference.setValue(null);
                                                         nameText.setVisibility(View.VISIBLE);
                                                         dp.setVisibility(View.VISIBLE);
+                                                        videoCallBtn.setVisibility(View.VISIBLE);
+                                                        callBtn.setVisibility(View.VISIBLE);
                                                         delete.setVisibility(View.INVISIBLE);
                                                         forward.setVisibility(View.INVISIBLE);
                                                         copy.setVisibility(View.INVISIBLE);
@@ -211,13 +218,16 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         nameText.setVisibility(View.VISIBLE);
                         dp = ((chatPage) context).findViewById(R.id.DP);
                         dp.setVisibility(View.VISIBLE);
+                        videoCallBtn = ((chatPage) context).findViewById(R.id.videoCall);
+                        videoCallBtn.setVisibility(View.VISIBLE);
+                        callBtn = ((chatPage) context).findViewById(R.id.call);
+                        callBtn.setVisibility(View.VISIBLE);
                         delete=((chatPage) context).findViewById(R.id.deleteIcon);
                         delete.setVisibility(View.INVISIBLE);
                         forward=((chatPage) context).findViewById(R.id.forwardIcon);
                         forward.setVisibility(View.INVISIBLE);
                         copy=((chatPage) context).findViewById(R.id.copyIcon);
                         copy.setVisibility(View.INVISIBLE);
-
                     }
                     return false;
                 }
@@ -225,7 +235,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         else if(getItemViewType(position) == imgRight|| getItemViewType(position) == imgLeft){
             final imgHolder imgholder = (imgHolder) holder;
-            imgholder.layout.setOnClickListener(new View.OnClickListener() {
+            imgholder.img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, imageViewActivity.class);
@@ -235,16 +245,15 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
             try {
                 if(chat.getMessage() != null) {
-                    Picasso.get().load(Uri.parse(chat.getMessage())).into(imgholder.img);
+                    Picasso.get().load(Uri.parse(chat.getMessage())).fit().centerCrop().into(imgholder.img);
                 }else{
                     imgholder.img.setImageResource(R.drawable.ic_launcher_foreground);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(context, "Too Large to Load", Toast.LENGTH_SHORT).show();
+                Log.d("ojaserror",""+e);
             }
-
-
             String time = chat.getTime();
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
             Date resultdate = new Date(Long.parseLong(time));
@@ -268,6 +277,10 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         nameText.setVisibility(View.INVISIBLE);
                         dp = ((chatPage) context).findViewById(R.id.DP);
                         dp.setVisibility(View.INVISIBLE);
+                        videoCallBtn = ((chatPage) context).findViewById(R.id.videoCall);
+                        videoCallBtn.setVisibility(View.INVISIBLE);
+                        callBtn = ((chatPage) context).findViewById(R.id.call);
+                        callBtn.setVisibility(View.INVISIBLE);
                         delete=((chatPage) context).findViewById(R.id.deleteIcon);
                         delete.setVisibility(View.VISIBLE);
                         forward=((chatPage) context).findViewById(R.id.forwardIcon);
@@ -290,6 +303,8 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                                         reference.setValue(null);
                                                         nameText.setVisibility(View.VISIBLE);
                                                         dp.setVisibility(View.VISIBLE);
+                                                        videoCallBtn.setVisibility(View.VISIBLE);
+                                                        callBtn.setVisibility(View.VISIBLE);
                                                         delete.setVisibility(View.INVISIBLE);
                                                         forward.setVisibility(View.INVISIBLE);
                                                         copy.setVisibility(View.INVISIBLE);
@@ -320,6 +335,10 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         nameText.setVisibility(View.VISIBLE);
                         dp = ((chatPage) context).findViewById(R.id.DP);
                         dp.setVisibility(View.VISIBLE);
+                        videoCallBtn = ((chatPage) context).findViewById(R.id.videoCall);
+                        videoCallBtn.setVisibility(View.VISIBLE);
+                        callBtn = ((chatPage) context).findViewById(R.id.call);
+                        callBtn.setVisibility(View.VISIBLE);
                         delete=((chatPage) context).findViewById(R.id.deleteIcon);
                         delete.setVisibility(View.INVISIBLE);
                         forward=((chatPage) context).findViewById(R.id.forwardIcon);
@@ -366,6 +385,10 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         nameText.setVisibility(View.INVISIBLE);
                         dp = ((chatPage) context).findViewById(R.id.DP);
                         dp.setVisibility(View.INVISIBLE);
+                        videoCallBtn = ((chatPage) context).findViewById(R.id.videoCall);
+                        videoCallBtn.setVisibility(View.INVISIBLE);
+                        callBtn = ((chatPage) context).findViewById(R.id.call);
+                        callBtn.setVisibility(View.INVISIBLE);
                         delete=((chatPage) context).findViewById(R.id.deleteIcon);
                         delete.setVisibility(View.VISIBLE);
                         forward=((chatPage) context).findViewById(R.id.forwardIcon);
@@ -388,6 +411,8 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                                         reference.setValue(null);
                                                         nameText.setVisibility(View.VISIBLE);
                                                         dp.setVisibility(View.VISIBLE);
+                                                        videoCallBtn.setVisibility(View.VISIBLE);
+                                                        callBtn.setVisibility(View.VISIBLE);
                                                         delete.setVisibility(View.INVISIBLE);
                                                         forward.setVisibility(View.INVISIBLE);
                                                         copy.setVisibility(View.INVISIBLE);
@@ -418,6 +443,10 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         nameText.setVisibility(View.VISIBLE);
                         dp = ((chatPage) context).findViewById(R.id.DP);
                         dp.setVisibility(View.VISIBLE);
+                        videoCallBtn = ((chatPage) context).findViewById(R.id.videoCall);
+                        videoCallBtn.setVisibility(View.VISIBLE);
+                        callBtn = ((chatPage) context).findViewById(R.id.call);
+                        callBtn.setVisibility(View.VISIBLE);
                         delete=((chatPage) context).findViewById(R.id.deleteIcon);
                         delete.setVisibility(View.INVISIBLE);
                         forward=((chatPage) context).findViewById(R.id.forwardIcon);
