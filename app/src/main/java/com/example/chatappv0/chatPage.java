@@ -2,29 +2,27 @@ package com.example.chatappv0;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatappv0.Adapter.chatAdapter;
 import com.example.chatappv0.Models.chatModel;
+import com.example.chatappv0.Models.meetModel;
 import com.example.chatappv0.Models.usersModel;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -37,7 +35,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -51,14 +48,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import org.jitsi.meet.sdk.JitsiMeet;
-import org.jitsi.meet.sdk.JitsiMeetActivity;
-import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
-
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -77,13 +68,16 @@ public class chatPage extends AppCompatActivity {
     private DatabaseReference reference;
     private ArrayList<chatModel> chatList;
     private ImageView attach;
+    private CardView meetingCard;
+    private Button joinMeetBtn;
+    private TextView meetHostName, meetType;
+    private ImageView meetIcon;
     private ImageView videoCall,audioCall;
     private static final int imageRequest = 1;
     private Uri imageUri;
     private ImageView DP;
     private Cipher cipher, decipher;
     private AdView mAdView;
-    private CardView meetingCard;
     private Boolean isuploading = false;
     private Boolean inActivity = false;
     private SecretKeySpec secretKeySpec;
@@ -159,13 +153,103 @@ public class chatPage extends AppCompatActivity {
         DP = findViewById(R.id.DP);
         attach=findViewById(R.id.imageView2);
         name = findViewById(R.id.name);
-        meetingCard=findViewById(R.id.include);
+        Intent intent = getIntent();
+        final String userId= intent.getStringExtra("userId");
+        meetingCard = findViewById(R.id.include);
+        joinMeetBtn=findViewById(R.id.joinMeetBtn);
+        meetHostName=findViewById(R.id.meetCreatorName);
+        meetType=findViewById(R.id.meetType);
+        meetIcon=findViewById(R.id.meetLogo);
         videoCall=findViewById(R.id.videoCall);
-        audioCall=findViewById(R.id.call);
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("meetings");
+        Query query = reference.orderByChild("endTime");
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    meetModel model = dataSnapshot.getValue(meetModel.class);
+                    if (Long.parseLong(model.getEndTime())==0&&((model.getHostUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())&&model.getPartnerUid().equals(userId))||(model.getPartnerUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())&&model.getHostUid().equals(userId)))){
+                        videoCall.setVisibility(View.INVISIBLE);
+                        audioCall.setVisibility(View.INVISIBLE);
+                        meetingCard.setVisibility(View.VISIBLE);
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(model.getHostUid());
+                        databaseReference.addValueEventListener(new ValueEventListener() {
+                            @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                meetHostName.setText(snapshot.child("username").getValue().toString());
+                                if(model.getType().equals("video")){
+                                    meetType.setText("Video");
+                                    meetIcon.setImageDrawable(getDrawable(R.drawable.video_call));
+                                }else{
+                                    meetType.setText("Audio");
+                                    meetIcon.setImageDrawable(getDrawable(R.drawable.call));
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        joinMeetBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i = new Intent(chatPage.this, meetingActivity.class);
+                                i.putExtra("key",model.getKey());
+                                i.putExtra("type", model.getType()+"");
+                                startActivity(i);
+                            }
+                        });
+                        break;
+                    }else{
+                        videoCall.setVisibility(View.VISIBLE);
+                        audioCall.setVisibility(View.VISIBLE);
+                        meetingCard.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         videoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(chatPage.this,videoCallActivity.class));
+                Intent i =new Intent(chatPage.this, meetingActivity.class);
+                DatabaseReference meetData = FirebaseDatabase.getInstance().getReference().child("meetings").push();
+                HashMap<String ,String>usermap=new HashMap<>();
+                usermap.put("key",meetData.getKey());
+                usermap.put("endTime","0");
+                usermap.put("hostUid",user.getUid());
+                usermap.put("partnerUid",userId);
+                usermap.put("startTime",System.currentTimeMillis()+"");
+                usermap.put("type","video");
+                meetData.setValue(usermap);
+                i.putExtra("key", meetData.getKey()+"");
+                i.putExtra("type", "video");
+                startActivity(i);
+            }
+        });
+        audioCall=findViewById(R.id.call);
+        audioCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i =new Intent(chatPage.this, meetingActivity.class);
+                DatabaseReference meetData = FirebaseDatabase.getInstance().getReference().child("meetings").push();
+                HashMap<String ,String>usermap=new HashMap<>();
+                usermap.put("key",meetData.getKey());
+                usermap.put("endTime","0");
+                usermap.put("hostUid",user.getUid());
+                usermap.put("partnerUid",userId);
+                usermap.put("startTime",System.currentTimeMillis()+"");
+                usermap.put("type","audio");
+                meetData.setValue(usermap);
+                i.putExtra("key", meetData.getKey()+"");
+                i.putExtra("type", "audio");
+                startActivity(i);
             }
         });
         messageList = findViewById(R.id.messageList);
@@ -173,8 +257,7 @@ public class chatPage extends AppCompatActivity {
         final TextView message = findViewById(R.id.message);
         ImageView send = findViewById(R.id.sendMSG);
         user= FirebaseAuth.getInstance().getCurrentUser();
-        Intent intent = getIntent();
-        final String userId= intent.getStringExtra("userId");
+
         reference = FirebaseDatabase.getInstance().getReference("users").child(userId);
         reference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("SetTextI18n")
