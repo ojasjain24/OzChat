@@ -1,7 +1,6 @@
 package com.example.chatappv0;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -10,21 +9,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.chatappv0.Adapter.chatAdapter;
+
 import com.example.chatappv0.Adapter.groupChatAdapter;
-import com.example.chatappv0.Fragments.groupFragment;
-import com.example.chatappv0.Models.chatModel;
 import com.example.chatappv0.Models.groupChatModel;
 import com.example.chatappv0.Models.groupDataModel;
+import com.example.chatappv0.Models.groupMeetingModel;
 import com.example.chatappv0.Models.usersModel;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -53,6 +52,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -72,6 +72,10 @@ public class groupChat extends AppCompatActivity {
     private static final int imageRequest = 1;
     private Uri imageUri;
     private AdView mAdView;
+    private CardView meetingCard;
+    private Button joinMeetBtn;
+    private TextView meetHostName, meetType;
+    private ImageView meetIcon;
     private ImageView videoCall,audioCall;
     private Cipher cipher, decipher;
     private SecretKeySpec secretKeySpec;
@@ -143,24 +147,94 @@ public class groupChat extends AppCompatActivity {
         delete=findViewById(R.id.deleteIcong);
         copy=findViewById(R.id.copyIcong);
         forward=findViewById(R.id.forwardIcong);
+        meetingCard = findViewById(R.id.include);
+        joinMeetBtn=findViewById(R.id.joinMeetBtn);
+        meetHostName=findViewById(R.id.meetCreatorName);
+        meetType=findViewById(R.id.meetType);
+        meetIcon=findViewById(R.id.meetLogo);
         videoCall=findViewById(R.id.videoCall);
+        audioCall=findViewById(R.id.call);
+        if (Objects.equals(intent.getStringExtra("endTime"), "0")){
+            videoCall.setVisibility(View.INVISIBLE);
+            audioCall.setVisibility(View.INVISIBLE);
+            meetingCard.setVisibility(View.VISIBLE);
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(intent.getStringExtra("host"));
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    meetHostName.setText(snapshot.child("username").getValue().toString());
+                    if(intent.getStringExtra("type").equals("video")){
+                        meetType.setText("Video");
+                        meetIcon.setImageDrawable(getDrawable(R.drawable.video_call));
+                    }else{
+                        meetType.setText("Audio");
+                        meetIcon.setImageDrawable(getDrawable(R.drawable.call));
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+            joinMeetBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(groupChat.this, groupMeetingActivity.class);
+                    i.putExtra("key",intent.getStringExtra("key"));
+                    i.putExtra("groupUid", nodeId);
+                    i.putExtra("type", intent.getStringExtra("type"));
+                    startActivity(i);
+                }
+            });
+        }else{
+            videoCall.setVisibility(View.VISIBLE);
+            audioCall.setVisibility(View.VISIBLE);
+            meetingCard.setVisibility(View.GONE);
+        }
+
         videoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i =new Intent(groupChat.this,videoCallActivity.class);
+                Intent i =new Intent(groupChat.this, groupMeetingActivity.class);
                 DatabaseReference meetData = FirebaseDatabase.getInstance().getReference().child("groups").child(nodeId).child("meetings").push();
                 HashMap<String ,String>usermap=new HashMap<>();
                 usermap.put("key",meetData.getKey());
-                usermap.put("endTime","live");
+                usermap.put("endTime","0");
                 usermap.put("hostUid",user.getUid());
                 usermap.put("startTime",System.currentTimeMillis()+"");
+                usermap.put("type","video");
+                meetData.setValue(usermap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        i.putExtra("key", meetData.getKey()+"");
+                        i.putExtra("groupUid", nodeId);
+                        i.putExtra("type", "video");
+                        startActivity(i);
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }
+                });
+            }
+        });
+
+        audioCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i =new Intent(groupChat.this, groupMeetingActivity.class);
+                DatabaseReference meetData = FirebaseDatabase.getInstance().getReference().child("groups").child(nodeId).child("meetings").push();
+                HashMap<String ,String>usermap=new HashMap<>();
+                usermap.put("key",meetData.getKey());
+                usermap.put("endTime","0");
+                usermap.put("hostUid",user.getUid());
+                usermap.put("startTime",System.currentTimeMillis()+"");
+                usermap.put("type","audio");
                 meetData.setValue(usermap);
                 i.putExtra("key", meetData.getKey()+"");
                 i.putExtra("groupUid", nodeId);
+                i.putExtra("type", "audio");
                 startActivity(i);
             }
         });
-        audioCall=findViewById(R.id.call);
         messageList = findViewById(R.id.chatPageMessageList);
         messageList.setHasFixedSize(true);
         final TextView message = findViewById(R.id.chatPageMessage);

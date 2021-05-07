@@ -1,5 +1,6 @@
 package com.example.chatappv0.Fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -55,7 +56,7 @@ public class rewardsFragment extends Fragment implements OnUserEarnedRewardListe
     private AdView mAdViewup;
     private AdView mAdViewdown;
     private RewardedInterstitialAd rewardedInterstitialAd;
-    private String TAG = "RewardsFragment";
+    private final String TAG = "RewardsFragment";
     Button seeAdBtn;
     TextView pointsText;
     DatabaseReference reference;
@@ -94,7 +95,6 @@ public class rewardsFragment extends Fragment implements OnUserEarnedRewardListe
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
@@ -189,16 +189,16 @@ public class rewardsFragment extends Fragment implements OnUserEarnedRewardListe
                 // to the app after tapping on an ad.
             }
         });
+        MobileAds.initialize(getContext(), new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+                loadAd();
+            }
+        });
 
         seeAdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MobileAds.initialize(getContext(), new OnInitializationCompleteListener() {
-                    @Override
-                    public void onInitializationComplete(InitializationStatus initializationStatus) {
-                        loadAd();
-                    }
-                });
                 int count =0;
                 int close = 0;
                 showAd(count,close);
@@ -206,47 +206,48 @@ public class rewardsFragment extends Fragment implements OnUserEarnedRewardListe
         });
         return view;
     }
-    public void loadAd() {
-        // Use the test ad unit ID to load an ad.
+    public void loadAd(){
         RewardedInterstitialAd.load(getContext(), "ca-app-pub-3940256099942544/5354046379",
-                new AdRequest.Builder().build(),  new RewardedInterstitialAdLoadCallback() {
-            @Override
-            public void onAdLoaded(RewardedInterstitialAd ad) {
-                rewardedInterstitialAd = ad;
-                rewardedInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                    /** Called when the ad failed to show full screen content. */
+                new AdRequest.Builder().build(), new RewardedInterstitialAdLoadCallback() {
                     @Override
-                    public void onAdFailedToShowFullScreenContent(AdError adError) {
-                        Log.i(TAG, "onAdFailedToShowFullScreenContent");
-                    }
+                    public void onAdLoaded(RewardedInterstitialAd ad) {
+                        rewardedInterstitialAd = ad;
+                        rewardedInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            /** Called when the ad failed to show full screen content. */
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                Log.i(TAG, "onAdFailedToShowFullScreenContent");
+                            }
 
-                    /** Called when ad showed the full screen content. */
-                    @Override
-                    public void onAdShowedFullScreenContent() {
-                        Log.i(TAG, "onAdShowedFullScreenContent");
-                    }
+                            /** Called when ad showed the full screen content. */
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                Log.i(TAG, "onAdShowedFullScreenContent");
+                            }
 
-                    /** Called when full screen content is dismissed. */
+                            /** Called when full screen content is dismissed. */
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                Log.i(TAG, "onAdDismissedFullScreenContent");
+                            }
+                        });
+                    }
                     @Override
-                    public void onAdDismissedFullScreenContent() {
-                        Log.i(TAG, "onAdDismissedFullScreenContent");
+                    public void onAdFailedToLoad(LoadAdError loadAdError) {
+                        Log.e(TAG, "onAdFailedToLoad");
                     }
                 });
-            }
-            @Override
-            public void onAdFailedToLoad(LoadAdError loadAdError) {
-                Log.e(TAG, "onAdFailedToLoad");
-            }
-        });
     }
 
+    @SuppressLint("LogNotTimber")
     @Override
     public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
         Log.i(TAG, "onUserEarnedReward");
         Log.d("ojasreward","150");
     }
 
-    public void showAd(int count,int close){
+    @SuppressLint("LogNotTimber")
+    public void showAd(int count, int close){
 
         if(rewardedInterstitialAd!=null) {
 //            close =1;
@@ -270,6 +271,7 @@ public class rewardsFragment extends Fragment implements OnUserEarnedRewardListe
 //            showAd(count,close);
 //        }
         else{
+            loadAd();
             Toast.makeText(getContext(), "Try again", Toast.LENGTH_SHORT).show();
             Log.d("ojasadnotloaded",count+"+");
         }

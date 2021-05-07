@@ -19,9 +19,11 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.chatappv0.Models.acceptRequestModel;
 import com.example.chatappv0.Models.chatModel;
 import com.example.chatappv0.Models.friendsModel;
+import com.example.chatappv0.Models.meetModel;
 import com.example.chatappv0.Models.usersModel;
 import com.example.chatappv0.R;
 import com.example.chatappv0.acceptRequest;
@@ -32,6 +34,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -97,10 +100,25 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(context, "" + holder.name.getText(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("meetings");
+                Query query = databaseReference.orderByChild("endTime");
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            meetModel model = dataSnapshot.getValue(meetModel.class);
+                            if (Long.parseLong(model.getEndTime()) == 0 && ((model.getHostUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) && model.getPartnerUid().equals(userid.getUid())) || (model.getPartnerUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) && model.getHostUid().equals(userid.getUid())))) {
+                                holder.live.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled (@NonNull DatabaseError error){
 
                     }
                 });
-
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -158,7 +176,7 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
         CircleImageView profile;
         RelativeLayout card;
         CardView countcard;
-
+        LottieAnimationView live;
         public Holder(@NonNull View itemView) {
             super(itemView);
 
@@ -168,6 +186,7 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
             card = itemView.findViewById(R.id.chat_card);
             messageCount=itemView.findViewById(R.id.messageCount);
             countcard=itemView.findViewById(R.id.countCard);
+            live=itemView.findViewById(R.id.liveAnimation);
         }
     }
 

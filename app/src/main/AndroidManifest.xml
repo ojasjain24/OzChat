@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
-        <activity android:name=".videoCallActivity" />
+        <activity android:name=".groupMeetingActivity" />
+        <activity android:name=".meetingActivity" />
         <activity
             android:name=".imageViewActivity"
             android:theme="@style/Widget.AppCompat.Toolbar" />

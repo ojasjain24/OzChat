@@ -1,7 +1,20 @@
 package com.example.chatappv0.Models;
 
-public class meetingModel {
-    String endTime, startTime, hostUid, key;
+public class meetModel {
+    String endTime;
+    String startTime;
+    String hostUid;
+    String partnerUid;
+    String key;
+    String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getEndTime() {
         return endTime;
@@ -27,6 +40,14 @@ public class meetingModel {
         this.hostUid = hostUid;
     }
 
+    public String getPartnerUid() {
+        return partnerUid;
+    }
+
+    public void setPartnerUid(String partnerUid) {
+        this.partnerUid = partnerUid;
+    }
+
     public String getKey() {
         return key;
     }
@@ -35,11 +56,5 @@ public class meetingModel {
         this.key = key;
     }
 
-    public meetingModel(String endTime, String startTime, String hostUid, String key) {
-        this.endTime = endTime;
-        this.startTime = startTime;
-        this.hostUid = hostUid;
-        this.key = key;
-    }
-    public meetingModel(){}
+    public meetModel(){}
 }
