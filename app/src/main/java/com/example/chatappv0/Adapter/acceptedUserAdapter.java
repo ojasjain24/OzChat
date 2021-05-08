@@ -111,6 +111,21 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
                             meetModel model = dataSnapshot.getValue(meetModel.class);
                             if (Long.parseLong(model.getEndTime()) == 0 && ((model.getHostUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) && model.getPartnerUid().equals(userid.getUid())) || (model.getPartnerUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) && model.getHostUid().equals(userid.getUid())))) {
                                 holder.live.setVisibility(View.VISIBLE);
+                                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent i = new Intent(context, chatPage.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        i.putExtra("userId", userid.getUid());
+                                        i.putExtra("endTime",model.getEndTime()+"");
+                                        i.putExtra("key",model.getKey());
+                                        i.putExtra("type",model.getType());
+                                        i.putExtra("host",model.getHostUid());
+                                        i.putExtra("partner", model.getPartnerUid());
+                                        Log.d("ojasaccepted","in");
+                                        context.startActivity(i);
+                                    }
+                                });
                             }
                         }
                     }
@@ -126,6 +141,7 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         i.putExtra("userId", userid.getUid());
                         context.startActivity(i);
+                        Log.d("ojasaccepted","out");
                     }
                 });
 

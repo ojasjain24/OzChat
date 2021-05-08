@@ -69,8 +69,10 @@ public class groupFragmentAdapter extends RecyclerView.Adapter<groupFragmentAdap
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     groupMeetingModel model = dataSnapshot.getValue(groupMeetingModel.class);
-                    if (Long.parseLong(model.getEndTime())==0) holder.live.setVisibility(View.VISIBLE);
-                    else holder.live.setVisibility(View.INVISIBLE);
+                    if (Long.parseLong(model.getEndTime())==0)
+                        holder.live.setVisibility(View.VISIBLE);
+                    else
+                        holder.live.setVisibility(View.INVISIBLE);
 
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
