@@ -18,9 +18,9 @@
         tools:replace="android:label">
         <activity android:name=".groupMeetingActivity" />
         <activity android:name=".meetingActivity" />
-        <activity
-            android:name=".imageViewActivity"
-            android:theme="@style/Widget.AppCompat.Toolbar" />
+        <activity android:name=".imageViewActivity"
+            android:theme="@style/Widget.AppCompat.Toolbar"
+            android:hardwareAccelerated="false"/>
         <activity android:name=".AboutUsActivity" />
         <activity android:name=".forwardMessage" />
         <activity android:name=".forwardMessageGrp" />
@@ -28,7 +28,8 @@
         <activity android:name=".addMember" />
         <activity android:name=".groupVisit" />
         <activity android:name=".profileVisit" />
-        <activity android:name=".groupChat" />
+        <activity android:name=".groupChat"
+            android:hardwareAccelerated="false"/>
         <activity android:name=".sendRequestToJoinGroup" />
         <activity android:name=".allGroupActivity" />
         <activity android:name=".groupNameActivity" />
@@ -36,8 +37,7 @@
         <activity android:name=".acceptRequest" />
         <activity android:name=".allRequest" />
         <activity android:name=".sendRequest" />
-        <activity
-            android:name=".chatPage"
+        <activity android:name=".chatPage"
             android:hardwareAccelerated="false" />
         <activity android:name=".allusersActivity" />
         <activity android:name=".MainActivity" />

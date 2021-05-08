@@ -72,6 +72,7 @@ public class allGroupsAdapter extends RecyclerView.Adapter<allGroupsAdapter.Hold
                 i.putExtra("name",data.get(position).getName());
                 i.putExtra("status", data.get(position).getDescription());
                 i.putExtra("pic", data.get(position).getGroupicon());
+                i.putExtra("type",data.get(position).getType());
                 context.startActivity(i);
             }
         });

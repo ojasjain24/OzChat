@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class sendRequestToJoinGroup extends AppCompatActivity {
     private ImageView profilePic;
@@ -52,45 +53,59 @@ public class sendRequestToJoinGroup extends AppCompatActivity {
         }
         send=findViewById(R.id.sendRequest);
         final FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
-        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("requests");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userList.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    groupModel = dataSnapshot.getValue(groupRequestsModel.class);
-                    if (reference.child(me.getUid())!=null) {
-                        userList.add(groupModel);
+        if(Objects.equals(intent.getStringExtra("type"), "Public-join without asking")){
+            send.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("members").child(me.getUid());
+                    HashMap<String,String> hashMap = new HashMap<>();
+                    hashMap.put("status","member");
+                    hashMap.put("uid",me.getUid());
+                    databaseReference.setValue(hashMap);
+                    startActivity(new Intent(sendRequestToJoinGroup.this,allGroupActivity.class));
+                }
+            });
+        }else{
+            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("requests");
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    userList.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        groupModel = dataSnapshot.getValue(groupRequestsModel.class);
+                        if (reference.child(me.getUid())!=null) {
+                            userList.add(groupModel);
+                        }
+                    }
+                    if(userList.size()==0) {
+                        send.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                DatabaseReference userdata = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("requests").child(user.getUid());
+                                HashMap<String, String> usermap = new HashMap<>();
+                                usermap.put("userid",user.getUid());
+                                userdata.setValue(usermap);
+                            }
+                        });
+                    } else {
+                        send.setText("Cancel request");
+                        send.setBackgroundResource(R.drawable.cancel_btn);
+                        requestSent.setVisibility(View.VISIBLE);
+                        send.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                reference.child(user.getUid()).setValue(null);
+                                startActivity(new Intent(sendRequestToJoinGroup.this,allGroupActivity.class));
+                            }
+                        });
                     }
                 }
-                if(userList.size()==0) {
-                    send.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            DatabaseReference userdata = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("requests").child(user.getUid());
-                            HashMap<String, String> usermap = new HashMap<>();
-                            usermap.put("userid",user.getUid());
-                            userdata.setValue(usermap);
-                        }
-                    });
-                } else {
-                    send.setText("Cancel request");
-                    send.setBackgroundResource(R.drawable.cancel_btn);
-                    requestSent.setVisibility(View.VISIBLE);
-                    send.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            reference.child(user.getUid()).setValue(null);
-                            startActivity(new Intent(sendRequestToJoinGroup.this,allGroupActivity.class));
-                        }
-                    });
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(sendRequestToJoinGroup.this, "" + error, Toast.LENGTH_SHORT).show();
                 }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(sendRequestToJoinGroup.this, "" + error, Toast.LENGTH_SHORT).show();
-            }
-        });
+            });
+        }
     }
 
     @Override
