@@ -117,8 +117,16 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
 
+
         if (getItemViewType(position) == msgRight|| getItemViewType(position) == msgLeft) {
             final msgHolder msgholder = (msgHolder) holder;
+            int color;
+            if(list.contains(chat)) {
+                color = R.color.transpirent;
+            }else{
+                color = R.color.nullColor;
+            }
+            msgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
             msgholder.message.setText(chat.getMessage());
             String time = chat.getTime();
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
@@ -235,6 +243,13 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         else if(getItemViewType(position) == imgRight|| getItemViewType(position) == imgLeft){
             final imgHolder imgholder = (imgHolder) holder;
+            int color;
+            if(list.contains(chat)) {
+                color = R.color.transpirent;
+            }else{
+                color = R.color.nullColor;
+            }
+            imgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
             imgholder.img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -353,6 +368,13 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         else{
             final fileHolder fileholder = (fileHolder) holder;
+            int color;
+            if(list.contains(chat)) {
+                color = R.color.transpirent;
+            }else{
+                color = R.color.nullColor;
+            }
+            fileholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
             fileholder.openBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
