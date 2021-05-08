@@ -44,7 +44,6 @@ public class meetingActivity extends FragmentActivity implements JitsiMeetActivi
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
             JitsiMeetActivityDelegate.onBackPressed();
         }
         this.doubleBackToExitPressedOnce = true;
@@ -96,7 +95,6 @@ public class meetingActivity extends FragmentActivity implements JitsiMeetActivi
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         groupMeetingModel model = snapshot.getValue(groupMeetingModel.class);
                         if(user.getUid().equals(model.getHostUid())&& neverInside[0]){
-                            JitsiMeetActivityDelegate.onHostDestroy(meetingActivity.this);
                             HashMap<String,Object> hashMap = new HashMap<>();
                             hashMap.put("endTime",System.currentTimeMillis()+"");
                             neverInside[0] =false;
@@ -108,9 +106,8 @@ public class meetingActivity extends FragmentActivity implements JitsiMeetActivi
                                 }
                             });
                         }else{
-                            JitsiMeetActivityDelegate.onHostPause(meetingActivity.this);
-                            android.os.Process.killProcess(android.os.Process.myPid());
                             startActivity(new Intent(meetingActivity.this,MainActivity.class));
+                            android.os.Process.killProcess(android.os.Process.myPid());
                         }
                     }
                     @Override
@@ -135,7 +132,6 @@ public class meetingActivity extends FragmentActivity implements JitsiMeetActivi
         super.onDestroy();
         view.dispose();
         view = null;
-
         JitsiMeetActivityDelegate.onHostDestroy(this);
     }
 
@@ -156,7 +152,6 @@ public class meetingActivity extends FragmentActivity implements JitsiMeetActivi
     @Override
     protected void onResume() {
         super.onResume();
-
         JitsiMeetActivityDelegate.onHostResume(this);
     }
 

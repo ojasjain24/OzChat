@@ -185,6 +185,7 @@ public class groupChat extends AppCompatActivity {
                     i.putExtra("groupUid", nodeId);
                     i.putExtra("type", intent.getStringExtra("type"));
                     startActivity(i);
+                    android.os.Process.killProcess(android.os.Process.myPid());
                 }
             });
         }else{
@@ -228,11 +229,16 @@ public class groupChat extends AppCompatActivity {
                 usermap.put("hostUid",user.getUid());
                 usermap.put("startTime",System.currentTimeMillis()+"");
                 usermap.put("type","audio");
-                meetData.setValue(usermap);
-                i.putExtra("key", meetData.getKey()+"");
-                i.putExtra("groupUid", nodeId);
-                i.putExtra("type", "audio");
-                startActivity(i);
+                meetData.setValue(usermap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        i.putExtra("key", meetData.getKey()+"");
+                        i.putExtra("groupUid", nodeId);
+                        i.putExtra("type", "audio");
+                        startActivity(i);
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }
+                });
             }
         });
         messageList = findViewById(R.id.chatPageMessageList);

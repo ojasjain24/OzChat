@@ -54,6 +54,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -161,60 +163,46 @@ public class chatPage extends AppCompatActivity {
         meetType=findViewById(R.id.meetType);
         meetIcon=findViewById(R.id.meetLogo);
         videoCall=findViewById(R.id.videoCall);
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("meetings");
-        Query query = reference.orderByChild("endTime");
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    meetModel model = dataSnapshot.getValue(meetModel.class);
-                    if (Long.parseLong(model.getEndTime())==0&&((model.getHostUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())&&model.getPartnerUid().equals(userId))||(model.getPartnerUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())&&model.getHostUid().equals(userId)))){
-                        videoCall.setVisibility(View.INVISIBLE);
-                        audioCall.setVisibility(View.INVISIBLE);
-                        meetingCard.setVisibility(View.VISIBLE);
-                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(model.getHostUid());
-                        databaseReference.addValueEventListener(new ValueEventListener() {
-                            @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                meetHostName.setText(snapshot.child("username").getValue().toString());
-                                if(model.getType().equals("video")){
-                                    meetType.setText("Video");
-                                    meetIcon.setImageDrawable(getDrawable(R.drawable.video_call));
-                                }else{
-                                    meetType.setText("Audio");
-                                    meetIcon.setImageDrawable(getDrawable(R.drawable.call));
-                                }
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                        joinMeetBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent i = new Intent(chatPage.this, meetingActivity.class);
-                                i.putExtra("key",model.getKey());
-                                i.putExtra("type", model.getType()+"");
-                                startActivity(i);
-                            }
-                        });
-                        break;
+        audioCall=findViewById(R.id.call);
+        if (Objects.equals(intent.getStringExtra("endTime"), "0")){
+            videoCall.setVisibility(View.INVISIBLE);
+            audioCall.setVisibility(View.INVISIBLE);
+            meetingCard.setVisibility(View.VISIBLE);
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(Objects.requireNonNull(intent.getStringExtra("host")));
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    meetHostName.setText(snapshot.child("username").getValue().toString());
+                    if(intent.getStringExtra("type").equals("video")){
+                        meetType.setText("Video");
+                        meetIcon.setImageDrawable(getDrawable(R.drawable.video_call));
                     }else{
-                        videoCall.setVisibility(View.VISIBLE);
-                        audioCall.setVisibility(View.VISIBLE);
-                        meetingCard.setVisibility(View.GONE);
+                        meetType.setText("Audio");
+                        meetIcon.setImageDrawable(getDrawable(R.drawable.call));
                     }
                 }
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+            joinMeetBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(chatPage.this, meetingActivity.class);
+                    i.putExtra("key",intent.getStringExtra("key"));
+                    i.putExtra("type", intent.getStringExtra("type")+"");
+                    startActivity(i);
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                }
+            });
+        }else{
+            videoCall.setVisibility(View.VISIBLE);
+            audioCall.setVisibility(View.VISIBLE);
+            meetingCard.setVisibility(View.GONE);
+        }
 
-            }
-        });
         videoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -227,13 +215,17 @@ public class chatPage extends AppCompatActivity {
                 usermap.put("partnerUid",userId);
                 usermap.put("startTime",System.currentTimeMillis()+"");
                 usermap.put("type","video");
-                meetData.setValue(usermap);
-                i.putExtra("key", meetData.getKey()+"");
-                i.putExtra("type", "video");
-                startActivity(i);
+                meetData.setValue(usermap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        i.putExtra("key", meetData.getKey()+"");
+                        i.putExtra("type", "video");
+                        startActivity(i);
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }
+                });
             }
         });
-        audioCall=findViewById(R.id.call);
         audioCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -246,10 +238,15 @@ public class chatPage extends AppCompatActivity {
                 usermap.put("partnerUid",userId);
                 usermap.put("startTime",System.currentTimeMillis()+"");
                 usermap.put("type","audio");
-                meetData.setValue(usermap);
-                i.putExtra("key", meetData.getKey()+"");
-                i.putExtra("type", "audio");
-                startActivity(i);
+                meetData.setValue(usermap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        i.putExtra("key", meetData.getKey()+"");
+                        i.putExtra("type", "audio");
+                        startActivity(i);
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }
+                });
             }
         });
         messageList = findViewById(R.id.messageList);

@@ -8,6 +8,7 @@
     <color name="nullColor">#00FFFFFF</color>
     <color name="text">#000000</color>
     <color name="linkColor">#096CC3</color>
+    <color name="meetCardBg">#839787</color>
 
 <!--    <color name="backGround">#F3F6E3</color>-->
 <!--    <color name="colorPrimary">#D7E69D</color>-->

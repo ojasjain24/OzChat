@@ -38,14 +38,12 @@ public class groupMeetingActivity extends FragmentActivity implements JitsiMeetA
             int resultCode,
             Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        JitsiMeetActivityDelegate.onActivityResult(
-                this, requestCode, resultCode, data);
+        JitsiMeetActivityDelegate.onActivityResult(this, requestCode, resultCode, data);
     }
 
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
             JitsiMeetActivityDelegate.onBackPressed();
         }
         this.doubleBackToExitPressedOnce = true;
@@ -97,7 +95,6 @@ public class groupMeetingActivity extends FragmentActivity implements JitsiMeetA
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             groupMeetingModel model = snapshot.getValue(groupMeetingModel.class);
                             if(user.getUid().equals(model.getHostUid())&& neverInside[0]){
-                                JitsiMeetActivityDelegate.onHostDestroy(groupMeetingActivity.this);
                                 HashMap<String,Object> hashMap = new HashMap<>();
                                 hashMap.put("endTime",System.currentTimeMillis()+"");
                                 Log.d("ojasinsidemeet",""+ neverInside[0]);
@@ -110,9 +107,8 @@ public class groupMeetingActivity extends FragmentActivity implements JitsiMeetA
                                     }
                                 });
                             }else{
-                                JitsiMeetActivityDelegate.onHostPause(groupMeetingActivity.this);
-                                android.os.Process.killProcess(android.os.Process.myPid());
                                 startActivity(new Intent(groupMeetingActivity.this,MainActivity.class));
+                                android.os.Process.killProcess(android.os.Process.myPid());
                             }
                         }
                         @Override
