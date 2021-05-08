@@ -1,11 +1,17 @@
 package com.example.chatappv0;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.app.Activity;
@@ -16,11 +22,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import com.squareup.picasso.Picasso;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
-
 public class imageViewActivity extends Activity implements OnTouchListener
 {
     private static final String TAG = "Touch";
@@ -42,12 +52,16 @@ public class imageViewActivity extends Activity implements OnTouchListener
     PointF mid = new PointF();
     float oldDist = 1f;
 
+    private ImageView acw,cw;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_view);
         ImageView imageView = findViewById(R.id.imagefullview);
+        acw=findViewById(R.id.acwRotation);
+        cw=findViewById(R.id.cwRotation);
         Intent intent = getIntent();
         String img = intent.getStringExtra("image");
         try {
@@ -61,6 +75,21 @@ public class imageViewActivity extends Activity implements OnTouchListener
             Toast.makeText(imageViewActivity.this, "Too Large to Load", Toast.LENGTH_SHORT).show();
         }
         imageView.setOnTouchListener(this);
+        final int[] angle = {0};
+        acw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                angle[0] = angle[0] -90;
+                imageView.setRotation(angle[0]);
+            }
+        });
+        cw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                angle[0] = angle[0] +90;
+                imageView.setRotation(angle[0]);
+            }
+        });
     }
 
     @Override
@@ -202,53 +231,76 @@ public class imageViewActivity extends Activity implements OnTouchListener
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
         if(item.getItemId() == R.id.download){
-
-            getImage(getIntent().getStringExtra("image"));
-
+            DownloadImage(getIntent().getStringExtra("image"));
         }
         return true;
     }
 
-    private Bitmap getImage(String imageUrl)
-    {
-        Bitmap image = null;
-        int inSampleSize = 0;
+    void DownloadImage(String ImageUrl) {
 
+        if (ContextCompat.checkSelfPermission(imageViewActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(imageViewActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(imageViewActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 123);
+            ActivityCompat.requestPermissions(imageViewActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
+            Toast.makeText(this, "Need Permission to access storage for Downloading Image", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Downloading Image", Toast.LENGTH_SHORT).show();
+            //Asynctask to create a thread to downlaod image in the background
+            new DownloadsImage().execute(ImageUrl);
+        }
+    }
+    class DownloadsImage extends AsyncTask<String, Void,Void> {
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
+        @Override
+        protected Void doInBackground(String... strings) {
+            URL url = null;
+            try {
+                url = new URL(strings[0]);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            Bitmap bm = null;
+            try {
+                bm =    BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        options.inJustDecodeBounds = true;
+            //Create Path to save Image
+            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+ "/OzChat"); //Creates app specific folder
 
-        options.inSampleSize = inSampleSize;
+            if(!path.exists()) {
+                path.mkdirs();
+            }
 
-        try
-        {
-            URL url = new URL(imageUrl);
-
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-
-            InputStream stream = connection.getInputStream();
-
-            image = BitmapFactory.decodeStream(stream, null, options);
-
-
-                options.inJustDecodeBounds = false;
-
-                connection = (HttpURLConnection)url.openConnection();
-
-                stream = connection.getInputStream();
-
-                image = BitmapFactory.decodeStream(stream, null, options);
-
-                return image;
-
+            File imageFile = new File(path, String.valueOf(System.currentTimeMillis())+".png"); // Imagename.png
+            FileOutputStream out = null;
+            try {
+                out = new FileOutputStream(imageFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try{
+                bm.compress(Bitmap.CompressFormat.PNG, 100, out); // Compress Image
+                out.flush();
+                out.close();
+                // Tell the media scanner about the new file so that it is
+                // immediately available to the user.
+                MediaScannerConnection.scanFile(imageViewActivity.this,new String[] { imageFile.getAbsolutePath() }, null,new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        // Log.i("ExternalStorage", "Scanned " + path + ":");
+                        //    Log.i("ExternalStorage", "-> uri=" + uri);
+                    }
+                });
+            } catch(Exception e) {
+            }
+            return null;
         }
 
-        catch(Exception e)
-        {
-            Log.e("getImage", e.toString());
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Toast.makeText(imageViewActivity.this, "Downloaded", Toast.LENGTH_SHORT).show();
         }
-
-        return image;
     }
 }
