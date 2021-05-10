@@ -1,6 +1,5 @@
 package com.example.chatappv0.Fragments;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -56,7 +55,7 @@ public class rewardsFragment extends Fragment implements OnUserEarnedRewardListe
     private AdView mAdViewup;
     private AdView mAdViewdown;
     private RewardedInterstitialAd rewardedInterstitialAd;
-    private final String TAG = "RewardsFragment";
+    private String TAG = "RewardsFragment";
     Button seeAdBtn;
     TextView pointsText;
     DatabaseReference reference;
@@ -95,6 +94,7 @@ public class rewardsFragment extends Fragment implements OnUserEarnedRewardListe
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
@@ -195,85 +195,64 @@ public class rewardsFragment extends Fragment implements OnUserEarnedRewardListe
                 loadAd();
             }
         });
-
         seeAdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int count =0;
-                int close = 0;
-                showAd(count,close);
+                showAd();
             }
         });
         return view;
     }
-    public void loadAd(){
-        RewardedInterstitialAd.load(getContext(), "ca-app-pub-3940256099942544/5354046379",
-                new AdRequest.Builder().build(), new RewardedInterstitialAdLoadCallback() {
+    public void loadAd() {
+        RewardedInterstitialAd.load(getContext(), "ca-app-pub-1155879823920026/1940447997",
+        new AdRequest.Builder().build(),  new RewardedInterstitialAdLoadCallback() {
+            @Override
+            public void onAdLoaded(RewardedInterstitialAd ad) {
+                rewardedInterstitialAd = ad;
+                Log.e(TAG, "onAdLoaded");
+                rewardedInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    /** Called when the ad failed to show full screen content. */
                     @Override
-                    public void onAdLoaded(RewardedInterstitialAd ad) {
-                        rewardedInterstitialAd = ad;
-                        rewardedInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                            /** Called when the ad failed to show full screen content. */
-                            @Override
-                            public void onAdFailedToShowFullScreenContent(AdError adError) {
-                                Log.i(TAG, "onAdFailedToShowFullScreenContent");
-                            }
-
-                            /** Called when ad showed the full screen content. */
-                            @Override
-                            public void onAdShowedFullScreenContent() {
-                                Log.i(TAG, "onAdShowedFullScreenContent");
-                            }
-
-                            /** Called when full screen content is dismissed. */
-                            @Override
-                            public void onAdDismissedFullScreenContent() {
-                                Log.i(TAG, "onAdDismissedFullScreenContent");
-                            }
-                        });
+                    public void onAdFailedToShowFullScreenContent(AdError adError) {
+                        Log.i(TAG, "onAdFailedToShowFullScreenContent");
                     }
+
+                    /** Called when ad showed the full screen content. */
                     @Override
-                    public void onAdFailedToLoad(LoadAdError loadAdError) {
-                        Log.e(TAG, "onAdFailedToLoad");
+                    public void onAdShowedFullScreenContent() {
+                        Log.i(TAG, "onAdShowedFullScreenContent");
+                        loadAd();
+                    }
+
+                    /** Called when full screen content is dismissed. */
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        Log.i(TAG, "onAdDismissedFullScreenContent");
+                        loadAd();
                     }
                 });
+            }
+            @Override
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                Log.e(TAG, "onAdFailedToLoad");
+            }
+        });
     }
 
-    @SuppressLint("LogNotTimber")
     @Override
     public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
         Log.i(TAG, "onUserEarnedReward");
-        Log.d("ojasreward","150");
+        float pointsNew = parseFloat(points) + 25.00f;
+        reference.child("points").setValue(pointsNew+"");
     }
 
-    @SuppressLint("LogNotTimber")
-    public void showAd(int count, int close){
-
+    public void showAd(){
         if(rewardedInterstitialAd!=null) {
-//            close =1;
-            rewardedInterstitialAd.show(getActivity(), new OnUserEarnedRewardListener() {
-                @Override
-                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-                    float pointsnew = parseFloat(points) + 25.00f;
-                    reference.child("points").setValue(pointsnew+"");                }
-            });
+            rewardedInterstitialAd.show( getActivity(),rewardsFragment.this);
         }
-//        else if(count<=10 && close != 1){
-//            count=count+1;
-//            final int finalCount = count;
-//            MobileAds.initialize(getContext(), new OnInitializationCompleteListener() {
-//                @Override
-//                public void onInitializationComplete(InitializationStatus initializationStatus) {
-//                    loadAd();
-//                    Log.d("ojascountad", finalCount +"-");
-//                }
-//            });
-//            showAd(count,close);
-//        }
         else{
-            loadAd();
             Toast.makeText(getContext(), "Try again", Toast.LENGTH_SHORT).show();
-            Log.d("ojasadnotloaded",count+"+");
+            loadAd();
         }
     }
 }
