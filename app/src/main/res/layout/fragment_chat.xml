@@ -26,7 +26,7 @@
         android:layout_centerHorizontal="true"
         android:elevation="10dp"
         app:adSize="SMART_BANNER"
-        app:adUnitId="ca-app-pub-3940256099942544/2934735716"
+        app:adUnitId="ca-app-pub-1155879823920026/5578986317"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -58,7 +58,7 @@ public class groupMeetingActivity extends FragmentActivity implements JitsiMeetA
         view = new JitsiMeetView(this);
 
         JitsiMeetConferenceOptions videoOptions = new JitsiMeetConferenceOptions.Builder()
-                .setRoom("https://meet.jit.si/ozChat_"+i.getStringExtra("key"))
+                .setRoom("https://meet.jit.si/Affix_"+i.getStringExtra("key"))
                 .setWelcomePageEnabled(false)
                 .setAudioOnly(false)
                 .setVideoMuted(false)
@@ -66,7 +66,7 @@ public class groupMeetingActivity extends FragmentActivity implements JitsiMeetA
                 .build();
 
         JitsiMeetConferenceOptions audioOptions = new JitsiMeetConferenceOptions.Builder()
-                .setRoom("https://meet.jit.si/ozChat_"+i.getStringExtra("key"))
+                .setRoom("https://meet.jit.si/Affix_"+i.getStringExtra("key"))
                 .setWelcomePageEnabled(false)
                 .setAudioOnly(true)
                 .setVideoMuted(true)

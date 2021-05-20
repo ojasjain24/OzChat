@@ -267,7 +267,7 @@ public class imageViewActivity extends Activity implements OnTouchListener
             }
 
             //Create Path to save Image
-            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+ "/OzChat"); //Creates app specific folder
+            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+ "/Affix Media"); //Creates app specific folder
 
             if(!path.exists()) {
                 path.mkdirs();
