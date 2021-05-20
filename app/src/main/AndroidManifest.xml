@@ -4,25 +4,26 @@
     package="com.example.chatappv0">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".applicationClass"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="OzChat"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@drawable/logo"
+        android:label="Affix"
+        android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
         <activity android:name=".groupMeetingActivity" />
         <activity android:name=".meetingActivity" />
-        <activity android:name=".imageViewActivity"
-            android:theme="@style/Widget.AppCompat.Toolbar"
-            android:hardwareAccelerated="false"/>
+        <activity
+            android:name=".imageViewActivity"
+            android:hardwareAccelerated="false"
+            android:theme="@style/Widget.AppCompat.Toolbar" />
         <activity android:name=".AboutUsActivity" />
         <activity android:name=".forwardMessage" />
         <activity android:name=".forwardMessageGrp" />
@@ -30,8 +31,9 @@
         <activity android:name=".addMember" />
         <activity android:name=".groupVisit" />
         <activity android:name=".profileVisit" />
-        <activity android:name=".groupChat"
-            android:hardwareAccelerated="false"/>
+        <activity
+            android:name=".groupChat"
+            android:hardwareAccelerated="false" />
         <activity android:name=".sendRequestToJoinGroup" />
         <activity android:name=".allGroupActivity" />
         <activity android:name=".groupNameActivity" />
@@ -39,7 +41,8 @@
         <activity android:name=".acceptRequest" />
         <activity android:name=".allRequest" />
         <activity android:name=".sendRequest" />
-        <activity android:name=".chatPage"
+        <activity
+            android:name=".chatPage"
             android:hardwareAccelerated="false" />
         <activity android:name=".allusersActivity" />
         <activity android:name=".MainActivity" />
@@ -53,8 +56,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".splashScreen"
-            android:theme="@style/SplashTheme">
+            android:name=".splashScreenA">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

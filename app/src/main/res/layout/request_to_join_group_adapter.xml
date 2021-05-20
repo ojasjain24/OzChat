@@ -27,7 +27,7 @@
         android:layout_marginBottom="5dp"
         android:layout_toEndOf="@id/chat_profile_picrga"
         android:singleLine="true"
-        android:text="OzChat"
+        android:text="Affix"
         android:textColor="#000"
         android:textSize="16sp"
         android:textStyle="bold" />

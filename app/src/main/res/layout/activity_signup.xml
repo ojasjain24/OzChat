@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:ellipsize="start"
-        android:text="Welcome to Chat app"
+        android:text="Welcome to Affix"
         android:textColor="@color/colorAccent"
         android:textSize="36sp"
         android:textStyle="italic"

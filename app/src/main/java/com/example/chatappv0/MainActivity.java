@@ -3,9 +3,13 @@ package com.example.chatappv0;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +32,8 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends AppCompatActivity {
     private InterstitialAd mInterstitialAd, mInterstitialAds;
     boolean doubleBackToExitPressedOnce = false;
+    public static final String CHANNEL_MEET = "channelMeet";
+    public static final String CHANNEL_MSG = "channelMsg";
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +46,9 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
-        getSupportActionBar().setTitle("OzChat");
+        getSupportActionBar().setTitle("Affix");
         AdRequest adRequest = new AdRequest.Builder().build();
-        InterstitialAd.load(this,"ca-app-pub-3940256099942544/4411468910", adRequest, new InterstitialAdLoadCallback() {
+        InterstitialAd.load(this,"ca-app-pub-1155879823920026/9612039594", adRequest, new InterstitialAdLoadCallback() {
             @Override
             public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                 // The mInterstitialAd reference will be null until
@@ -85,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         AdRequest adRequests = new AdRequest.Builder().build();
-        InterstitialAd.load(this,"ca-app-pub-3940256099942544/4411468910", adRequests, new InterstitialAdLoadCallback() {
+        InterstitialAd.load(this,"ca-app-pub-1155879823920026/3689946305", adRequests, new InterstitialAdLoadCallback() {
             @Override
             public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                 // The mInterstitialAd reference will be null until
@@ -126,7 +132,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d("TAG", "The interstitial ad wasn't ready yet.");
         }
-
+//        notificationServices notificationServices = new notificationServices();
+//        NotificationManager manager = getSystemService(NotificationManager.class);
+//        notificationServices.createNotificationChannels(MainActivity.this,CHANNEL_MEET,manager,"","");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -157,9 +165,6 @@ public class MainActivity extends AppCompatActivity {
         }
         if(item.getItemId()==R.id.allgroups){
             startActivity(new Intent(MainActivity.this,allGroupActivity.class));
-        }
-        if(item.getItemId()==R.id.settingsmenu){
-            Toast.makeText(this, "This feature is under development phase", Toast.LENGTH_SHORT).show();
         }
         if(item.getItemId()==R.id.aboutus){
             startActivity(new Intent(MainActivity.this,AboutUsActivity.class));
@@ -196,4 +201,5 @@ public class MainActivity extends AppCompatActivity {
             Log.d("TAG", "The interstitial ad wasn't ready yet.");
         }
     }
+
 }

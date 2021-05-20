@@ -8,9 +8,6 @@
         android:id="@+id/profilemenu"
         android:title="@string/profle" />
     <item
-        android:id="@+id/settingsmenu"
-        android:title="@string/settings" />
-    <item
         android:id="@+id/allusers"
         android:title="@string/all_users" />
     <item
