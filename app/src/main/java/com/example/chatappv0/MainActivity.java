@@ -32,8 +32,8 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends AppCompatActivity {
     private InterstitialAd mInterstitialAd, mInterstitialAds;
     boolean doubleBackToExitPressedOnce = false;
-    public static final String CHANNEL_MEET = "channelMeet";
-    public static final String CHANNEL_MSG = "channelMsg";
+//    public static final String CHANNEL_MEET = "channelMeet";
+//    public static final String CHANNEL_MSG = "channelMsg";
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +84,6 @@ public class MainActivity extends AppCompatActivity {
                 mInterstitialAd = null;
             }
         });
-        if (mInterstitialAd != null) {
-            mInterstitialAd.show(MainActivity.this);
-        } else {
-            Log.d("TAG", "The interstitial ad wasn't ready yet.");
-        }
-
         AdRequest adRequests = new AdRequest.Builder().build();
         InterstitialAd.load(this,"ca-app-pub-1155879823920026/3689946305", adRequests, new InterstitialAdLoadCallback() {
             @Override
@@ -127,11 +121,6 @@ public class MainActivity extends AppCompatActivity {
                 mInterstitialAds = null;
             }
         });
-        if (mInterstitialAds != null) {
-            mInterstitialAds.show(MainActivity.this);
-        } else {
-            Log.d("TAG", "The interstitial ad wasn't ready yet.");
-        }
 //        notificationServices notificationServices = new notificationServices();
 //        NotificationManager manager = getSystemService(NotificationManager.class);
 //        notificationServices.createNotificationChannels(MainActivity.this,CHANNEL_MEET,manager,"","");
@@ -197,8 +186,9 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         if (mInterstitialAds != null) {
             mInterstitialAds.show(MainActivity.this);
+            Log.d("ojasadstart","yes");
         } else {
-            Log.d("TAG", "The interstitial ad wasn't ready yet.");
+            Log.d("ojasnotready", "The interstitial ad wasn't ready yet.");
         }
     }
 
