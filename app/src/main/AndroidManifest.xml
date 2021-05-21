@@ -56,7 +56,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".splashScreenA">
+            android:name=".splashScreenA"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

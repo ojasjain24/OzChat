@@ -6,214 +6,257 @@
     android:background="@color/backGround"
     android:layout_height="match_parent"
     tools:context=".AboutUsActivity">
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/textView26"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:text="What is this app?"
-            android:textColor="@color/colorAccent"
-            android:textSize="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent">
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieAnimationView5"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:scaleType="fitCenter"
-            android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView26"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/oldman_msging" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/textView26"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:text="What is this app?"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/textView1au"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:text="Its a End-to-End Encrypted Messaging app, You can use it for Professional purpose, Casual purpose, Dating Purpose, and any way you want it to."
-            android:textColor="@color/colorAccent"
-            android:gravity="center"
-            android:textSize="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/lottieAnimationView5"
-            app:layout_constraintEnd_toEndOf="@+id/textView26"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/lottieAnimationView5"
-            app:layout_constraintTop_toTopOf="@+id/lottieAnimationView5" />
-        <TextView
-            android:id="@+id/textView27"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:text="About Developers"
-            android:textColor="@color/colorAccent"
-            android:textSize="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lottieAnimationView5" />
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieAnimationView6"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:scaleType="fitCenter"
-            android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView27"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/coder" />
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottieAnimationView5"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitCenter"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView26"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/oldman_msging" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:text="@string/who_are_we"
-            android:textColor="@color/colorAccent"
-            android:gravity="center"
-            android:textSize="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/lottieAnimationView6"
-            app:layout_constraintEnd_toEndOf="@+id/textView26"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/lottieAnimationView6"
-            app:layout_constraintTop_toTopOf="@+id/lottieAnimationView6" />
-        <TextView
-            android:id="@+id/textView28"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:text="Why Ads?"
-            android:textColor="@color/colorAccent"
-            android:textSize="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lottieAnimationView6" />
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieAnimationView7"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:scaleType="fitCenter"
-            android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView28"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/no_ads" />
+                <TextView
+                    android:id="@+id/textView1au"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:text="Its a End-to-End Encrypted Messaging app, You can use it for Professional purpose, Casual purpose, Dating Purpose, and any way you want it to."
+                    android:textColor="@color/colorAccent"
+                    android:gravity="center"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/lottieAnimationView5"
+                    app:layout_constraintEnd_toEndOf="@+id/textView26"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/lottieAnimationView5"
+                    app:layout_constraintTop_toTopOf="@+id/lottieAnimationView5" />
+                <TextView
+                    android:id="@+id/textView27"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:text="About Developers"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lottieAnimationView5" />
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottieAnimationView6"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitCenter"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView27"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/coder" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:text="We do not have our own servers, So we buy those from trusted brands like amazon and google. To pay for those servers we use ads."
-            android:textColor="@color/colorAccent"
-            android:gravity="center"
-            android:textSize="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/lottieAnimationView7"
-            app:layout_constraintEnd_toEndOf="@+id/textView26"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/lottieAnimationView7"
-            app:layout_constraintTop_toTopOf="@+id/lottieAnimationView7" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:text="@string/who_are_we"
+                    android:textColor="@color/colorAccent"
+                    android:gravity="center"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/lottieAnimationView6"
+                    app:layout_constraintEnd_toEndOf="@+id/textView26"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/lottieAnimationView6"
+                    app:layout_constraintTop_toTopOf="@+id/lottieAnimationView6" />
+                <TextView
+                    android:id="@+id/textView28"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:text="Why Ads?"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lottieAnimationView6" />
 
-        <TextView
-            android:id="@+id/textView29"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:text="Data Security?"
-            android:textColor="@color/colorAccent"
-            android:textSize="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lottieAnimationView7" />
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieAnimationView8"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:scaleType="fitCenter"
-            android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView29"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/lock_security" />
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottieAnimationView7"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitCenter"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView28"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/no_ads" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:text="We oath to never sell your data, We respect your privacy, your data is safe. All your data is stored in Encrypted form in the database, so even if they got hacked (which is extremely difficult), your data would be safe."
-            android:textColor="@color/colorAccent"
-            android:gravity="center"
-            android:textSize="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/lottieAnimationView8"
-            app:layout_constraintEnd_toEndOf="@+id/textView26"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/lottieAnimationView8"
-            app:layout_constraintTop_toTopOf="@+id/lottieAnimationView8" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:text="We do not have our own servers, So we buy those from trusted brands like amazon and google. To pay for those servers we use ads."
+                    android:textColor="@color/colorAccent"
+                    android:gravity="center"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/lottieAnimationView7"
+                    app:layout_constraintEnd_toEndOf="@+id/textView26"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/lottieAnimationView7"
+                    app:layout_constraintTop_toTopOf="@+id/lottieAnimationView7" />
 
-        <TextView
-            android:id="@+id/textView30"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:text="Donate"
-            android:textColor="@color/colorAccent"
-            android:textSize="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lottieAnimationView8" />
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieAnimationView9"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:scaleType="fitCenter"
-            android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView30"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/wallet" />
+                <TextView
+                    android:id="@+id/textView29"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:text="Data Security?"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lottieAnimationView7" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:text="Currently I am a student, and I would really appreciate, If you would donate for my studies and betterment of this app."
-            android:textColor="@color/colorAccent"
-            android:gravity="center"
-            android:textSize="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/lottieAnimationView9"
-            app:layout_constraintEnd_toEndOf="@+id/textView26"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/lottieAnimationView9"
-            app:layout_constraintTop_toTopOf="@+id/lottieAnimationView9" />
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottieAnimationView8"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitCenter"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView29"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/lock_security" />
 
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:text="We oath to never sell your data, We respect your privacy, your data is safe. All your data is stored in Encrypted form in the database, so even if they got hacked (which is extremely difficult), your data would be safe."
+                    android:textColor="@color/colorAccent"
+                    android:gravity="center"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/lottieAnimationView8"
+                    app:layout_constraintEnd_toEndOf="@+id/textView26"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/lottieAnimationView8"
+                    app:layout_constraintTop_toTopOf="@+id/lottieAnimationView8" />
+
+                <TextView
+                    android:id="@+id/textView30"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:text="Donate"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lottieAnimationView8" />
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottieAnimationView9"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitCenter"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView30"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/wallet" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:text="Currently I am a student, and I would really appreciate, If you would donate for my studies and betterment of this app."
+                    android:textColor="@color/colorAccent"
+                    android:gravity="center"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/lottieAnimationView9"
+                    app:layout_constraintEnd_toEndOf="@+id/textView26"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/lottieAnimationView9"
+                    app:layout_constraintTop_toTopOf="@+id/lottieAnimationView9" />
+
+                <TextView
+                    android:id="@+id/textView31"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:text="Contact Us"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lottieAnimationView9" />
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottieAnimationView10"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitCenter"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView31"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/mail_animation" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:text="You can send us your Feedback, queries, suggestions, etc to us on Our mail. We usually reply within 1-2 business days.\n affixchat@gmail.com"
+                    android:textColor="@color/colorAccent"
+                    android:linksClickable="true"
+                    android:autoLink="all"
+                    android:gravity="center"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/lottieAnimationView10"
+                    app:layout_constraintEnd_toEndOf="@+id/textView26"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/lottieAnimationView10"
+                    app:layout_constraintTop_toTopOf="@+id/lottieAnimationView10" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+        </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
