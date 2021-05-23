@@ -331,7 +331,7 @@ public class groupChat extends AppCompatActivity {
                         float pointsnew = parseFloat(points) - fileSize;
                         reference.child("points").setValue(pointsnew+"");
                     }else if(parseFloat(points)<fileSize){
-                        Toast.makeText(groupChat.this, "You have used all your data. Go to reward section to earn more", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(groupChat.this, "Not Enough Points! Go to reward section to get the Points.", Toast.LENGTH_SHORT).show();
                     }
                     out[0] =1;
                 }

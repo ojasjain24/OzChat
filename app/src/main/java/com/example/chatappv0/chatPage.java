@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatappv0.Adapter.chatAdapter;
 import com.example.chatappv0.Models.chatModel;
-import com.example.chatappv0.Models.meetModel;
 import com.example.chatappv0.Models.usersModel;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -187,6 +186,7 @@ public class chatPage extends AppCompatActivity {
 
                 }
             });
+
             joinMeetBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -354,7 +354,7 @@ public class chatPage extends AppCompatActivity {
                         float pointsnew = parseFloat(points) - fileSize;
                         reference.child("points").setValue(pointsnew+"");
                     }else if(parseFloat(points)<fileSize){
-                        Toast.makeText(chatPage.this, "You have used all your data. Go to reward section to earn more", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(chatPage.this, "Not Enough Points! Go to reward section to get the Points.", Toast.LENGTH_SHORT).show();
                     }
                     out[0] =1;
                 }
