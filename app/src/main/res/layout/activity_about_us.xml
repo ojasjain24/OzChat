@@ -205,7 +205,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="5dp"
-                    android:text="Currently I am a student, and I would really appreciate, If you would donate for my studies and betterment of this app."
+                    android:autoLink="all"
+                    android:linksClickable="true"
+                    android:textColorLink="@color/linkColor"
+                    android:text="Currently I am a student, and I would really appreciate, If you would donate for my studies and betterment of this app. You can donate on the link below. \n https://www.buymeacoffee.com/Affix"
                     android:textColor="@color/colorAccent"
                     android:gravity="center"
                     android:textSize="16dp"
@@ -248,6 +251,7 @@
                     android:text="You can send us your Feedback, queries, suggestions, etc to us on Our mail. We usually reply within 1-2 business days.\n affixchat@gmail.com"
                     android:textColor="@color/colorAccent"
                     android:linksClickable="true"
+                    android:textColorLink="@color/linkColor"
                     android:autoLink="all"
                     android:gravity="center"
                     android:textSize="16dp"
@@ -256,6 +260,31 @@
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/lottieAnimationView10"
                     app:layout_constraintTop_toTopOf="@+id/lottieAnimationView10" />
+
+                        <TextView
+                            android:id="@+id/textView32"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:gravity="center"
+                            android:text="Motivation"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="32dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/lottieAnimationView10" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="The main goal behind this app was data security and transparency. We created this app so that users can communicate and transfer data with privacy. Unlike other apps this app does NOT share or sell your data. The costs for servers and data centers are covered by Ads. Rest of the expenses like development cost, maintenance cost, etc. are taken care by donations made by you."
+                            android:gravity="center"
+                            android:textSize="16dp"
+                            android:textColor="@color/colorAccent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/textView32"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_margin="15dp"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

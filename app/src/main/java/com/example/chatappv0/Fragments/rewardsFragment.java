@@ -242,7 +242,7 @@ public class rewardsFragment extends Fragment implements OnUserEarnedRewardListe
     @Override
     public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
         Log.i(TAG, "onUserEarnedReward");
-        float pointsNew = parseFloat(points) + 25.00f;
+        float pointsNew = parseFloat(points) + 50.00f;
         reference.child("points").setValue(pointsNew+"");
     }
 

@@ -3,14 +3,20 @@ package com.example.chatappv0;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,7 +38,8 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends AppCompatActivity {
     private InterstitialAd mInterstitialAd, mInterstitialAds;
     boolean doubleBackToExitPressedOnce = false;
-//    public static final String CHANNEL_MEET = "channelMeet";
+    private int CAMERA_PERMISSION_CODE = 1, MIC_PERMISSION_CODE = 2;
+    //    public static final String CHANNEL_MEET = "channelMeet";
 //    public static final String CHANNEL_MSG = "channelMsg";
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -124,6 +131,10 @@ public class MainActivity extends AppCompatActivity {
 //        notificationServices notificationServices = new notificationServices();
 //        NotificationManager manager = getSystemService(NotificationManager.class);
 //        notificationServices.createNotificationChannels(MainActivity.this,CHANNEL_MEET,manager,"","");
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+        } else {
+            requestPermissions();
+        }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -191,5 +202,58 @@ public class MainActivity extends AppCompatActivity {
             Log.d("ojasnotready", "The interstitial ad wasn't ready yet.");
         }
     }
+    private void requestPermissions() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.CAMERA) || ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.RECORD_AUDIO) ) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission needed")
+                    .setMessage("Camera and Mic Permissions required for call feature.")
+                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
+                                ActivityCompat.requestPermissions(MainActivity.this,
+                                        new String[] {Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_CODE);
+                            }
+                            if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                                ActivityCompat.requestPermissions(MainActivity.this,
+                                        new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+                            }
 
+                        }
+                    })
+                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+            ActivityCompat.requestPermissions(this,
+                    new String[] {Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_CODE);
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == CAMERA_PERMISSION_CODE)  {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Camera Permission GRANTED", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Camera Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (requestCode == MIC_PERMISSION_CODE)  {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Mic Permission GRANTED", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Mic Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
