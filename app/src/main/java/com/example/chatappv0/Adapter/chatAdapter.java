@@ -255,6 +255,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public void onClick(View v) {
                     Intent intent = new Intent(context, imageViewActivity.class);
                     intent.putExtra("image", chat.getMessage());
+                    intent.putExtra("Type",chat.getType());
                     context.startActivity(intent);
                 }
             });

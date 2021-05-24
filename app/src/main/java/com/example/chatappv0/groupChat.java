@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatappv0.Adapter.groupChatAdapter;
 import com.example.chatappv0.Models.groupChatModel;
 import com.example.chatappv0.Models.groupDataModel;
-import com.example.chatappv0.Models.groupMeetingModel;
 import com.example.chatappv0.Models.usersModel;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;

@@ -4,16 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -208,19 +203,16 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.RECORD_AUDIO) ) {
             new AlertDialog.Builder(this)
                     .setTitle("Permission needed")
-                    .setMessage("Camera and Mic Permissions required for call feature.")
+                    .setMessage("Camera and Mic Permissions are required for call feature.")
                     .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
-                                ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[] {Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_CODE);
+                            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_CODE);
                             }
-                            if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
-                                ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+                            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
                             }
-
                         }
                     })
                     .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -231,11 +223,8 @@ public class MainActivity extends AppCompatActivity {
                     })
                     .create().show();
         } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
-            ActivityCompat.requestPermissions(this,
-                    new String[] {Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_CODE);
-
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_CODE);
         }
     }
 
