@@ -1,5 +1,6 @@
 package com.example.chatappv0;
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -11,7 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageButton;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.app.Activity;
@@ -273,7 +274,7 @@ public class imageViewActivity extends Activity implements OnTouchListener
                 path.mkdirs();
             }
 
-            File imageFile = new File(path, String.valueOf(System.currentTimeMillis())+".png"); // Imagename.png
+            File imageFile = new File(path, String.valueOf(System.currentTimeMillis())+"."+getIntent().getStringExtra("Type"));
             FileOutputStream out = null;
             try {
                 out = new FileOutputStream(imageFile);
@@ -302,5 +303,10 @@ public class imageViewActivity extends Activity implements OnTouchListener
             super.onPostExecute(aVoid);
             Toast.makeText(imageViewActivity.this, "Downloaded", Toast.LENGTH_SHORT).show();
         }
+    }
+    private String getFileExtension(Uri uri){
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 }

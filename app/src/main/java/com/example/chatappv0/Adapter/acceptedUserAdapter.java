@@ -3,30 +3,23 @@ package com.example.chatappv0.Adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.airbnb.lottie.LottieAnimationView;
-import com.example.chatappv0.Models.acceptRequestModel;
 import com.example.chatappv0.Models.chatModel;
 import com.example.chatappv0.Models.friendsModel;
 import com.example.chatappv0.Models.meetModel;
 import com.example.chatappv0.Models.usersModel;
 import com.example.chatappv0.R;
-import com.example.chatappv0.acceptRequest;
 import com.example.chatappv0.chatPage;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,10 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
-import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapter.Holder> {

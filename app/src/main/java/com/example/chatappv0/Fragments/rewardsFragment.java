@@ -35,11 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-
-import static java.lang.Float.floatToIntBits;
 import static java.lang.Float.parseFloat;
-import static java.lang.Integer.parseInt;
 
 /**
  * A simple {@link Fragment} subclass.

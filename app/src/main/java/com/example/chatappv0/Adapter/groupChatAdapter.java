@@ -313,6 +313,7 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 public void onClick(View v) {
                     Intent intent = new Intent(context, imageViewActivity.class);
                     intent.putExtra("image", chat.getMessage());
+                    intent.putExtra("Type",chat.getType());
                     context.startActivity(intent);
                 }
             });

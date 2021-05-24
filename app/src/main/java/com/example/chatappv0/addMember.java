@@ -2,7 +2,7 @@ package com.example.chatappv0;
 
 import android.content.Intent;
 import  android.os.Bundle;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatappv0.Adapter.addMemberAdapter;
-import com.example.chatappv0.Adapter.selectUserForGroupAdapter;
+
 import com.example.chatappv0.Models.groupMemberModel;
 import com.example.chatappv0.Models.usersModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -23,7 +23,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class addMember extends AppCompatActivity {

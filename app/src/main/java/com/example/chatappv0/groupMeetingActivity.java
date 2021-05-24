@@ -148,6 +148,7 @@ public class groupMeetingActivity extends FragmentActivity implements JitsiMeetA
             final int requestCode,
             final String[] permissions,
             final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         JitsiMeetActivityDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 

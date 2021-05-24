@@ -1,9 +1,9 @@
 package com.example.chatappv0.Adapter;
 import android.content.Context;
 import android.content.Intent;
-import android.icu.text.Transliterator;
+
 import android.net.Uri;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

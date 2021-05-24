@@ -19,7 +19,6 @@ import com.example.chatappv0.Models.groupDataModel;
 import com.example.chatappv0.Models.groupMemberModel;
 import com.example.chatappv0.R;
 import com.example.chatappv0.allGroupActivity;
-import com.example.chatappv0.allusersActivity;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -36,8 +35,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
-
-import static java.lang.Thread.sleep;
 
 /**
  * A simple {@link Fragment} subclass.

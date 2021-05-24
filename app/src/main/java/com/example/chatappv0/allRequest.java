@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.chatappv0.Adapter.requestsAdapter;
 import com.example.chatappv0.Models.acceptRequestModel;
-import com.example.chatappv0.Models.usersModel;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

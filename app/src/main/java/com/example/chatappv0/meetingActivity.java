@@ -1,16 +1,11 @@
 package com.example.chatappv0;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.chatappv0.Models.groupMeetingModel;
@@ -31,8 +26,6 @@ import org.jitsi.meet.sdk.JitsiMeetViewListener;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-
 public class meetingActivity extends FragmentActivity implements JitsiMeetActivityInterface {
     private JitsiMeetView view;
     boolean doubleBackToExitPressedOnce = false;
@@ -152,6 +145,7 @@ public class meetingActivity extends FragmentActivity implements JitsiMeetActivi
             final int requestCode,
             final String[] permissions,
             final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         JitsiMeetActivityDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
