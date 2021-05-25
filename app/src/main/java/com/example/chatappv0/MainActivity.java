@@ -126,9 +126,11 @@ public class MainActivity extends AppCompatActivity {
 //        notificationServices notificationServices = new notificationServices();
 //        NotificationManager manager = getSystemService(NotificationManager.class);
 //        notificationServices.createNotificationChannels(MainActivity.this,CHANNEL_MEET,manager,"","");
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-        } else {
-            requestPermissions();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ) {
+            requestPermissionsAudio();
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ) {
+            requestPermissionsCamera();
         }
     }
     @Override
@@ -197,22 +199,16 @@ public class MainActivity extends AppCompatActivity {
             Log.d("ojasnotready", "The interstitial ad wasn't ready yet.");
         }
     }
-    private void requestPermissions() {
+    private void requestPermissionsCamera() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.CAMERA) || ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.RECORD_AUDIO) ) {
+                Manifest.permission.CAMERA)  ) {
             new AlertDialog.Builder(this)
                     .setTitle("Permission needed")
-                    .setMessage("Camera and Mic Permissions are required for call feature.")
+                    .setMessage("Camera Permissions are required for call feature.")
                     .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_CODE);
-                            }
-                            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
-                            }
+                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
                         }
                     })
                     .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -224,20 +220,44 @@ public class MainActivity extends AppCompatActivity {
                     .create().show();
         } else {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+        }
+    }
+    private void requestPermissionsAudio() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.RECORD_AUDIO) ) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission needed")
+                    .setMessage("Mic Permissions are required for call feature.")
+                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_CODE);
+
+                        }
+                    })
+                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+        } else {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_CODE);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == CAMERA_PERMISSION_CODE)  {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Camera Permission GRANTED", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Camera Permission DENIED", Toast.LENGTH_SHORT).show();
             }
         }
-        if (requestCode == MIC_PERMISSION_CODE)  {
+        if (requestCode == MIC_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Mic Permission GRANTED", Toast.LENGTH_SHORT).show();
             } else {
