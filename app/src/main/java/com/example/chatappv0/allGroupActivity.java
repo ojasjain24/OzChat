@@ -38,6 +38,7 @@ public class allGroupActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_allusers);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         noFriends=findViewById(R.id.noFriendsTextaau);
         empty=findViewById(R.id.emptyaau);
         loading=findViewById(R.id.loadingaau);
@@ -58,7 +59,7 @@ public class allGroupActivity extends AppCompatActivity {
                 userList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     final groupDataModel group = snapshot.getValue(groupDataModel.class);
-                    if(group.getType().toLowerCase().startsWith("public")) {
+                    if(group.getType() !=null && group.getType().toLowerCase().startsWith("public")) {
                         final DatabaseReference reference =databaseReference.child(group.getNodeid()).child("members");
                         reference.addValueEventListener(new ValueEventListener() {
                             @Override

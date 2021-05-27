@@ -36,6 +36,7 @@ public class allRequest extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_request);
         noFriends=findViewById(R.id.noFriendsTextaur);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         empty=findViewById(R.id.emptyaur);
         loading=findViewById(R.id.loadingaur);
         loadingText=findViewById(R.id.loadingTextaur);

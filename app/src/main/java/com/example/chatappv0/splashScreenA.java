@@ -75,17 +75,17 @@ public class splashScreenA extends AppCompatActivity {
                 public void run() {
                     try {
                         // Thread will sleep for 3 seconds
-                        sleep(3 * 1000);
+                        sleep(2 * 1000);
                         // After 3 seconds redirect to another intent
-                        if (mInterstitialAd != null) {
-                            mInterstitialAd.show(splashScreenA.this);
-                            Log.d("ojasadstart","yes");
-                        } else {
-                            Log.d("ojasnotready", "The interstitial ad wasn't ready yet.");
-                        }
                         if (user != null) {
                             if(auth.getCurrentUser().isEmailVerified()){
                                 startActivity(new Intent(splashScreenA.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                                if (mInterstitialAd != null) {
+                                    mInterstitialAd.show(splashScreenA.this);
+                                    Log.d("ojasadstart","yes");
+                                } else {
+                                    Log.d("ojasnotready", "The interstitial ad wasn't ready yet.");
+                                }
                             }else{
                                 Toast.makeText(splashScreenA.this, "Please Verify your mail", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(splashScreenA.this, loginActivity.class));
@@ -108,13 +108,15 @@ public class splashScreenA extends AppCompatActivity {
                 public void run() {
                     try {
                         // Thread will sleep for 5 seconds
-                        sleep(3 * 1000);
+                        sleep(2 * 1000);
                         // After 3 seconds redirect to another intent
                         if (user != null) {
                             if (auth.getCurrentUser().isEmailVerified()) {
                                 startActivity(new Intent(splashScreenA.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                            }else{
+                                Toast.makeText(splashScreenA.this, "Please Verify your mail", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(splashScreenA.this, loginActivity.class));
                             }
-
                         } else {
                             startActivity(new Intent(splashScreenA.this, loginActivity.class));
                         }

@@ -72,7 +72,7 @@ public class chatPage extends AppCompatActivity {
     private CardView meetingCard;
     private Button joinMeetBtn;
     private TextView meetHostName, meetType;
-    private ImageView meetIcon;
+    private ImageView meetIcon, back;
     private ImageView videoCall,audioCall;
     private static final int imageRequest = 1;
     private Uri imageUri;
@@ -163,6 +163,13 @@ public class chatPage extends AppCompatActivity {
         meetIcon=findViewById(R.id.meetLogo);
         videoCall=findViewById(R.id.videoCall);
         audioCall=findViewById(R.id.call);
+        back=findViewById(R.id.imageView6);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         if (Objects.equals(intent.getStringExtra("endTime"), "0")){
             videoCall.setVisibility(View.INVISIBLE);
             audioCall.setVisibility(View.INVISIBLE);

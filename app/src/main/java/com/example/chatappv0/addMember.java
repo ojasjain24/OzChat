@@ -34,6 +34,7 @@ public class addMember extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_member);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         nextBtn=findViewById(R.id.floatingActionButtonam);
         recyclerView=findViewById(R.id.newMemberList);
         recyclerView.setHasFixedSize(true);
@@ -94,5 +95,10 @@ public class addMember extends AppCompatActivity {
                 Toast.makeText(addMember.this, "check your network connection", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
     }
 }

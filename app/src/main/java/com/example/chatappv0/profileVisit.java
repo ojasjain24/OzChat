@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -17,6 +18,7 @@ public class profileVisit extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_visit);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent i =getIntent();
         name=findViewById(R.id.textView14pv);
         name.setText(i.getStringExtra("name"));
@@ -36,5 +38,10 @@ public class profileVisit extends AppCompatActivity {
         }else{
             dp.setImageResource(R.drawable.ic_launcher_foreground);
         }
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return super.onSupportNavigateUp();
     }
 }

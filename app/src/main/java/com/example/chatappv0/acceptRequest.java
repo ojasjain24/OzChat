@@ -30,6 +30,7 @@ public class acceptRequest extends AppCompatActivity {
      protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accept_request);
+         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         acceptBtn=findViewById(R.id.accept);
         dp=findViewById(R.id.DPshow);
         final Intent intent = getIntent();

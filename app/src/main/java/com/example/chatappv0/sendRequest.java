@@ -34,6 +34,7 @@ public class sendRequest extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_send_request);
         profilePic = findViewById(R.id.DP);
         requestSent=findViewById(R.id.textView12);
