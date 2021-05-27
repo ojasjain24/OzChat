@@ -50,6 +50,7 @@ public class profileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         profilePic = findViewById(R.id.imageView);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         statusEditor = findViewById(R.id.statusEditor);
         professionEditor = findViewById(R.id.professionEditor);
         countryEditor = findViewById(R.id.countryEditor);

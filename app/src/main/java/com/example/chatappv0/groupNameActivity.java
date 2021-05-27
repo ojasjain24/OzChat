@@ -53,6 +53,7 @@ public class groupNameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_name);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         groupName=findViewById(R.id.editGroupName);
         groupDescription=findViewById(R.id.editGroupDescription);
         profilePic=findViewById(R.id.groupIcon);
@@ -181,5 +182,14 @@ public class groupNameActivity extends AppCompatActivity {
         final Intent i= getIntent();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i.getStringExtra("nodeId"));
         reference.setValue(null);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        final Intent i= getIntent();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(i.getStringExtra("nodeId"));
+        reference.setValue(null);
+        return super.onSupportNavigateUp();
     }
 }

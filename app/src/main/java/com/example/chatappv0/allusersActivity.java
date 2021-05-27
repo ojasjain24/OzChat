@@ -38,6 +38,7 @@ public class allusersActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_allusers);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         noFriends=findViewById(R.id.noFriendsTextaau);
         empty=findViewById(R.id.emptyaau);
         loading=findViewById(R.id.loadingaau);

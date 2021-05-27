@@ -35,6 +35,7 @@ public class sendRequestToJoinGroup extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_request_to_join_group);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         profilePic = findViewById(R.id.groupDP);
         status = findViewById(R.id.groupDescription);
         requestSent=findViewById(R.id.requestSentDisplay);

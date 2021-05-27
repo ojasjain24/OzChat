@@ -67,7 +67,7 @@ public class groupChat extends AppCompatActivity {
     private RecyclerView messageList;
     private DatabaseReference reference;
     private ArrayList<groupChatModel> chatList;
-    private ImageView attach;
+    private ImageView attach,back;
     private static final int imageRequest = 1;
     private Uri imageUri;
     private AdView mAdView;
@@ -153,6 +153,13 @@ public class groupChat extends AppCompatActivity {
         meetIcon=findViewById(R.id.meetLogo);
         videoCall=findViewById(R.id.videoCall);
         audioCall=findViewById(R.id.call);
+        back=findViewById(R.id.imageView6g);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         if (Objects.equals(intent.getStringExtra("endTime"), "0")){
             videoCall.setVisibility(View.INVISIBLE);
             audioCall.setVisibility(View.INVISIBLE);

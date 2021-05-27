@@ -31,6 +31,7 @@ public class displayUserForGroup extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         nextBtn=findViewById(R.id.floatingActionButton);
         recyclerView=findViewById(R.id.making_group_list);
         recyclerView.setHasFixedSize(true);

@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatappv0.Models.groupChatModel;
 import com.example.chatappv0.Models.usersModel;
 import com.example.chatappv0.R;
+import com.example.chatappv0.chatPage;
 import com.example.chatappv0.forwardMessageGrp;
 import com.example.chatappv0.groupChat;
 import com.example.chatappv0.imageViewActivity;
@@ -59,7 +60,7 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     FirebaseUser firebaseUser;
     TextView nameText;
     ArrayList<String> imageTypes = new ArrayList<>();
-    ImageView dp, delete, forward,copy;
+    ImageView dp, delete, forward,copy, videoCallBtn, callBtn;
     ClipboardManager clipboardManager;
     int count=0;
     String nodeId;
@@ -224,6 +225,10 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         forward=((groupChat) context).findViewById(R.id.forwardIcong);
                         forward.setVisibility(View.VISIBLE);
                         copy=((groupChat) context).findViewById(R.id.copyIcong);
+                        videoCallBtn = ((groupChat) context).findViewById(R.id.videoCall);
+                        callBtn = ((groupChat) context).findViewById(R.id.call);
+                        videoCallBtn.setVisibility(View.INVISIBLE);
+                        callBtn.setVisibility(View.INVISIBLE);
                         if(count==0) {
                             copy.setVisibility(View.VISIBLE);
                         }
@@ -244,6 +249,8 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                                 delete.setVisibility(View.INVISIBLE);
                                                 forward.setVisibility(View.INVISIBLE);
                                                 copy.setVisibility(View.INVISIBLE);
+                                                videoCallBtn.setVisibility(View.VISIBLE);
+                                                callBtn.setVisibility(View.VISIBLE);
                                             }else {
                                                 Toast.makeText(context, "You can not delete messages sent by others", Toast.LENGTH_SHORT).show();
                                             }
@@ -294,6 +301,10 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         forward.setVisibility(View.INVISIBLE);
                         copy=((groupChat) context).findViewById(R.id.copyIcong);
                         copy.setVisibility(View.INVISIBLE);
+                        videoCallBtn = ((groupChat) context).findViewById(R.id.videoCall);
+                        callBtn = ((groupChat) context).findViewById(R.id.call);
+                        videoCallBtn.setVisibility(View.VISIBLE);
+                        callBtn.setVisibility(View.VISIBLE);
                     }
                     return false;
                 }
@@ -357,6 +368,10 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         forward.setVisibility(View.VISIBLE);
                         copy=((groupChat) context).findViewById(R.id.copyIcong);
                         copy.setVisibility(View.GONE);
+                        videoCallBtn = ((groupChat) context).findViewById(R.id.videoCall);
+                        callBtn = ((groupChat) context).findViewById(R.id.call);
+                        videoCallBtn.setVisibility(View.INVISIBLE);
+                        callBtn.setVisibility(View.INVISIBLE);
                         Log.d("ojaslistoutside",list.size()+"");
                         final Boolean[] ok = {false};
                         delete.setOnClickListener(new View.OnClickListener() {
@@ -376,7 +391,8 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                                         delete.setVisibility(View.INVISIBLE);
                                                         forward.setVisibility(View.INVISIBLE);
                                                         copy.setVisibility(View.INVISIBLE);
-                                                    }else {
+                                                        videoCallBtn.setVisibility(View.VISIBLE);
+                                                        callBtn.setVisibility(View.VISIBLE);                            }else {
                                                         Toast.makeText(context, "You can not delete messages sent by others", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
@@ -408,7 +424,10 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         forward.setVisibility(View.INVISIBLE);
                         copy=((groupChat) context).findViewById(R.id.copyIcong);
                         copy.setVisibility(View.INVISIBLE);
-                    }
+                        videoCallBtn = ((groupChat) context).findViewById(R.id.videoCall);
+                        callBtn = ((groupChat) context).findViewById(R.id.call);
+                        videoCallBtn.setVisibility(View.VISIBLE);
+                        callBtn.setVisibility(View.VISIBLE);}
                     return false;
                 }
             });
@@ -460,6 +479,10 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         forward.setVisibility(View.VISIBLE);
                         copy=((groupChat) context).findViewById(R.id.copyIcong);
                         copy.setVisibility(View.GONE);
+                        videoCallBtn = ((groupChat) context).findViewById(R.id.videoCall);
+                        callBtn = ((groupChat) context).findViewById(R.id.call);
+                        videoCallBtn.setVisibility(View.INVISIBLE);
+                        callBtn.setVisibility(View.INVISIBLE);
                         Log.d("ojaslistoutside",list.size()+"");
                         final Boolean[] ok = {false};
                         delete.setOnClickListener(new View.OnClickListener() {
@@ -479,7 +502,8 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                                         delete.setVisibility(View.INVISIBLE);
                                                         forward.setVisibility(View.INVISIBLE);
                                                         copy.setVisibility(View.INVISIBLE);
-                                                    }else {
+                                                        videoCallBtn.setVisibility(View.VISIBLE);
+                                                        callBtn.setVisibility(View.VISIBLE);        }else {
                                                         Toast.makeText(context, "You can not delete messages sent by others", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
@@ -512,6 +536,10 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         forward.setVisibility(View.INVISIBLE);
                         copy=((groupChat) context).findViewById(R.id.copyIcong);
                         copy.setVisibility(View.INVISIBLE);
+                        videoCallBtn = ((groupChat) context).findViewById(R.id.videoCall);
+                        callBtn = ((groupChat) context).findViewById(R.id.call);
+                        videoCallBtn.setVisibility(View.VISIBLE);
+                        callBtn.setVisibility(View.VISIBLE);
                     }
                     return false;
                 }

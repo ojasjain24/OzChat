@@ -250,6 +250,7 @@ public class imageViewActivity extends Activity implements OnTouchListener
             new DownloadsImage().execute(ImageUrl);
         }
     }
+
     class DownloadsImage extends AsyncTask<String, Void,Void> {
 
         @Override
@@ -304,9 +305,5 @@ public class imageViewActivity extends Activity implements OnTouchListener
             Toast.makeText(imageViewActivity.this, "Downloaded", Toast.LENGTH_SHORT).show();
         }
     }
-    private String getFileExtension(Uri uri){
-        ContentResolver contentResolver = getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
+
 }

@@ -71,6 +71,7 @@ public class groupVisit extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_visit);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         MobileAds.initialize(groupVisit.this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
@@ -431,6 +432,18 @@ public class groupVisit extends AppCompatActivity {
                 Toast.makeText(groupVisit.this, "check your network connection", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        Intent i = new Intent(groupVisit.this, groupChat.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.putExtra("nodeId", getIntent().getStringExtra("nodeId"));
+        i.putExtra("name",getIntent().getStringExtra("name"));
+        i.putExtra("status", getIntent().getStringExtra("status"));
+        i.putExtra("pic", getIntent().getStringExtra("pic"));
+        startActivity(i);
+        return super.onSupportNavigateUp();
     }
 
 }
