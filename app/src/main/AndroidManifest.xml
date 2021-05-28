@@ -25,7 +25,7 @@
         <activity
             android:name=".imageViewActivity"
             android:hardwareAccelerated="false"
-            android:theme="@style/Widget.AppCompat.Toolbar"/>
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
         <activity android:name=".AboutUsActivity"
             android:parentActivityName=".MainActivity"/>

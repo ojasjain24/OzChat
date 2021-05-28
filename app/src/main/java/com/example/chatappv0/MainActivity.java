@@ -132,6 +132,8 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ) {
             requestPermissionsCamera();
         }
+        splashScreenA splashScreenA = new splashScreenA();
+        splashScreenA.playAd(MainActivity.this);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

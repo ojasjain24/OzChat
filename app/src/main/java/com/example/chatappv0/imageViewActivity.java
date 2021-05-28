@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.MimeTypeMap;
@@ -47,12 +49,13 @@ public class imageViewActivity extends Activity implements OnTouchListener
     static final int DRAG = 1;
     static final int ZOOM = 2;
     int mode = NONE;
+    int width, height;
 
     // these PointF objects are used to record the point(s) the user is touching
     PointF start = new PointF();
     PointF mid = new PointF();
     float oldDist = 1f;
-
+    final int[] angle = {0};
     private ImageView acw,cw;
 
     /** Called when the activity is first created. */
@@ -60,7 +63,26 @@ public class imageViewActivity extends Activity implements OnTouchListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_view);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        height = displayMetrics.heightPixels;
+        width = displayMetrics.widthPixels;
         ImageView imageView = findViewById(R.id.imagefullview);
+        ImageView back = findViewById(R.id.backBtn);
+        ImageView download = findViewById(R.id.downloadBtn);
+        download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DownloadImage(getIntent().getStringExtra("image"));
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                onBackPressed();
+            }
+        });
         acw=findViewById(R.id.acwRotation);
         cw=findViewById(R.id.cwRotation);
         Intent intent = getIntent();
@@ -76,12 +98,16 @@ public class imageViewActivity extends Activity implements OnTouchListener
             Toast.makeText(imageViewActivity.this, "Too Large to Load", Toast.LENGTH_SHORT).show();
         }
         imageView.setOnTouchListener(this);
-        final int[] angle = {0};
         acw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 angle[0] = angle[0] -90;
                 imageView.setRotation(angle[0]);
+                int heightInDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height, getResources().getDisplayMetrics());
+                int widthInDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, width, getResources().getDisplayMetrics());
+                imageView.getLayoutParams().width = widthInDp;
+                imageView.getLayoutParams().height = heightInDp;
+                imageView.requestLayout();
             }
         });
         cw.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +115,11 @@ public class imageViewActivity extends Activity implements OnTouchListener
             public void onClick(View v) {
                 angle[0] = angle[0] +90;
                 imageView.setRotation(angle[0]);
+                int heightInDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height, getResources().getDisplayMetrics());
+                int widthInDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, width, getResources().getDisplayMetrics());
+                imageView.getLayoutParams().width = widthInDp;
+                imageView.getLayoutParams().height = heightInDp;
+                imageView.requestLayout();
             }
         });
     }
@@ -219,24 +250,6 @@ public class imageViewActivity extends Activity implements OnTouchListener
         sb.append("]");
         Log.d("Touch Events ---------", sb.toString());
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.image_view_menu,menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        super.onOptionsItemSelected(item);
-        if(item.getItemId() == R.id.download){
-            DownloadImage(getIntent().getStringExtra("image"));
-        }
-        return true;
-    }
-
     void DownloadImage(String ImageUrl) {
 
         if (ContextCompat.checkSelfPermission(imageViewActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
