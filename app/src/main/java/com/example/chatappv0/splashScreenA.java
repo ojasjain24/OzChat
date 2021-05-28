@@ -3,6 +3,7 @@ package com.example.chatappv0;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -80,12 +81,7 @@ public class splashScreenA extends AppCompatActivity {
                         if (user != null) {
                             if(auth.getCurrentUser().isEmailVerified()){
                                 startActivity(new Intent(splashScreenA.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                                if (mInterstitialAd != null) {
-                                    mInterstitialAd.show(splashScreenA.this);
-                                    Log.d("ojasadstart","yes");
-                                } else {
-                                    Log.d("ojasnotready", "The interstitial ad wasn't ready yet.");
-                                }
+
                             }else{
                                 Toast.makeText(splashScreenA.this, "Please Verify your mail", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(splashScreenA.this, loginActivity.class));
@@ -126,6 +122,14 @@ public class splashScreenA extends AppCompatActivity {
                     }
                 }
             };
+        }
+    }
+    public void playAd(Activity activity){
+        if (mInterstitialAd != null) {
+            mInterstitialAd.show(activity);
+            Log.d("ojasadstart","yes");
+        } else {
+            Log.d("ojasnotreadysplash", "The interstitial ad wasn't ready yet.");
         }
     }
 }
