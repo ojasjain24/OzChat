@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backGround"
+    android:background="?attr/backGround"
     tools:context=".profileVisit">
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
                 android:id="@+id/DPpv"
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
-                android:background="@color/backGround"
+                android:background="?attr/backGround"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_launcher_background"
                 app:layout_constraintBottom_toBottomOf="parent"

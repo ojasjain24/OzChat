@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="backGround" format="color"/>
+    <attr name="Tint" format="color"/>
+    <attr name="bar" format="color"/>
+    <attr name="LightMsgColor" format="color"/>
+    <attr name="DarkMsgColor" format="color"/>
+    <attr name="BtnTint" format="color"/>
+</resources>

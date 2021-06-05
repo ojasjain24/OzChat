@@ -3,6 +3,7 @@ package com.example.chatappv0;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -16,6 +17,8 @@ public class profileVisit extends AppCompatActivity {
     private ImageView dp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Resources.Theme theme = super.getTheme();
+        new ThemeSetter().aSetTheme(this,theme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_visit);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

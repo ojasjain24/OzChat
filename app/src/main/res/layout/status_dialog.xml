@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal|center_vertical"
-    android:background="@color/backGround"
+    android:background="?attr/backGround"
     android:elevation="10dp"
     android:textAlignment="center">
 

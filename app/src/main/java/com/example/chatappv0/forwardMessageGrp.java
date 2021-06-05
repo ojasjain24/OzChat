@@ -1,6 +1,7 @@
 package com.example.chatappv0;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import  android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -39,6 +40,8 @@ public class forwardMessageGrp extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Resources.Theme theme = super.getTheme();
+        new ThemeSetter().aSetTheme(this,theme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forward_message_actvity);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

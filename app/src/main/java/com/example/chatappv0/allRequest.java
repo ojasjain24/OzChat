@@ -1,6 +1,7 @@
 package com.example.chatappv0;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import  android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -33,6 +34,8 @@ public class allRequest extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Resources.Theme theme = super.getTheme();
+        new ThemeSetter().aSetTheme(this,theme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_request);
         noFriends=findViewById(R.id.noFriendsTextaur);

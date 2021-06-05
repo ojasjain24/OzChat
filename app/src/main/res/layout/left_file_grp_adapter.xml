@@ -46,6 +46,7 @@
         android:layout_marginRight="20sp"
         android:background="@drawable/btn_background"
         android:text="open"
+        android:backgroundTint="?attr/BtnTint"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3g"
         app:layout_constraintEnd_toEndOf="@+id/imageView3g"
         app:layout_constraintHorizontal_bias="0.0"

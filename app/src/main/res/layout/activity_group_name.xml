@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backGround"
+    android:background="?attr/backGround"
     tools:context=".groupNameActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -48,7 +48,7 @@
         android:clickable="true"
         android:focusable="true"
         android:rotationY="180"
-        app:backgroundTint="@color/colorPrimaryDark"
+        app:backgroundTint="?attr/Tint"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:text="Group Type"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/text"
         android:textSize="22dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

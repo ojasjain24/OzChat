@@ -17,6 +17,9 @@
         android:id="@+id/allgroups"
         android:title="All Groups" />
     <item
+        android:id="@+id/appThemes"
+        android:title="Theme"/>
+    <item
         android:id="@+id/loguotmenu"
         android:title="@string/logout" />
     <item

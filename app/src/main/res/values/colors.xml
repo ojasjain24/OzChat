@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="backGround">#F6E7F0</color>
+    <color name="backGround">#FFFFFF</color>
     <color name="colorPrimary">#CA9BEC</color>
     <color name="colorPrimaryDark">#78499A</color>
     <color name="colorAccent">#320360</color>
-    <color name="transpirent">#99EDC0C1</color>
+    <color name="transpirent">#8CB6BAD6</color>
     <color name="nullColor">#00FFFFFF</color>
     <color name="text">#000000</color>
     <color name="linkColor">#096CC3</color>
-    <color name="meetCardBg">#839787</color>
+    <color name="meetCardBg">#9ABA92</color>
 
 <!--    <color name="backGround">#F3F6E3</color>-->
 <!--    <color name="colorPrimary">#D7E69D</color>-->

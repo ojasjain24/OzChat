@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backGround"
+    android:background="?attr/backGround"
     android:tag="groupfragment"
     tools:context=".Fragments.groupFragment">
 
@@ -20,6 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/bgAnimation"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:rotationY="-180"

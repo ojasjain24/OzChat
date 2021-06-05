@@ -1,6 +1,7 @@
 package com.example.chatappv0;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import  android.os.Bundle;
 
 import android.view.View;
@@ -32,6 +33,8 @@ public class addMember extends AppCompatActivity {
     ArrayList<usersModel> userList = new ArrayList<>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Resources.Theme theme = super.getTheme();
+        new ThemeSetter().aSetTheme(this,theme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_member);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

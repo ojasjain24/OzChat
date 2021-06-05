@@ -1,6 +1,7 @@
 package com.example.chatappv0.Fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -35,6 +36,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -99,6 +102,16 @@ public class  chatFragment extends Fragment {
         recyclerView= view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        String text = sharedPreferences.getString("Theme", "Default");
+        LottieAnimationView bgAnimation = view.findViewById(R.id.bgAnimation);
+        if(!text.equals("Default")){
+            bgAnimation.setVisibility(View.INVISIBLE);
+        }else{
+            bgAnimation.setVisibility(View.VISIBLE);
+        }
+
         noFriends=view.findViewById(R.id.noFriendsText);
         empty=view.findViewById(R.id.empty);
         loading=view.findViewById(R.id.loading);

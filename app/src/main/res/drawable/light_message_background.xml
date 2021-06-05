@@ -3,6 +3,6 @@
     <corners
         android:radius="5dp"
         android:topLeftRadius="0dp"/>
-    <solid android:color="#CEDCCA"/>
+    <solid android:color="?attr/LightMsgColor"/>
 
 </shape>
