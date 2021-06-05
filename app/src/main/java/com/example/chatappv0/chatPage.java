@@ -3,7 +3,9 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.chatappv0.Adapter.chatAdapter;
 import com.example.chatappv0.Models.chatModel;
 import com.example.chatappv0.Models.usersModel;
@@ -91,6 +95,8 @@ public class chatPage extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Resources.Theme theme = super.getTheme();
+        new ThemeSetter().aSetTheme(this,theme);
         super.onCreate(savedInstanceState);
         if(getSupportActionBar()!=null) {
             this.getSupportActionBar().hide();
@@ -148,6 +154,17 @@ public class chatPage extends AppCompatActivity {
                 // to the app after tapping on an ad.
             }
         });
+
+
+        SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        String text = sharedPreferences.getString("Theme", "Default");
+        LottieAnimationView bgAnimation = findViewById(R.id.bgAnimation);
+        if(!text.equals("Default")){
+            bgAnimation.setVisibility(View.INVISIBLE);
+        }else{
+            bgAnimation.setVisibility(View.VISIBLE);
+        }
+
         delete=findViewById(R.id.deleteIcon);
         copy=findViewById(R.id.copyIcon);
         forward=findViewById(R.id.forwardIcon);

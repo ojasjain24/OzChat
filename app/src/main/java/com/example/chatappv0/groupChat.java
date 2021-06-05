@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +22,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.chatappv0.Adapter.groupChatAdapter;
 import com.example.chatappv0.Models.groupChatModel;
 import com.example.chatappv0.Models.groupDataModel;
@@ -85,6 +88,8 @@ public class groupChat extends AppCompatActivity {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Resources.Theme theme = super.getTheme();
+        new ThemeSetter().aSetTheme(this,theme);
         super.onCreate(savedInstanceState);
         if(getSupportActionBar()!=null) {
             this.getSupportActionBar().hide();
@@ -140,6 +145,16 @@ public class groupChat extends AppCompatActivity {
                 // to the app after tapping on an ad.
             }
         });
+
+        SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        String text = sharedPreferences.getString("Theme", "Default");
+        LottieAnimationView bgAnimation = findViewById(R.id.bgAnimation);
+        if(!text.equals("Default")){
+            bgAnimation.setVisibility(View.INVISIBLE);
+        }else{
+            bgAnimation.setVisibility(View.VISIBLE);
+        }
+
         final ImageView DP = findViewById(R.id.chatPageDp);
         attach=findViewById(R.id.imageView2g);
         name = findViewById(R.id.chatPageName);

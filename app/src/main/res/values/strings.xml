@@ -18,4 +18,13 @@
         <item>Public-join without asking</item>
     </string-array>
 
+    <array name="Theme">
+        <item>Default</item>
+        <item>Yellow</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>SkyBlue</item>
+        <item>Red</item>
+        <item>OceanBlue</item>
+    </array>
 </resources>

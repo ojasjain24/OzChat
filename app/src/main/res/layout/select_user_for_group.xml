@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/select_for_group"
-    android:background="@color/backGround"
+    android:background="?attr/backGround"
     android:layout_marginBottom="5dp"
     android:foreground="?selectableItemBackground"
     android:layout_width="match_parent"

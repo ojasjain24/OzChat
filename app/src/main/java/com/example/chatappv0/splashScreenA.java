@@ -2,7 +2,6 @@ package com.example.chatappv0;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -28,7 +26,7 @@ public class splashScreenA extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        logo=(ImageView) findViewById(R.id.logo_ecv);
+        logo=(ImageView) findViewById(R.id.logo_ss);
         AdRequest adRequest = new AdRequest.Builder().build();
         InterstitialAd.load(splashScreenA.this,"ca-app-pub-1155879823920026/1490522289", adRequest, new InterstitialAdLoadCallback() {
             @Override

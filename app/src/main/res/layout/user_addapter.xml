@@ -78,7 +78,7 @@
         android:layout_alignBottom="@+id/chat_profile_pic"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
-        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardBackgroundColor="#CEDCCA"
         android:visibility="gone"
         app:cardCornerRadius="100dp">
 

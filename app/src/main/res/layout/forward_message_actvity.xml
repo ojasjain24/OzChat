@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/backGround"
+    android:background="?attr/backGround"
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -26,7 +26,7 @@
         android:clickable="true"
         android:focusable="true"
         android:rotationY="180"
-        app:backgroundTint="@color/colorPrimaryDark"
+        app:backgroundTint="?attr/Tint"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

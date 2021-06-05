@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backGround"
+    android:background="?attr/backGround"
     tools:context=".profileActivity">
     <ScrollView
         android:id="@+id/scrollView2"
@@ -67,7 +67,7 @@
                 android:background="@drawable/btn_background"
                 android:text="Join"
                 android:textSize="24dp"
-                android:shadowColor="@color/colorAccent"
+                android:shadowColor="@color/text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"

@@ -6,7 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,10 +28,13 @@ public class loginActivity extends AppCompatActivity {
     private TextView username;
     private TextView password;
     private FirebaseAuth auth;
+    boolean doubleBackToExitPressedOnce = false;
     private TextView forgetPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Resources.Theme theme = super.getTheme();
+        new ThemeSetter().aSetTheme(this,theme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         username=findViewById(R.id.emailInput);
@@ -42,7 +48,6 @@ public class loginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                startActivity(new Intent(loginActivity.this,signupActivity.class));
-               finish();
            }
 
         });
@@ -153,5 +158,18 @@ public class loginActivity extends AppCompatActivity {
             }
         });
         alertDialog.show();
+    }
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            Intent a = new Intent(Intent.ACTION_MAIN);
+            a.addCategory(Intent.CATEGORY_HOME);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(a);
+            finishAffinity();
+        }
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+        new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
     }
 }

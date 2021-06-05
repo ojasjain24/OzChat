@@ -46,6 +46,7 @@
         android:layout_height="35dp"
         android:layout_marginLeft="20dp"
         android:background="@drawable/btn_background"
+        android:backgroundTint="?attr/BtnTint"
         android:text="open"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="@+id/imageView3"

@@ -8,7 +8,7 @@
     tools:context=".splashScreenA">
 
     <ImageView
-        android:id="@+id/logo_ecv"
+        android:id="@+id/logo_ss"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:contentDescription="Affix"

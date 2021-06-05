@@ -4,7 +4,7 @@
     android:id="@+id/chat_cardrga"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/backGround"
+    android:background="?attr/backGround"
     android:foreground="?selectableItemBackground">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -42,7 +42,7 @@
         android:layout_marginBottom="5dp"
         android:layout_toEndOf="@id/chat_profile_picrga"
         android:singleLine="true"
-        android:text="Hey there! I am new here Please help me in these things"
+        android:text="Well Hello There! I am Using Affix😁"
         android:textColor="#0D0B60" />
 
     <TextView
@@ -56,7 +56,7 @@
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="1dp"
         android:text="TextView"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/text"
         android:visibility="gone" />
 
     <View
@@ -78,7 +78,6 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/btn_background"
-        android:backgroundTint="@color/colorPrimaryDark"
         android:text="add" />
 
     <Button
@@ -90,7 +89,6 @@
         android:layout_alignBottom="@+id/button"
         android:layout_marginEnd="24dp"
         android:background="@drawable/cancel_btn"
-        android:backgroundTint="@color/colorAccent"
         android:backgroundTintMode="add"
         android:text="reject" />
 

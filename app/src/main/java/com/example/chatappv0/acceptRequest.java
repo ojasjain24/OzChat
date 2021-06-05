@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +29,8 @@ public class acceptRequest extends AppCompatActivity {
     private ImageView dp;
      @Override
      protected void onCreate(Bundle savedInstanceState) {
+         Resources.Theme theme = super.getTheme();
+         new ThemeSetter().aSetTheme(this,theme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accept_request);
          getSupportActionBar().setDisplayHomeAsUpEnabled(true);
