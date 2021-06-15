@@ -14,6 +14,7 @@ public class ThemeSetter extends AppCompatActivity {
         if(text.equals("Blue"))      { theme.applyStyle(R.style.Blue,true);}
         if(text.equals("SkyBlue"))   { theme.applyStyle(R.style.SkyBlue,true);}
         if(text.equals("Red"))       { theme.applyStyle(R.style.Red,true);}
+        if(text.equals("OccurYellow"))       { theme.applyStyle(R.style.OccurYellow,true);}
         if(text.equals("OceanBlue")) { theme.applyStyle(R.style.OceanBlue,true);}
     }
 }

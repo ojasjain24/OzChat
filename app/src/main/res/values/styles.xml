@@ -4,7 +4,7 @@
         <item name="colorPrimary">#78499a</item>
         <item name="colorPrimaryDark">#320360</item>
         <item name="colorAccent">#ca9bec</item>
-        <item name="backGround">#F8F0FD</item>
+        <item name="backGround">#FCF8FF</item>
         <item name="Tint">#78499a</item>
         <item name="bar">#935EBA</item>
         <item name="BtnTint">#538F4E</item>
@@ -25,10 +25,22 @@
     </style>
 
     <style name="Yellow" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">#D5B732</item>
+        <item name="colorPrimaryDark">#655616</item>
+        <item name="colorAccent">#EAC831</item>
+        <item name="backGround">#FFFEFB</item>
+        <item name="Tint">#DFBE2F</item>
+        <item name="bar">#EAC834</item>
+        <item name="BtnTint">#EAC834</item>
+        <item name="DarkMsgColor">#E6D483</item>
+        <item name="LightMsgColor">#EDE6C7</item>
+    </style>
+
+    <style name="OccurYellow" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#8E7B43</item>
         <item name="colorPrimaryDark">#49411A</item>
         <item name="colorAccent">#C3B174</item>
-        <item name="backGround">#FFFDF1</item>
+        <item name="backGround">#FFFEFA</item>
         <item name="Tint">#9A8D49</item>
         <item name="bar">#9A8955</item>
         <item name="BtnTint">#9A8D49</item>
@@ -51,32 +63,32 @@
     <style name="OceanBlue" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#499A80</item>
         <item name="colorPrimaryDark">#036046</item>
-        <item name="colorAccent">#9BECD9</item>
+        <item name="colorAccent">#9BECD5</item>
         <item name="backGround">#F6FFFC</item>
         <item name="Tint">#499A80</item>
         <item name="bar">#54AA8C</item>
         <item name="BtnTint">#499A80</item>
-        <item name="DarkMsgColor">#92BAB2</item>
-        <item name="LightMsgColor">#CADCDA</item>
+        <item name="DarkMsgColor">#92BAAD</item>
+        <item name="LightMsgColor">#CADCD5</item>
     </style>
 
     <style name="SkyBlue" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">#58AFAF</item>
-        <item name="colorPrimaryDark">#046A6A</item>
-        <item name="colorAccent">#6A9E9E</item>
+        <item name="colorPrimary">#589BAF</item>
+        <item name="colorPrimaryDark">#0F8398</item>
+        <item name="colorAccent">#6A969E</item>
         <item name="backGround">#F6FEFF</item>
-        <item name="Tint">#59B6AC</item>
-        <item name="bar">#54AAA7</item>
-        <item name="BtnTint">#59B6AC</item>
-        <item name="DarkMsgColor">#92B9BA</item>
-        <item name="LightMsgColor">#CADBDC</item>
+        <item name="Tint">#599CB6</item>
+        <item name="bar">#548FAA</item>
+        <item name="BtnTint">#599CB6</item>
+        <item name="DarkMsgColor">#92B2BA</item>
+        <item name="LightMsgColor">#CAD8DC</item>
     </style>
 
     <style name="Red" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#9A4949</item>
         <item name="colorPrimaryDark">#600303</item>
         <item name="colorAccent">#EC9B9B</item>
-        <item name="backGround">#FDF0F0</item>
+        <item name="backGround">#FFF7F7</item>
         <item name="Tint">#9A4949</item>
         <item name="bar">#AA5454</item>
         <item name="BtnTint">#9A4949</item>
