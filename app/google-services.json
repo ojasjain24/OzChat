@@ -8,6 +8,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:967405985323:android:ebd2a012956f57f98dd46e",
+        "android_client_info": {
+          "package_name": "com.affixchat.chatappv0"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "967405985323-6lbgj49kva6ctirjc4g4bku1jqhp50dg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCz6mo896VKEU7HBsvOWmS5V_mfFaea9l4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "967405985323-6lbgj49kva6ctirjc4g4bku1jqhp50dg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:967405985323:android:a1e18cfc660415cc8dd46e",
         "android_client_info": {
           "package_name": "com.example.chatappv0"
@@ -41,7 +70,8 @@
             }
           ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-1155879823920026~6202690891"
     }
   ],
   "configuration_version": "1"

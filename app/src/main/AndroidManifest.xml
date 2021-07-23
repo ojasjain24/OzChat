@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.chatappv0">
+    package="com.affixchat.chatappv0">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
 
     <application
@@ -18,67 +19,59 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
+        <activity android:name=".OtherApps"></activity>
+        <activity
+            android:name=".GroupSettings"
+            android:parentActivityName=".groupVisit" />
         <activity android:name=".groupMeetingActivity" />
-
         <activity android:name=".meetingActivity" />
-
         <activity
             android:name=".imageViewActivity"
             android:hardwareAccelerated="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
-
-        <activity android:name=".AboutUsActivity"
-            android:parentActivityName=".MainActivity"/>
-
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".AboutUsActivity"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".forwardMessage" />
-
         <activity android:name=".forwardMessageGrp" />
-
         <activity android:name=".addMember" />
-
         <activity android:name=".groupVisit" />
-
         <activity android:name=".profileVisit" />
-
         <activity
             android:name=".groupChat"
             android:hardwareAccelerated="false" />
-
-        <activity android:name=".sendRequestToJoinGroup"
+        <activity
+            android:name=".sendRequestToJoinGroup"
             android:parentActivityName=".allGroupActivity" />
-
-        <activity android:name=".allGroupActivity"
+        <activity
+            android:name=".allGroupActivity"
             android:parentActivityName=".MainActivity" />
-
         <activity android:name=".groupNameActivity" />
-
-        <activity android:name=".displayUserForGroup"
+        <activity
+            android:name=".displayUserForGroup"
             android:parentActivityName=".MainActivity" />
-
-        <activity android:name=".acceptRequest"
-            android:parentActivityName=".allRequest"/>
-
-        <activity android:name=".allRequest"
+        <activity
+            android:name=".acceptRequest"
+            android:parentActivityName=".allRequest" />
+        <activity
+            android:name=".allRequest"
             android:parentActivityName=".MainActivity" />
-
-        <activity android:name=".sendRequest"
-            android:parentActivityName=".allusersActivity"/>
-
+        <activity
+            android:name=".sendRequest"
+            android:parentActivityName=".allusersActivity" />
         <activity
             android:name=".chatPage"
             android:hardwareAccelerated="false" />
-
-        <activity android:name=".allusersActivity"
+        <activity
+            android:name=".allusersActivity"
             android:parentActivityName=".MainActivity" />
-
         <activity android:name=".MainActivity" />
-
-        <activity android:name=".profileActivity"
+        <activity
+            android:name=".profileActivity"
             android:parentActivityName=".MainActivity" />
-
-        <activity android:name=".signupActivity"
-            android:parentActivityName=".loginActivity"/>
-
+        <activity
+            android:name=".signupActivity"
+            android:parentActivityName=".loginActivity" />
         <activity android:name=".loginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -86,7 +79,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".splashScreenA"
             android:theme="@style/Theme.AppCompat.NoActionBar">
