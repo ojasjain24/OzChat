@@ -1,6 +1,7 @@
 package com.affixchat.chatappv0.Adapter;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -36,20 +37,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
 
 public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
@@ -58,8 +48,8 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     String userId;
     TextView nameText;
     ArrayList<String> imageTypes = new ArrayList<>();
-    ArrayList<String> videoTypes = new ArrayList<>();
-    ArrayList<String> audioTypes = new ArrayList<>();
+//    ArrayList<String> videoTypes = new ArrayList<>();
+//    ArrayList<String> audioTypes = new ArrayList<>();
     ImageView dp, delete, forward,copy, videoCallBtn, callBtn;
     ClipboardManager clipboardManager;
     int count=0;
@@ -74,9 +64,9 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public chatAdapter() {
     }
 
-    public chatAdapter(Context context, ArrayList<chatModel> mChat,String userId) {
+    public chatAdapter(Context context ,String userId) {
         this.context = context;
-        this.mChat = mChat;
+        this.mChat = new ArrayList<>();
         this.userId=userId;
     }
 
@@ -93,9 +83,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return new imgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.left_img_adapter, parent, false));
         }else if(viewType==imgRight){
             return new imgHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_img_adapter, parent, false));
-        }
-
-        else{
+        } else{
             return new fileHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.right_file_adapter, parent, false));
         }
     }
@@ -103,6 +91,14 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
+        nameText = ((chatPage) context).findViewById(R.id.name);
+        delete=((chatPage) context).findViewById(R.id.deleteIcon);
+        forward=((chatPage) context).findViewById(R.id.forwardIcon);
+        dp = ((chatPage) context).findViewById(R.id.DP);
+        copy=((chatPage) context).findViewById(R.id.copyIcon);
+        callBtn = ((chatPage) context).findViewById(R.id.call);
+        videoCallBtn = ((chatPage) context).findViewById(R.id.videoCall);
+
         final chatModel chat = mChat.get(position);
         if (getItemViewType(position) == msgRight|| getItemViewType(position) == msgLeft) {
             final msgHolder msgholder = (msgHolder) holder;
@@ -131,57 +127,54 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                     msgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
                     if(list.size()!=0) {
-                        nameText = ((chatPage) context).findViewById(R.id.name);
                         nameText.setVisibility(View.INVISIBLE);
-                        dp = ((chatPage) context).findViewById(R.id.DP);
                         dp.setVisibility(View.INVISIBLE);
-                        delete=((chatPage) context).findViewById(R.id.deleteIcon);
                         delete.setVisibility(View.VISIBLE);
-                        forward=((chatPage) context).findViewById(R.id.forwardIcon);
                         forward.setVisibility(View.VISIBLE);
-                        copy=((chatPage) context).findViewById(R.id.copyIcon);
-                        videoCallBtn = ((chatPage) context).findViewById(R.id.videoCall);
                         videoCallBtn.setVisibility(View.INVISIBLE);
-                        callBtn = ((chatPage) context).findViewById(R.id.call);
                         callBtn.setVisibility(View.INVISIBLE);
-
                         if(count==0) {
                             copy.setVisibility(View.VISIBLE);
                         }
                         delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                final ProgressDialog pd= new ProgressDialog(context);
+                                pd.setMessage("deleting");
                                 new AlertDialog.Builder(context)
                                     .setTitle("Delete Messages?")
                                     .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
                                     .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
+                                           pd.show();
                                             for(int i=list.size()-1;i>=0;i--) {
                                                 if (list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(i).getKey());
                                                     reference.setValue(null);
-                                                    nameText.setVisibility(View.VISIBLE);
-                                                    dp.setVisibility(View.VISIBLE);
-                                                    videoCallBtn.setVisibility(View.VISIBLE);
-                                                    callBtn.setVisibility(View.VISIBLE);
-                                                    delete.setVisibility(View.INVISIBLE);
-                                                    forward.setVisibility(View.INVISIBLE);
-                                                    copy.setVisibility(View.INVISIBLE);
+                                                    mChat.remove(list.get(i));
+                                                    notifyDataSetChanged();
                                                 }else {
                                                     Toast.makeText(context, "You can not delete messages sent by others", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
+                                            pd.dismiss();
                                         }
                                     })
                                     .setNegativeButton(android.R.string.no, null)
                                     .setIcon(R.drawable.logo)
                                     .show();
+                                nameText.setVisibility(View.VISIBLE);
+                                dp.setVisibility(View.VISIBLE);
+                                videoCallBtn.setVisibility(View.VISIBLE);
+                                callBtn.setVisibility(View.VISIBLE);
+                                delete.setVisibility(View.INVISIBLE);
+                                forward.setVisibility(View.INVISIBLE);
+                                copy.setVisibility(View.INVISIBLE);
                             }
                         });
 
-
                         clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                        copy.setOnClickListener(new View.OnClickListener() {
+                        copy.setOnClickListener( new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 String data="";
@@ -197,6 +190,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 context.startActivity(i);
                             }
                         });
+
                         forward.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -208,19 +202,12 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             }
                         });
                     }else{
-                        nameText = ((chatPage) context).findViewById(R.id.name);
                         nameText.setVisibility(View.VISIBLE);
-                        dp = ((chatPage) context).findViewById(R.id.DP);
                         dp.setVisibility(View.VISIBLE);
-                        videoCallBtn = ((chatPage) context).findViewById(R.id.videoCall);
                         videoCallBtn.setVisibility(View.VISIBLE);
-                        callBtn = ((chatPage) context).findViewById(R.id.call);
                         callBtn.setVisibility(View.VISIBLE);
-                        delete=((chatPage) context).findViewById(R.id.deleteIcon);
                         delete.setVisibility(View.INVISIBLE);
-                        forward=((chatPage) context).findViewById(R.id.forwardIcon);
                         forward.setVisibility(View.INVISIBLE);
-                        copy=((chatPage) context).findViewById(R.id.copyIcon);
                         copy.setVisibility(View.INVISIBLE);
                     }
                     return false;
@@ -274,34 +261,32 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                     imgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
                     if(list.size()!=0) {
-                        nameText = ((chatPage) context).findViewById(R.id.name);
                         nameText.setVisibility(View.INVISIBLE);
-                        dp = ((chatPage) context).findViewById(R.id.DP);
                         dp.setVisibility(View.INVISIBLE);
-                        videoCallBtn = ((chatPage) context).findViewById(R.id.videoCall);
                         videoCallBtn.setVisibility(View.INVISIBLE);
-                        callBtn = ((chatPage) context).findViewById(R.id.call);
                         callBtn.setVisibility(View.INVISIBLE);
-                        delete=((chatPage) context).findViewById(R.id.deleteIcon);
                         delete.setVisibility(View.VISIBLE);
-                        forward=((chatPage) context).findViewById(R.id.forwardIcon);
                         forward.setVisibility(View.VISIBLE);
-                        copy=((chatPage) context).findViewById(R.id.copyIcon);
                         copy.setVisibility(View.GONE);
                         Log.d("ojaslistoutside",list.size()+"");
                         final Boolean[] ok = {false};
                         delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                final ProgressDialog pd= new ProgressDialog(context);
+                                pd.setMessage("deleting");
                                 new AlertDialog.Builder(context)
                                         .setTitle("Delete Messages?")
                                         .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
                                         .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
+                                                pd.show();
                                                 for(int i=list.size()-1;i>=0;i--) {
                                                     if (list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(i).getKey());
                                                         reference.setValue(null);
+                                                        mChat.remove(list.get(i));
+                                                        notifyDataSetChanged();
                                                         nameText.setVisibility(View.VISIBLE);
                                                         dp.setVisibility(View.VISIBLE);
                                                         videoCallBtn.setVisibility(View.VISIBLE);
@@ -313,6 +298,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                                         Toast.makeText(context, "You can not delete messages sent by others", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
+                                                pd.dismiss();
                                             }
                                         })
                                         .setNegativeButton(android.R.string.no, null)
@@ -332,19 +318,12 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             }
                         });
                     }else{
-                        nameText = ((chatPage) context).findViewById(R.id.name);
                         nameText.setVisibility(View.VISIBLE);
-                        dp = ((chatPage) context).findViewById(R.id.DP);
                         dp.setVisibility(View.VISIBLE);
-                        videoCallBtn = ((chatPage) context).findViewById(R.id.videoCall);
                         videoCallBtn.setVisibility(View.VISIBLE);
-                        callBtn = ((chatPage) context).findViewById(R.id.call);
                         callBtn.setVisibility(View.VISIBLE);
-                        delete=((chatPage) context).findViewById(R.id.deleteIcon);
                         delete.setVisibility(View.INVISIBLE);
-                        forward=((chatPage) context).findViewById(R.id.forwardIcon);
                         forward.setVisibility(View.INVISIBLE);
-                        copy=((chatPage) context).findViewById(R.id.copyIcon);
                         copy.setVisibility(View.INVISIBLE);
                     }
                     return false;
@@ -389,34 +368,31 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                     fileholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
                     if(list.size()!=0) {
-                        nameText = ((chatPage) context).findViewById(R.id.name);
                         nameText.setVisibility(View.INVISIBLE);
-                        dp = ((chatPage) context).findViewById(R.id.DP);
                         dp.setVisibility(View.INVISIBLE);
-                        videoCallBtn = ((chatPage) context).findViewById(R.id.videoCall);
                         videoCallBtn.setVisibility(View.INVISIBLE);
-                        callBtn = ((chatPage) context).findViewById(R.id.call);
                         callBtn.setVisibility(View.INVISIBLE);
-                        delete=((chatPage) context).findViewById(R.id.deleteIcon);
                         delete.setVisibility(View.VISIBLE);
-                        forward=((chatPage) context).findViewById(R.id.forwardIcon);
                         forward.setVisibility(View.VISIBLE);
-                        copy=((chatPage) context).findViewById(R.id.copyIcon);
                         copy.setVisibility(View.GONE);
-                        Log.d("ojaslistoutside",list.size()+"");
                         final Boolean[] ok = {false};
                         delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                final ProgressDialog pd= new ProgressDialog(context);
+                                pd.setMessage("deleting");
                                 new AlertDialog.Builder(context)
                                     .setTitle("Delete Messages?")
                                     .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
                                     .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
+                                            pd.show();
                                             for(int i=list.size()-1;i>=0;i--) {
                                                 if (list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference("chats").child(list.get(i).getKey());
                                                     reference.setValue(null);
+                                                    mChat.remove(list.get(i));
+                                                    notifyDataSetChanged();
                                                     nameText.setVisibility(View.VISIBLE);
                                                     dp.setVisibility(View.VISIBLE);
                                                     videoCallBtn.setVisibility(View.VISIBLE);
@@ -428,6 +404,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                                     Toast.makeText(context, "You can not delete messages sent by others", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
+                                            pd.dismiss();
                                         }
                                     })
                                     .setNegativeButton(android.R.string.no, null)
@@ -447,19 +424,12 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             }
                         });
                     }else{
-                        nameText = ((chatPage) context).findViewById(R.id.name);
                         nameText.setVisibility(View.VISIBLE);
-                        dp = ((chatPage) context).findViewById(R.id.DP);
                         dp.setVisibility(View.VISIBLE);
-                        videoCallBtn = ((chatPage) context).findViewById(R.id.videoCall);
                         videoCallBtn.setVisibility(View.VISIBLE);
-                        callBtn = ((chatPage) context).findViewById(R.id.call);
                         callBtn.setVisibility(View.VISIBLE);
-                        delete=((chatPage) context).findViewById(R.id.deleteIcon);
                         delete.setVisibility(View.INVISIBLE);
-                        forward=((chatPage) context).findViewById(R.id.forwardIcon);
                         forward.setVisibility(View.INVISIBLE);
-                        copy=((chatPage) context).findViewById(R.id.copyIcon);
                         copy.setVisibility(View.INVISIBLE);
                     }
                     return false;
@@ -504,7 +474,6 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             layout=itemView.findViewById(R.id.background);
         }
     }
-
     public static class imgHolder extends RecyclerView.ViewHolder {
         TextView time;
         ConstraintLayout border;
@@ -520,7 +489,7 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
     @Override
     public int getItemViewType(int position) {
-//        //ArrayLists
+        //ArrayLists
         imageTypes.add("bmp");
         imageTypes.add("gif");
         imageTypes.add("jpg");
@@ -555,6 +524,10 @@ public class chatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else {
             return msgLeft;
         }
+    }
+    public void addMessage(chatModel model){
+        mChat.add(model);
+        notifyDataSetChanged();
     }
 
 }

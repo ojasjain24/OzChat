@@ -55,9 +55,6 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final Holder holder, final int position) {
-
-
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
         reference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("SetTextI18n")
@@ -112,6 +109,14 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
                                         i.putExtra("type",model.getType());
                                         i.putExtra("host",model.getHostUid());
                                         i.putExtra("partner", model.getPartnerUid());
+
+                                        i.putExtra("name",usersModelArrayList.get(position).getUsername());
+                                        i.putExtra("dp",usersModelArrayList.get(position).getImageurl());
+                                        i.putExtra("country",usersModelArrayList.get(position).getCountry());
+                                        i.putExtra("gender",usersModelArrayList.get(position).getGender());
+                                        i.putExtra("lang",usersModelArrayList.get(position).getLanguage());
+                                        i.putExtra("status",usersModelArrayList.get(position).getStatus());
+                                        i.putExtra("prof",usersModelArrayList.get(position).getProfession());
                                         Log.d("ojasaccepted","in");
                                         context.startActivity(i);
                                     }
@@ -130,6 +135,13 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
                         Intent i = new Intent(context, chatPage.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         i.putExtra("userId", userid.getUid());
+                        i.putExtra("name",usersModelArrayList.get(position).getUsername());
+                        i.putExtra("dp",usersModelArrayList.get(position).getImageurl());
+                        i.putExtra("country",usersModelArrayList.get(position).getCountry());
+                        i.putExtra("gender",usersModelArrayList.get(position).getGender());
+                        i.putExtra("lang",usersModelArrayList.get(position).getLanguage());
+                        i.putExtra("status",usersModelArrayList.get(position).getStatus());
+                        i.putExtra("prof",usersModelArrayList.get(position).getProfession());
                         context.startActivity(i);
                         Log.d("ojasaccepted","out");
                     }
@@ -170,6 +182,16 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
 
             }
         });
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override

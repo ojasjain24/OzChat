@@ -1,9 +1,9 @@
 package com.affixchat.chatappv0;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -22,24 +22,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.airbnb.lottie.LottieAnimationView;
 import com.affixchat.chatappv0.Adapter.chatAdapter;
 import com.affixchat.chatappv0.Models.chatModel;
 import com.affixchat.chatappv0.Models.usersModel;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,7 +42,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -58,7 +49,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -82,17 +72,17 @@ public class chatPage extends AppCompatActivity {
     private Uri imageUri;
     private ImageView DP;
     private Cipher cipher, decipher;
-    private AdView mAdView;
     private Boolean isuploading = false;
     private Boolean inActivity = false;
     private SecretKeySpec secretKeySpec;
     private final byte[] encryptionKey ={5,15,-65,-56,3,45,-96,37,85,64,85,-92,-12,-5,64,-50};
-    static String LastMessageTime;
+    chatAdapter adapter;
     ImageView delete, copy,forward;
 
     public chatPage(){
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Resources.Theme theme = super.getTheme();
@@ -110,60 +100,16 @@ public class chatPage extends AppCompatActivity {
             e.printStackTrace();
         }
         secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
         setContentView(R.layout.activity_chat_page);
-        mAdView = findViewById(R.id.adView2);
-        final AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        mAdView.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-            }
 
-            @Override
-            public void onAdFailedToLoad(LoadAdError adError) {
-                // Code to be executed when an ad request fails.
-                super.onAdFailedToLoad(adError);
-                mAdView.loadAd(adRequest);
-            }
-
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-            }
-
-            @Override
-            public void onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-            }
-//
-//            @Override
-//            public void onAdLeftApplication() {
-//                // Code to be executed when the user has left the app.
-//            }
-
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when the user is about to return
-                // to the app after tapping on an ad.
-            }
-        });
-
-
-        SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        String text = sharedPreferences.getString("Theme", "Default");
-        LottieAnimationView bgAnimation = findViewById(R.id.bgAnimation);
-        if(!text.equals("Default")){
-            bgAnimation.setVisibility(View.INVISIBLE);
-        }else{
-            bgAnimation.setVisibility(View.VISIBLE);
-        }
+//        SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+//        String text = sharedPreferences.getString("Theme", "Default");
+//        LottieAnimationView bgAnimation = findViewById(R.id.bgAnimation);
+//        if(!text.equals("Default")){
+//            bgAnimation.setVisibility(View.INVISIBLE);
+//        }else{
+//            bgAnimation.setVisibility(View.VISIBLE);
+//        }
 
         delete=findViewById(R.id.deleteIcon);
         copy=findViewById(R.id.copyIcon);
@@ -278,58 +224,39 @@ public class chatPage extends AppCompatActivity {
         final TextView message = findViewById(R.id.message);
         ImageView send = findViewById(R.id.sendMSG);
         user= FirebaseAuth.getInstance().getCurrentUser();
-
-        reference = FirebaseDatabase.getInstance().getReference("users").child(userId);
-        reference.addValueEventListener(new ValueEventListener() {
-            @SuppressLint("SetTextI18n")
+        readMsg(user.getUid(),userId);
+        name.setText((intent.getStringExtra("name")).substring(0,1).toUpperCase()+(intent.getStringExtra("name")).substring(1));
+        if (intent.getStringExtra("dp") != null) {
+            Picasso.get().load(Uri.parse(intent.getStringExtra("dp"))).into(DP);
+        }else{
+            DP.setImageResource(R.drawable.ic_launcher_foreground);
+        }
+        name.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    final usersModel usermodel = dataSnapshot.getValue(usersModel.class);
-                    FirebaseUser firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
-                    if(usermodel.getUserid().equals(firebaseUser.getUid())){
-                        name.setText("Me");
-                    }else{
-                        name.setText((usermodel.getUsername()).substring(0,1).toUpperCase()+(usermodel.getUsername()).substring(1));
-                    }
-                    if (usermodel.getImageurl() != null) {
-                        Picasso.get().load(Uri.parse(usermodel.getImageurl())).into(DP);
-                    }else{
-                        DP.setImageResource(R.drawable.ic_launcher_foreground);
-                    }
-                    name.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(chatPage.this,profileVisit.class);
-                            i.putExtra("name",usermodel.getUsername());
-                            i.putExtra("status",usermodel.getStatus());
-                            i.putExtra("pic",usermodel.getImageurl());
-                            i.putExtra("gender",usermodel.getGender());
-                            i.putExtra("profession",usermodel.getProfession());
-                            i.putExtra("country",usermodel.getCountry());
-                            i.putExtra("language",usermodel.getLanguage());
-                            startActivity(i);
-                        }
-                    });
-                    DP.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(chatPage.this,profileVisit.class);
-                            i.putExtra("name",usermodel.getUsername());
-                            i.putExtra("status",usermodel.getStatus());
-                            i.putExtra("pic",usermodel.getImageurl());
-                            i.putExtra("gender",usermodel.getGender());
-                            i.putExtra("profession",usermodel.getProfession());
-                            i.putExtra("country",usermodel.getCountry());
-                            i.putExtra("language",usermodel.getLanguage());
-                            startActivity(i);
-                        }
-                    });
-                }
-                readMsg(user.getUid(),userId);
+            public void onClick(View v) {
+                Intent i = new Intent(chatPage.this,profileVisit.class);
+                i.putExtra("name",intent.getStringExtra("name"));
+                i.putExtra("status",intent.getStringExtra("status"));
+                i.putExtra("pic",intent.getStringExtra("dp"));
+                i.putExtra("gender",intent.getStringExtra("gender"));
+                i.putExtra("profession",intent.getStringExtra("prof"));
+                i.putExtra("country",intent.getStringExtra("country"));
+                i.putExtra("language",intent.getStringExtra("lang"));
+                startActivity(i);
             }
+        });
+        DP.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onClick(View v) {
+                Intent i = new Intent(chatPage.this,profileVisit.class);
+                i.putExtra("name",intent.getStringExtra("name"));
+                i.putExtra("status",intent.getStringExtra("status"));
+                i.putExtra("pic",intent.getStringExtra("dp"));
+                i.putExtra("gender",intent.getStringExtra("gender"));
+                i.putExtra("profession",intent.getStringExtra("prof"));
+                i.putExtra("country",intent.getStringExtra("country"));
+                i.putExtra("language",intent.getStringExtra("lang"));
+                startActivity(i);
             }
         });
 
@@ -341,8 +268,8 @@ public class chatPage extends AppCompatActivity {
                     Toast.makeText(chatPage.this, "no text entered", Toast.LENGTH_SHORT).show();
                 }else {
                     sendMsg(user.getUid(),userId,msg);
+                    message.setText("");
                 }
-                message.setText("");
             }
         });
         attach.setOnClickListener(new View.OnClickListener() {
@@ -351,6 +278,11 @@ public class chatPage extends AppCompatActivity {
                 openFile();
             }
         });
+        adapter = new chatAdapter(chatPage.this, getIntent().getStringExtra("userId"));
+        LinearLayoutManager manager =new LinearLayoutManager(getApplicationContext());
+        manager.setStackFromEnd(true);
+        messageList.setLayoutManager(manager);
+        messageList.setAdapter(adapter);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -391,9 +323,6 @@ public class chatPage extends AppCompatActivity {
     }
 
     private void sendMsg(String me, String receiver, String message){
-        final ProgressDialog pd= new ProgressDialog(this);
-        pd.setMessage("uploading");
-        pd.show();
         name.setVisibility(View.VISIBLE);
         DP.setVisibility(View.VISIBLE);
         forward.setVisibility(View.INVISIBLE);
@@ -410,25 +339,30 @@ public class chatPage extends AppCompatActivity {
         hashMap.put("isseen","false");
         hashMap.put("key",fileRef.getKey());
         fileRef.setValue(hashMap);
-        pd.dismiss();
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(me).child("friends").child(receiver);
+        HashMap<String , Object> hashMap1 = new HashMap<>();
+        hashMap1.put("lastmsg",""+System.currentTimeMillis());
+        databaseReference.updateChildren(hashMap1);
+
+        DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("users").child(receiver).child("friends").child(me);
+        HashMap<String , Object> map = new HashMap<>();
+        map.put("lastmsg",""+System.currentTimeMillis());
+        databaseReference1.updateChildren(map);
     }
 
     private void readMsg(final String myuid, final String receiveruid){
-        chatList = new ArrayList<>();
         reference = FirebaseDatabase.getInstance().getReference().child("chats");
         Query query= (reference.orderByChild("time"));
-        query.addValueEventListener(new ValueEventListener() {
+        query.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                chatList.clear();
-                for(DataSnapshot Snapshot : snapshot.getChildren()) {
-                    chatModel chat = Snapshot.getValue(chatModel.class);
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                chatModel chat = snapshot.getValue(chatModel.class);
                     if (chat != null) {
                         if ((chat.getReceiverUid().equals(myuid)&&chat.getSenderUid().equals(receiveruid))||(chat.getReceiverUid().equals(receiveruid)&&
                                 chat.getSenderUid().equals(myuid))) {
                             try {
-                                chatList.add(new chatModel(chat.getSenderUid(),chat.getReceiverUid(),AESDecryptionMethod(chat.getMessage()),chat.getIsThisFile(),chat.getTime(),chat.getType(),chat.getIsseen(),chat.getKey()));
-//                                String fileType = MimeTypeMap.getFileExtensionFromUrl(AESDecryptionMethod(chat.getMessage()));
+                                adapter.addMessage(new chatModel(chat.getSenderUid(),chat.getReceiverUid(),AESDecryptionMethod(chat.getMessage()),chat.getIsThisFile(),chat.getTime(),chat.getType(),chat.getIsseen(),chat.getKey()));
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
@@ -436,36 +370,79 @@ public class chatPage extends AppCompatActivity {
                         if ((chat.getReceiverUid().equals(myuid)&&chat.getSenderUid().equals(receiveruid))&& inActivity){
                             HashMap<String,Object> hashMap = new HashMap<>();
                             hashMap.put("isseen","true");
-                            Snapshot.getRef().updateChildren(hashMap);
+                            snapshot.getRef().updateChildren(hashMap);
                         }
                     }
-                }
-                if(chatList.size()!=0){
-                    LastMessageTime = chatList.get(chatList.size()-1).getTime();
-                }else{
-                    LastMessageTime = "0";
-                }
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(myuid).child("friends").child(receiveruid);
-                HashMap<String , Object> hashMap = new HashMap<>();
-                hashMap.put("lastmsg",LastMessageTime);
-                databaseReference.updateChildren(hashMap);
-
-                DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("users").child(receiveruid).child("friends").child(myuid);
-                HashMap<String , Object> map = new HashMap<>();
-                map.put("lastmsg",LastMessageTime);
-                databaseReference1.updateChildren(map);
-
-                chatAdapter adapter = new chatAdapter(chatPage.this, chatList, getIntent().getStringExtra("userId"));
-                LinearLayoutManager manager =new LinearLayoutManager(getApplicationContext());
-                manager.setStackFromEnd(true);
-                messageList.setLayoutManager(manager);
-                messageList.setAdapter(adapter);
+                    messageList.smoothScrollToPosition(adapter.getItemCount());
             }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
+
     }
+
+//        private void readMsgz(final String myuid, final String receiveruid){
+//        chatList = new ArrayList<>();
+//        reference = FirebaseDatabase.getInstance().getReference().child("chats");
+//        Query query= (reference.orderByChild("time"));
+//        query.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                chatList.clear();
+//                for(DataSnapshot Snapshot : snapshot.getChildren()) {
+//                    chatModel chat = Snapshot.getValue(chatModel.class);
+//                    if (chat != null) {
+//                        if ((chat.getReceiverUid().equals(myuid)&&chat.getSenderUid().equals(receiveruid))||(chat.getReceiverUid().equals(receiveruid)&&
+//                                chat.getSenderUid().equals(myuid))) {
+//                            try {
+//                                chatList.add(new chatModel(chat.getSenderUid(),chat.getReceiverUid(),AESDecryptionMethod(chat.getMessage()),chat.getIsThisFile(),chat.getTime(),chat.getType(),chat.getIsseen(),chat.getKey()));
+////                                String fileType = MimeTypeMap.getFileExtensionFromUrl(AESDecryptionMethod(chat.getMessage()));
+//                            } catch (UnsupportedEncodingException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                        if ((chat.getReceiverUid().equals(myuid)&&chat.getSenderUid().equals(receiveruid))&& inActivity){
+//                            HashMap<String,Object> hashMap = new HashMap<>();
+//                            hashMap.put("isseen","true");
+//                            Snapshot.getRef().updateChildren(hashMap);
+//                        }
+//                    }
+//                }
+//                if(chatList.size()!=0){
+//                    LastMessageTime = chatList.get(chatList.size()-1).getTime();
+//                }else{
+//                    LastMessageTime = "0";
+//                }
+//
+//                chatAdapter adapter = new chatAdapter(chatPage.this, getIntent().getStringExtra("userId"));
+//                LinearLayoutManager manager =new LinearLayoutManager(getApplicationContext());
+//                manager.setStackFromEnd(true);
+//                messageList.setLayoutManager(manager);
+//                messageList.setAdapter(adapter);
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//            }
+//        });
+//    }
 
     //files sending
     private void sendFile(String me, String receiver, String fileAddr){
@@ -485,6 +462,16 @@ public class chatPage extends AppCompatActivity {
         hashMap.put("isseen","false");
         hashMap.put("key",reference.getKey());
         reference.setValue(hashMap);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(me).child("friends").child(receiver);
+        HashMap<String , Object> hashMap1 = new HashMap<>();
+        hashMap1.put("lastmsg",""+System.currentTimeMillis());
+        databaseReference.updateChildren(hashMap1);
+
+        DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("users").child(receiver).child("friends").child(me);
+        HashMap<String , Object> map = new HashMap<>();
+        map.put("lastmsg",""+System.currentTimeMillis());
+        databaseReference1.updateChildren(map);
     }
 
     private void uploadImage(){
@@ -616,9 +603,6 @@ private void openFile() {
         super.onBackPressed();
         if (!isuploading) {
             inActivity=false;
-            finishAffinity();
-            Intent intent = new Intent(chatPage.this, MainActivity.class);
-            startActivity(intent);
         }else{
             Toast.makeText(this, "Please wait until file gets uploaded", Toast.LENGTH_SHORT).show();
         }

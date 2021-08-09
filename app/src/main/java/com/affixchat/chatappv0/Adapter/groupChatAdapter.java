@@ -1,6 +1,7 @@
 package com.affixchat.chatappv0.Adapter;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -27,6 +28,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.affixchat.chatappv0.Models.chatModel;
 import com.affixchat.chatappv0.Models.groupChatModel;
 import com.affixchat.chatappv0.Models.usersModel;
 import com.affixchat.chatappv0.R;
@@ -76,9 +78,9 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public groupChatAdapter() {
     }
 
-    public groupChatAdapter(Context context, ArrayList<groupChatModel> mChat,String nodeId) {
+    public groupChatAdapter(Context context,String nodeId) {
         this.context = context;
-        this.mChat = mChat;
+        this.mChat = new ArrayList<>();
         this.nodeId=nodeId;
     }
 
@@ -106,12 +108,18 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         final groupChatModel chat = mChat.get(position);
+        nameText = ((groupChat) context).findViewById(R.id.chatPageName);
+        dp = ((groupChat) context).findViewById(R.id.chatPageDp);
+        delete=((groupChat) context).findViewById(R.id.deleteIcong);
+        forward=((groupChat) context).findViewById(R.id.forwardIcong);
+        videoCallBtn = ((groupChat) context).findViewById(R.id.videoCall);
+        callBtn = ((groupChat) context).findViewById(R.id.call);
+        copy=((groupChat) context).findViewById(R.id.copyIcong);
+
         try {
             cipher = Cipher.getInstance("AES");
             decipher = Cipher.getInstance("AES");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
         }
         secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
@@ -215,17 +223,10 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
                     msgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
                     if(list.size()!=0) {
-                        nameText = ((groupChat) context).findViewById(R.id.chatPageName);
-                        nameText.setVisibility(View.INVISIBLE);
-                        dp = ((groupChat) context).findViewById(R.id.chatPageDp);
                         dp.setVisibility(View.INVISIBLE);
-                        delete=((groupChat) context).findViewById(R.id.deleteIcong);
+                        nameText.setVisibility(View.INVISIBLE);
                         delete.setVisibility(View.VISIBLE);
-                        forward=((groupChat) context).findViewById(R.id.forwardIcong);
                         forward.setVisibility(View.VISIBLE);
-                        copy=((groupChat) context).findViewById(R.id.copyIcong);
-                        videoCallBtn = ((groupChat) context).findViewById(R.id.videoCall);
-                        callBtn = ((groupChat) context).findViewById(R.id.call);
                         videoCallBtn.setVisibility(View.INVISIBLE);
                         callBtn.setVisibility(View.INVISIBLE);
                         if(count==0) {
@@ -234,15 +235,20 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                final ProgressDialog pd= new ProgressDialog(context);
+                                pd.setMessage("deleting");
                                 new AlertDialog.Builder(context)
                                 .setTitle("Delete Messages?")
                                 .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
                                 .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
+                                        pd.show();
                                         for(int i=list.size()-1;i>=0;i--) {
                                             if (list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                 final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").child(list.get(i).getKey());
                                                 reference.setValue(null);
+                                                mChat.remove(list.get(i));
+                                                notifyDataSetChanged();
                                                 nameText.setVisibility(View.VISIBLE);
                                                 dp.setVisibility(View.VISIBLE);
                                                 delete.setVisibility(View.INVISIBLE);
@@ -254,6 +260,7 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                                 Toast.makeText(context, "You can not delete messages sent by others", Toast.LENGTH_SHORT).show();
                                             }
                                         }
+                                        pd.dismiss();
                                     }
                                 })
                                 .setNegativeButton(android.R.string.no, null)
@@ -290,18 +297,11 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             }
                         });
                     }else{
-                        nameText = ((groupChat) context).findViewById(R.id.chatPageName);
                         nameText.setVisibility(View.VISIBLE);
-                        dp = ((groupChat) context).findViewById(R.id.chatPageDp);
                         dp.setVisibility(View.VISIBLE);
-                        delete=((groupChat) context).findViewById(R.id.deleteIcong);
                         delete.setVisibility(View.INVISIBLE);
-                        forward=((groupChat) context).findViewById(R.id.forwardIcong);
                         forward.setVisibility(View.INVISIBLE);
-                        copy=((groupChat) context).findViewById(R.id.copyIcong);
                         copy.setVisibility(View.INVISIBLE);
-                        videoCallBtn = ((groupChat) context).findViewById(R.id.videoCall);
-                        callBtn = ((groupChat) context).findViewById(R.id.call);
                         videoCallBtn.setVisibility(View.VISIBLE);
                         callBtn.setVisibility(View.VISIBLE);
                     }
@@ -357,18 +357,11 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
                     imgholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
                     if(list.size()!=0) {
-                        nameText = ((groupChat) context).findViewById(R.id.chatPageName);
                         nameText.setVisibility(View.INVISIBLE);
-                        dp = ((groupChat) context).findViewById(R.id.chatPageDp);
                         dp.setVisibility(View.INVISIBLE);
-                        delete=((groupChat) context).findViewById(R.id.deleteIcong);
                         delete.setVisibility(View.VISIBLE);
-                        forward=((groupChat) context).findViewById(R.id.forwardIcong);
                         forward.setVisibility(View.VISIBLE);
-                        copy=((groupChat) context).findViewById(R.id.copyIcong);
                         copy.setVisibility(View.GONE);
-                        videoCallBtn = ((groupChat) context).findViewById(R.id.videoCall);
-                        callBtn = ((groupChat) context).findViewById(R.id.call);
                         videoCallBtn.setVisibility(View.INVISIBLE);
                         callBtn.setVisibility(View.INVISIBLE);
                         Log.d("ojaslistoutside",list.size()+"");
@@ -376,25 +369,33 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                final ProgressDialog pd= new ProgressDialog(context);
+                                pd.setMessage("deleting");
                                 new AlertDialog.Builder(context)
                                         .setTitle("Delete Messages?")
                                         .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
                                         .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
+                                                pd.show();
                                                 for(int i=list.size()-1;i>=0;i--) {
                                                     if (list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").child(list.get(i).getKey());
                                                         reference.setValue(null);
+                                                        mChat.remove(list.get(i));
+                                                        notifyDataSetChanged();
                                                         nameText.setVisibility(View.VISIBLE);
                                                         dp.setVisibility(View.VISIBLE);
                                                         delete.setVisibility(View.INVISIBLE);
                                                         forward.setVisibility(View.INVISIBLE);
                                                         copy.setVisibility(View.INVISIBLE);
                                                         videoCallBtn.setVisibility(View.VISIBLE);
-                                                        callBtn.setVisibility(View.VISIBLE);                            }else {
+                                                        callBtn.setVisibility(View.VISIBLE);
+
+                                                    }else {
                                                         Toast.makeText(context, "You can not delete messages sent by others", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
+                                                pd.dismiss();
                                             }
                                         })
                                         .setNegativeButton(android.R.string.no, null)
@@ -413,18 +414,11 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             }
                         });
                     }else{
-                        nameText = ((groupChat) context).findViewById(R.id.chatPageName);
                         nameText.setVisibility(View.VISIBLE);
-                        dp = ((groupChat) context).findViewById(R.id.chatPageDp);
                         dp.setVisibility(View.VISIBLE);
-                        delete=((groupChat) context).findViewById(R.id.deleteIcong);
                         delete.setVisibility(View.INVISIBLE);
-                        forward=((groupChat) context).findViewById(R.id.forwardIcong);
                         forward.setVisibility(View.INVISIBLE);
-                        copy=((groupChat) context).findViewById(R.id.copyIcong);
                         copy.setVisibility(View.INVISIBLE);
-                        videoCallBtn = ((groupChat) context).findViewById(R.id.videoCall);
-                        callBtn = ((groupChat) context).findViewById(R.id.call);
                         videoCallBtn.setVisibility(View.VISIBLE);
                         callBtn.setVisibility(View.VISIBLE);}
                     return false;
@@ -468,34 +462,31 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
                     fileholder.layout.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
                     if(list.size()!=0) {
-                        nameText = ((groupChat) context).findViewById(R.id.chatPageName);
                         nameText.setVisibility(View.INVISIBLE);
-                        dp = ((groupChat) context).findViewById(R.id.chatPageDp);
                         dp.setVisibility(View.INVISIBLE);
-                        delete=((groupChat) context).findViewById(R.id.deleteIcong);
                         delete.setVisibility(View.VISIBLE);
-                        forward=((groupChat) context).findViewById(R.id.forwardIcong);
                         forward.setVisibility(View.VISIBLE);
-                        copy=((groupChat) context).findViewById(R.id.copyIcong);
                         copy.setVisibility(View.GONE);
-                        videoCallBtn = ((groupChat) context).findViewById(R.id.videoCall);
-                        callBtn = ((groupChat) context).findViewById(R.id.call);
                         videoCallBtn.setVisibility(View.INVISIBLE);
                         callBtn.setVisibility(View.INVISIBLE);
-                        Log.d("ojaslistoutside",list.size()+"");
                         final Boolean[] ok = {false};
                         delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                final ProgressDialog pd= new ProgressDialog(context);
+                                pd.setMessage("deleting");
                                 new AlertDialog.Builder(context)
                                         .setTitle("Delete Messages?")
                                         .setMessage("Only Messages sent by you will be deleted for everyone. do you want to delete?")
                                         .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
+                                                pd.show();
                                                 for(int i=list.size()-1;i>=0;i--) {
                                                     if (list.get(i).getSenderUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").child(list.get(i).getKey());
                                                         reference.setValue(null);
+                                                        mChat.remove(list.get(i));
+                                                        notifyDataSetChanged();
                                                         nameText.setVisibility(View.VISIBLE);
                                                         dp.setVisibility(View.VISIBLE);
                                                         delete.setVisibility(View.INVISIBLE);
@@ -506,6 +497,7 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                                         Toast.makeText(context, "You can not delete messages sent by others", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
+                                                pd.dismiss();
                                             }
                                         })
                                         .setNegativeButton(android.R.string.no, null)
@@ -525,18 +517,11 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             }
                         });
                     }else{
-                        nameText = ((groupChat) context).findViewById(R.id.chatPageName);
                         nameText.setVisibility(View.VISIBLE);
-                        dp = ((groupChat) context).findViewById(R.id.chatPageDp);
                         dp.setVisibility(View.VISIBLE);
-                        delete=((groupChat) context).findViewById(R.id.deleteIcong);
                         delete.setVisibility(View.INVISIBLE);
-                        forward=((groupChat) context).findViewById(R.id.forwardIcong);
                         forward.setVisibility(View.INVISIBLE);
-                        copy=((groupChat) context).findViewById(R.id.copyIcong);
                         copy.setVisibility(View.INVISIBLE);
-                        videoCallBtn = ((groupChat) context).findViewById(R.id.videoCall);
-                        callBtn = ((groupChat) context).findViewById(R.id.call);
                         videoCallBtn.setVisibility(View.VISIBLE);
                         callBtn.setVisibility(View.VISIBLE);
                     }
@@ -629,5 +614,9 @@ public class groupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         } else {
             return msgLeft;
         }
+    }
+    public void addMessageG (groupChatModel model){
+        mChat.add(model);
+        notifyDataSetChanged();
     }
 }

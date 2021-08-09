@@ -64,7 +64,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adView3" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarg" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/bgAnimation"
@@ -74,7 +74,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adView3"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarg"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         android:scaleType="fitXY"
@@ -191,15 +191,6 @@
         app:layout_constraintEnd_toStartOf="@+id/deleteIcong"
         app:layout_constraintTop_toTopOf="@+id/toolbarg" />
 
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:adSize="SMART_BANNER"
-        app:adUnitId="ca-app-pub-1155879823920026/8113187295"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarg" />
 
     <ImageView
         android:id="@+id/videoCall"
