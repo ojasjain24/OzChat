@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -84,8 +85,10 @@ public class groupChat extends AppCompatActivity {
     private final byte[] encryptionKey ={5,15,-65,-56,3,45,-96,37,85,64,85,-92,-12,-5,64,-50};
     static String LastMessageTime;
     ImageView delete, copy,forward;
+    groupChatAdapter adapter;
     public groupChat(){
     }
+    @SuppressLint("GetInstance")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Resources.Theme theme = super.getTheme();
@@ -97,9 +100,7 @@ public class groupChat extends AppCompatActivity {
         try {
             cipher = Cipher.getInstance("AES");
             decipher = Cipher.getInstance("AES");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
         }
 
@@ -107,44 +108,6 @@ public class groupChat extends AppCompatActivity {
         setContentView(R.layout.activity_group_chat);
         Intent intent = getIntent();
         final String nodeId= intent.getStringExtra("nodeId");
-        mAdView = findViewById(R.id.adView3);
-        final AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        mAdView.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-            }
-
-            @Override
-            public void onAdFailedToLoad(LoadAdError adError) {
-                // Code to be executed when an ad request fails.
-                super.onAdFailedToLoad(adError);
-                mAdView.loadAd(adRequest);
-            }
-
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-            }
-
-            @Override
-            public void onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-            }
-
-//            @Override
-//            public void onAdLeftApplication() {
-//                // Code to be executed when the user has left the app.
-//            }
-
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when the user is about to return
-                // to the app after tapping on an ad.
-            }
-        });
 
         SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         String text = sharedPreferences.getString("Theme", "Default");
@@ -267,7 +230,7 @@ public class groupChat extends AppCompatActivity {
         final TextView message = findViewById(R.id.chatPageMessage);
         ImageView send = findViewById(R.id.sendMSGg);
         user= FirebaseAuth.getInstance().getCurrentUser();
-
+        readMsg(nodeId);
         reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -305,7 +268,7 @@ public class groupChat extends AppCompatActivity {
                         }
                     });
                 }
-                readMsg(user.getUid(),nodeId);
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -329,6 +292,12 @@ public class groupChat extends AppCompatActivity {
                 openImage();
             }
         });
+
+        adapter = new groupChatAdapter(groupChat.this,nodeId);
+        LinearLayoutManager manager=new LinearLayoutManager(getApplicationContext());
+        manager.setStackFromEnd(true);
+        messageList.setLayoutManager(manager);
+        messageList.setAdapter(adapter);
     }
 
     @Override
@@ -377,46 +346,85 @@ public class groupChat extends AppCompatActivity {
         hashMap.put("type","null");
         hashMap.put("key",fileRef.getKey());
         fileRef.setValue(hashMap);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId);
+        HashMap<String , Object> hashMap1 = new HashMap<>();
+        hashMap1.put("lastmsg",""+LastMessageTime);
+        databaseReference.updateChildren(hashMap1);
+
     }
-    private void readMsg(final String myuid, final String nodeId){
+//    private void readMsgm(final String myuid, final String nodeId){
+//        chatList = new ArrayList<>();
+//        reference = FirebaseDatabase.getInstance().getReference().child("groups").child(nodeId).child("chats");
+//        Query query= (reference.orderByChild("time"));
+//        query.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                chatList.clear();
+//                for(DataSnapshot Snapshot : snapshot.getChildren()) {
+//                    groupChatModel chat = Snapshot.getValue(groupChatModel.class);
+//                    if (chat != null) {
+//                        try {
+//                            chatList.add(new groupChatModel(chat.getSenderUid(),chat.getIsThisFile(),chat.getKey(),AESDecryptionMethod(chat.getMessage()),chat.getTime(),chat.getType()));
+//                        } catch (UnsupportedEncodingException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//                if(chatList.size()!=0){
+//                    LastMessageTime = chatList.get(chatList.size()-1).getTime();
+//                }else{
+//                    LastMessageTime = "0";
+//                }
+//
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//            }
+//        });
+//    }
+
+    private void readMsg(final String nodeId) {
         chatList = new ArrayList<>();
         reference = FirebaseDatabase.getInstance().getReference().child("groups").child(nodeId).child("chats");
-        Query query= (reference.orderByChild("time"));
-        query.addValueEventListener(new ValueEventListener() {
+        Query query = (reference.orderByChild("time"));
+        query.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                chatList.clear();
-                for(DataSnapshot Snapshot : snapshot.getChildren()) {
-                    groupChatModel chat = Snapshot.getValue(groupChatModel.class);
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    groupChatModel chat = snapshot.getValue(groupChatModel.class);
                     if (chat != null) {
                         try {
-                            chatList.add(new groupChatModel(chat.getSenderUid(),chat.getIsThisFile(),chat.getKey(),AESDecryptionMethod(chat.getMessage()),chat.getTime(),chat.getType()));
+                            adapter.addMessageG(new groupChatModel(chat.getSenderUid(),chat.getIsThisFile(),chat.getKey(),AESDecryptionMethod(chat.getMessage()),chat.getTime(),chat.getType()));
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
                     }
+                    messageList.smoothScrollToPosition(adapter.getItemCount());
                 }
-                if(chatList.size()!=0){
-                    LastMessageTime = chatList.get(chatList.size()-1).getTime();
-                }else{
-                    LastMessageTime = "0";
-                }
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId);
-                HashMap<String , Object> hashMap = new HashMap<>();
-                hashMap.put("lastmsg",LastMessageTime);
-                databaseReference.updateChildren(hashMap);
-                groupChatAdapter adapter = new groupChatAdapter(groupChat.this, chatList,nodeId);
-                LinearLayoutManager manager=new LinearLayoutManager(getApplicationContext());
-                manager.setStackFromEnd(true);
-                messageList.setLayoutManager(manager);
-                messageList.setAdapter(adapter);
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
             }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
-    //files sending
+
+        //files sending
     private void sendFile(String me, String nodeId, String fileAddr){
         DatabaseReference fileRef= FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").push();
         HashMap<String,Object> hashMap = new HashMap();
@@ -427,6 +435,12 @@ public class groupChat extends AppCompatActivity {
         hashMap.put("type",""+getFileExtension(imageUri));
         hashMap.put("key",fileRef.getKey());
         fileRef.setValue(hashMap);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId);
+        HashMap<String , Object> hashMap1 = new HashMap<>();
+        hashMap1.put("lastmsg",""+LastMessageTime);
+        databaseReference.updateChildren(hashMap1);
+
     }
     private void uploadImage(){
         final Intent intent = getIntent();
