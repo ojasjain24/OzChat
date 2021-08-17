@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -25,6 +26,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.affixchat.chatappv0.Adapter.chatAdapter;
 import com.affixchat.chatappv0.Models.chatModel;
 import com.affixchat.chatappv0.Models.usersModel;
+import com.affixchat.chatappv0.Notification.APISERVICESHIT;
+import com.affixchat.chatappv0.Notification.Client;
+import com.affixchat.chatappv0.Notification.Data;
+import com.affixchat.chatappv0.Notification.FirebaseMessaging;
+import com.affixchat.chatappv0.Notification.MyResponse;
+import com.affixchat.chatappv0.Notification.Sender;
+import com.affixchat.chatappv0.Notification.Token;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,6 +46,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -54,9 +65,16 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.content.ContentValues.TAG;
 import static java.lang.Float.parseFloat;
 
 public class chatPage extends AppCompatActivity {
+    FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
     private TextView name;
     private FirebaseUser user;
     private RecyclerView messageList;
@@ -78,7 +96,8 @@ public class chatPage extends AppCompatActivity {
     private final byte[] encryptionKey ={5,15,-65,-56,3,45,-96,37,85,64,85,-92,-12,-5,64,-50};
     chatAdapter adapter;
     ImageView delete, copy,forward;
-
+    APISERVICESHIT apiService;
+    String userId;
     public chatPage(){
     }
 
@@ -110,6 +129,7 @@ public class chatPage extends AppCompatActivity {
 //        }else{
 //            bgAnimation.setVisibility(View.VISIBLE);
 //        }
+        apiService = Client.getRetrofit("https://fcm.googleapis.com/").create(APISERVICESHIT.class);
 
         delete=findViewById(R.id.deleteIcon);
         copy=findViewById(R.id.copyIcon);
@@ -118,7 +138,7 @@ public class chatPage extends AppCompatActivity {
         attach=findViewById(R.id.imageView2);
         name = findViewById(R.id.name);
         Intent intent = getIntent();
-        final String userId= intent.getStringExtra("userId");
+        userId= intent.getStringExtra("userId");
         meetingCard = findViewById(R.id.include);
         joinMeetBtn=findViewById(R.id.joinMeetBtn);
         meetHostName=findViewById(R.id.meetCreatorName);
@@ -349,6 +369,8 @@ public class chatPage extends AppCompatActivity {
         HashMap<String , Object> map = new HashMap<>();
         map.put("lastmsg",""+System.currentTimeMillis());
         databaseReference1.updateChildren(map);
+
+        sendNotification(receiver,getIntent().getStringExtra("name"));
     }
 
     private void readMsg(final String myuid, final String receiveruid){
@@ -625,4 +647,71 @@ private void openFile() {
         super.onPause();
         inActivity=false;
     }
+    private void sendNotification(String receiver, final String username){
+        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Token");
+        Query query = tokens.orderByKey().equalTo(receiver);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Token token = snapshot.getValue(Token.class);
+                    Data data = new Data(user.getUid(), R.drawable.logo_noti, "You have received new Messages", "New Message",
+                            receiver);
+
+                    Sender sender = new Sender(data, token.getToken());
+                    apiService.sendNotification(sender)
+                            .enqueue(new Callback<MyResponse>() {
+                                @Override
+                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                    if (response.code() == 200){
+                                        if (response.body().success != 1){
+                                            Toast.makeText(chatPage.this, "Failed!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<MyResponse> call, Throwable t) {
+
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+//private void SendNotifications(String friendid, String nameofsender, String message) {
+//    String useridfortoken = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//    firestore.collection("Tokens").document(friendid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+//        @Override
+//        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+//            assert value != null;
+//            Token objectotoken = value.toObject(Token.class);
+//            assert objectotoken != null;
+//            token = objectotoken.getToken();
+//            Log.d(TAG, "onEvent: " + token);
+//            Data data = new Data(useridfortoken, R.mipmap.ic_launcher, message, "New Message From " + nameofsender, friendid);
+//
+//            Sender sender = new Sender(data, token);
+//            apiserviceshit.sendNotification(sender).enqueue(new Callback<Response>() {
+//                @Override
+//                public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+//                    if (response.code() == 200) {
+//                        if (response.body().success != 1) {
+//                            Toast.makeText(getContext(), "Failed", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                }
+//                @Override
+//                public void onFailure(Call<Response> call, Throwable t) {
+//                }
+//            });
+//        }
+//    });
+//}
 }

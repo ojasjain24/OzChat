@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
-        <activity android:name=".OtherApps"></activity>
+        <activity android:name=".OtherApps" />
         <activity
             android:name=".GroupSettings"
             android:parentActivityName=".groupVisit" />
@@ -88,6 +88,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <service android:name=".Notification.FirebaseMessaging"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <receiver android:name=".Notification.NotificationService" />
+
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

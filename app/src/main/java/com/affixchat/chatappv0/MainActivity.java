@@ -33,8 +33,18 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.FirebaseApiNotAvailableException;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.HashMap;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -150,8 +160,21 @@ public class MainActivity extends AppCompatActivity {
         splashScreenA splashScreenA = new splashScreenA();
         splashScreenA.playAd(MainActivity.this);
 
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
 
-    }
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        GenerateToken(token);
+
+                    }
+                });}
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -316,5 +339,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         alertDialog.show();
+    }
+
+    private void GenerateToken(String token) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("token", token);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Token").child(FirebaseAuth.getInstance().getCurrentUser().getUid()+"");
+        databaseReference.setValue(hashMap);
     }
 }
