@@ -1,24 +1,15 @@
 package com.affixchat.chatappv0.Notification;
-
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.RemoteInput;
-
-import com.affixchat.chatappv0.Fragments.chatFragment;
 import com.affixchat.chatappv0.MainActivity;
-import com.affixchat.chatappv0.R;
-import com.affixchat.chatappv0.chatPage;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -33,8 +24,6 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
         String sented = remoteMessage.getData().get("sent");
         String user = remoteMessage.getData().get("user");
-
-
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (firebaseUser != null) {
@@ -45,7 +34,6 @@ public class FirebaseMessaging extends FirebaseMessagingService {
                 } else {
                     sendNotification(remoteMessage);
                 }
-
             }
         }
     }
@@ -62,10 +50,10 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 //        Intent intent = new Intent(this, Chatfragment.class);
 //        Bundle bundle = new Bundle();
 //        bundle.putString("friendid", user);
-        SharedPreferences sharedPreferences = getSharedPreferences("PREFS", MODE_PRIVATE);
-        SharedPreferences.Editor predsefits = sharedPreferences.edit();
-        predsefits.putString("friendid", user);
-        predsefits.apply();
+//        SharedPreferences sharedPreferences = getSharedPreferences("PREFS", MODE_PRIVATE);
+//        SharedPreferences.Editor predsefits = sharedPreferences.edit();
+//        predsefits.putString("friendid", user);
+//        predsefits.apply();
         //intent.putExtras(bundle);
         //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         //PendingIntent pendingIntent = PendingIntent.getActivity(this, j, intent, PendingIntent.FLAG_ONE_SHOT);

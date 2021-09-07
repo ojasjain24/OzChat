@@ -1,6 +1,8 @@
 package com.affixchat.chatappv0.Models;
 
-public class acceptRequestModel {
+import java.io.Serializable;
+
+public class acceptRequestModel implements Serializable {
     private String senderuid;
     private String receveruid;
     private String requestid;

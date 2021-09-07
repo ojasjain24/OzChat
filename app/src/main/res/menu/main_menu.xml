@@ -9,7 +9,10 @@
         android:title="New Group" />
     <item
         android:id="@+id/requests"
-        android:title="Requests" />
+        android:title="Requests"
+        app:showAsAction="always"
+        app:actionLayout="@layout/requests_menu_tile"
+        />
     <item
         android:id="@+id/allusers"
         android:title="@string/all_users" />
@@ -27,5 +30,5 @@
         android:title="Our Apps" />
     <item
         android:id="@+id/loguotmenu"
-        android:title="@string/logout" />
+        android:title="@string/logout"/>
 </menu>

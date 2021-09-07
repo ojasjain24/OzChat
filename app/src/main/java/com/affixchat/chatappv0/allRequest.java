@@ -3,6 +3,7 @@ package com.affixchat.chatappv0;
 import android.content.Intent;
 import android.content.res.Resources;
 import  android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ public class allRequest extends AppCompatActivity {
     private LottieAnimationView empty,loading;
     private TextView noFriends,loadingText;
     ArrayList<acceptRequestModel> userList = new ArrayList<>();
+    ArrayList<acceptRequestModel> list = new ArrayList<>();
     String senderUid;
 
     @Override
@@ -46,11 +48,44 @@ public class allRequest extends AppCompatActivity {
         recyclerView=findViewById(R.id.requestList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        readusers();
+        list = (ArrayList<acceptRequestModel>) getIntent().getSerializableExtra("BUNDLE");
+        if(list!=null) EmptyListAnimation(list.size());
+        else EmptyListAnimation(0);
+        setAdapter(list);
+        loadingText.setVisibility(View.INVISIBLE);
+        loading.setVisibility(View.INVISIBLE);
     }
-    private void readusers() {
-        loading.setSpeed(1);
-        loading.playAnimation();
+
+//    public void  readusers() {
+//        loading.setSpeed(1);
+//        loading.playAnimation();
+//        final FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
+//        final DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("requests");
+//        databaseReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                userList.clear();
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    final acceptRequestModel user = snapshot.getValue(acceptRequestModel.class);
+//                    user.setRequestid(snapshot.getKey());
+//                    senderUid=user.getSenderuid();
+//                    if (user.getReceveruid().equals(me.getUid())){
+//                        userList.add(user);
+//                    }
+//                }
+//                loadingText.setVisibility(View.INVISIBLE);
+//                loading.setVisibility(View.INVISIBLE);
+//                setAdapter(userList);
+//                EmptyListAnimation(userList.size());
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                Toast.makeText(allRequest.this, "check your network connection", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
+
+    public void readusers(OnGetObjectListener<ArrayList<acceptRequestModel>> callback) {
         final FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
         final DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("requests");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -65,21 +100,22 @@ public class allRequest extends AppCompatActivity {
                         userList.add(user);
                     }
                 }
-                loadingText.setVisibility(View.INVISIBLE);
-                loading.setVisibility(View.INVISIBLE);
-                setAdapter();
-                EmptyListAnimation();
+                callback.onGetObject(userList);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(allRequest.this, "check your network connection", Toast.LENGTH_SHORT).show();
+                callback.onFail(databaseError.toException());
             }
         });
+
     }
-    private void setAdapter(){
-        requestsAdapter = new requestsAdapter(getApplicationContext(), userList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(allRequest.this));
-        recyclerView.setAdapter(requestsAdapter);
+
+    private void setAdapter(ArrayList<acceptRequestModel> userList){
+        if(userList!=null) {
+            requestsAdapter = new requestsAdapter(getApplicationContext(), userList);
+            recyclerView.setLayoutManager(new LinearLayoutManager(allRequest.this));
+            recyclerView.setAdapter(requestsAdapter);
+        }
     }
 
     @Override
@@ -87,8 +123,8 @@ public class allRequest extends AppCompatActivity {
         super.onBackPressed();
         startActivity(new Intent(allRequest.this,MainActivity.class));
     }
-    private void EmptyListAnimation() {
-        if (userList.isEmpty()) {
+    private void EmptyListAnimation(int i) {
+        if (i==0) {
             empty.setVisibility(View.VISIBLE);
             noFriends.setVisibility(View.VISIBLE);
             empty.setSpeed(1);
@@ -98,4 +134,5 @@ public class allRequest extends AppCompatActivity {
             noFriends.setVisibility(View.GONE);
         }
     }
+
 }

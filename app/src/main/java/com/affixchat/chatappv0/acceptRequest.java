@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.affixchat.chatappv0.Notification.sendNotificationFunction;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -88,6 +90,8 @@ public class acceptRequest extends AppCompatActivity {
                         Toast.makeText(acceptRequest.this, ""+error, Toast.LENGTH_SHORT).show();
                     }
                 });
+                sendNotificationFunction notificationFunction = new sendNotificationFunction();
+                notificationFunction.sendNotification(intent.getStringExtra("userId"),me.getUid(),acceptRequest.this,intent.getStringExtra("name")+" has accepted your friend request","Request accepted");
             }
         });
         declineBtn.setOnClickListener(new View.OnClickListener() {

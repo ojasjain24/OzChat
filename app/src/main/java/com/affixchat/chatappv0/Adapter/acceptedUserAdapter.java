@@ -208,7 +208,6 @@ public class acceptedUserAdapter extends RecyclerView.Adapter<acceptedUserAdapte
         LottieAnimationView live;
         public Holder(@NonNull View itemView) {
             super(itemView);
-
             name = itemView.findViewById(R.id.chat_profile_name);
             status = itemView.findViewById(R.id.chat_profile_status);
             profile = itemView.findViewById(R.id.chat_profile_pic);

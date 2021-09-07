@@ -33,6 +33,7 @@ import com.affixchat.chatappv0.Notification.FirebaseMessaging;
 import com.affixchat.chatappv0.Notification.MyResponse;
 import com.affixchat.chatappv0.Notification.Sender;
 import com.affixchat.chatappv0.Notification.Token;
+import com.affixchat.chatappv0.Notification.sendNotificationFunction;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -96,7 +97,7 @@ public class chatPage extends AppCompatActivity {
     private final byte[] encryptionKey ={5,15,-65,-56,3,45,-96,37,85,64,85,-92,-12,-5,64,-50};
     chatAdapter adapter;
     ImageView delete, copy,forward;
-    APISERVICESHIT apiService;
+
     String userId;
     public chatPage(){
     }
@@ -129,7 +130,7 @@ public class chatPage extends AppCompatActivity {
 //        }else{
 //            bgAnimation.setVisibility(View.VISIBLE);
 //        }
-        apiService = Client.getRetrofit("https://fcm.googleapis.com/").create(APISERVICESHIT.class);
+
 
         delete=findViewById(R.id.deleteIcon);
         copy=findViewById(R.id.copyIcon);
@@ -211,6 +212,8 @@ public class chatPage extends AppCompatActivity {
                         i.putExtra("key", meetData.getKey()+"");
                         i.putExtra("type", "video");
                         startActivity(i);
+                        sendNotificationFunction notificationFunction = new sendNotificationFunction();
+                        notificationFunction.sendNotification(userId,user.getUid(),chatPage.this,"Video call has started. Join quickly","Video Call");
                         android.os.Process.killProcess(android.os.Process.myPid());
                     }
                 });
@@ -234,6 +237,8 @@ public class chatPage extends AppCompatActivity {
                         i.putExtra("key", meetData.getKey()+"");
                         i.putExtra("type", "audio");
                         startActivity(i);
+                        sendNotificationFunction notificationFunction = new sendNotificationFunction();
+                        notificationFunction.sendNotification(userId,user.getUid(),chatPage.this,"Audio call has started. Join quickly","Audio Call");
                         android.os.Process.killProcess(android.os.Process.myPid());
                     }
                 });
@@ -369,8 +374,8 @@ public class chatPage extends AppCompatActivity {
         HashMap<String , Object> map = new HashMap<>();
         map.put("lastmsg",""+System.currentTimeMillis());
         databaseReference1.updateChildren(map);
-
-        sendNotification(receiver,getIntent().getStringExtra("name"));
+        sendNotificationFunction notificationFunction = new sendNotificationFunction();
+        notificationFunction.sendNotification(receiver,me,chatPage.this,"You have received a new message","New Message");
     }
 
     private void readMsg(final String myuid, final String receiveruid){
@@ -494,6 +499,8 @@ public class chatPage extends AppCompatActivity {
         HashMap<String , Object> map = new HashMap<>();
         map.put("lastmsg",""+System.currentTimeMillis());
         databaseReference1.updateChildren(map);
+        sendNotificationFunction notificationFunction = new sendNotificationFunction();
+        notificationFunction.sendNotification(receiver,me,chatPage.this,"You have received a new message","New Message");
     }
 
     private void uploadImage(){
@@ -582,11 +589,7 @@ private void openFile() {
         try {
             cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
             encryptedByte = cipher.doFinal(stringByte);
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
+        } catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
 
@@ -610,11 +613,7 @@ private void openFile() {
             decipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
             decryption = decipher.doFinal(EncryptedByte);
             decryptedString = new String(decryption);
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
+        } catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
         return decryptedString;
@@ -647,43 +646,7 @@ private void openFile() {
         super.onPause();
         inActivity=false;
     }
-    private void sendNotification(String receiver, final String username){
-        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Token");
-        Query query = tokens.orderByKey().equalTo(receiver);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(user.getUid(), R.drawable.logo_noti, "You have received new Messages", "New Message",
-                            receiver);
 
-                    Sender sender = new Sender(data, token.getToken());
-                    apiService.sendNotification(sender)
-                            .enqueue(new Callback<MyResponse>() {
-                                @Override
-                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                                    if (response.code() == 200){
-                                        if (response.body().success != 1){
-                                            Toast.makeText(chatPage.this, "Failed!", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<MyResponse> call, Throwable t) {
-
-                                }
-                            });
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
 //private void SendNotifications(String friendid, String nameofsender, String message) {
 //    String useridfortoken = FirebaseAuth.getInstance().getCurrentUser().getUid();

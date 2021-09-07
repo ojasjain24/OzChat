@@ -51,12 +51,13 @@ public class allusersActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         readusers();
     }
+
     private void readusers() {
         loading.setSpeed(1);
         loading.playAnimation();
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("users");
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userList.clear();
@@ -102,6 +103,7 @@ public class allusersActivity extends AppCompatActivity {
         super.onBackPressed();
         startActivity(new Intent(allusersActivity.this, MainActivity.class));
     }
+
     private void EmptyListAnimation() {
         if (userList.isEmpty()) {
             empty.setVisibility(View.VISIBLE);
