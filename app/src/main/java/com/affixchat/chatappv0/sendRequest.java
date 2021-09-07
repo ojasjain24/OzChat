@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.affixchat.chatappv0.Models.acceptRequestModel;
+import com.affixchat.chatappv0.Notification.sendNotificationFunction;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -88,6 +89,8 @@ public class sendRequest extends AppCompatActivity {
                                 usermap.put("senderuid", user.getUid());
                                 usermap.put("receveruid", userId);
                                 userdata.push().setValue(usermap);
+                                sendNotificationFunction notificationFunction = new sendNotificationFunction();
+                                notificationFunction.sendNotification(userId,user.getUid(),sendRequest.this,"You have received a new friend request","New Friend Request");
                             }
                         });
                     } else {

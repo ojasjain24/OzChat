@@ -22,6 +22,9 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.affixchat.chatappv0.Models.acceptRequestModel;
+import com.affixchat.chatappv0.Models.groupMemberModel;
+import com.affixchat.chatappv0.Notification.sendNotificationFunction;
 import com.airbnb.lottie.LottieAnimationView;
 import com.affixchat.chatappv0.Adapter.groupChatAdapter;
 import com.affixchat.chatappv0.Models.groupChatModel;
@@ -82,10 +85,12 @@ public class groupChat extends AppCompatActivity {
     private ImageView videoCall,audioCall;
     private Cipher cipher, decipher;
     private SecretKeySpec secretKeySpec;
+    String groupName="";
     private final byte[] encryptionKey ={5,15,-65,-56,3,45,-96,37,85,64,85,-92,-12,-5,64,-50};
     static String LastMessageTime;
     ImageView delete, copy,forward;
     groupChatAdapter adapter;
+    ArrayList<groupMemberModel> membersList = new ArrayList<>();
     public groupChat(){
     }
     @SuppressLint("GetInstance")
@@ -117,8 +122,17 @@ public class groupChat extends AppCompatActivity {
         }else{
             bgAnimation.setVisibility(View.VISIBLE);
         }
+        membersDetail(new OnGetObjectListener<ArrayList<groupMemberModel>>() {
+            @Override
+            public void onGetObject(ArrayList<groupMemberModel> object) {
+                membersList=object;
+            }
 
-        final ImageView DP = findViewById(R.id.chatPageDp);
+            @Override
+            public void onFail(Exception e) {
+                Toast.makeText(groupChat.this, "check your network connection", Toast.LENGTH_SHORT).show();
+            }
+        });final ImageView DP = findViewById(R.id.chatPageDp);
         attach=findViewById(R.id.imageView2g);
         name = findViewById(R.id.chatPageName);
         delete=findViewById(R.id.deleteIcong);
@@ -178,6 +192,57 @@ public class groupChat extends AppCompatActivity {
             meetingCard.setVisibility(View.GONE);
         }
 
+        messageList = findViewById(R.id.chatPageMessageList);
+        messageList.setHasFixedSize(true);
+        final TextView message = findViewById(R.id.chatPageMessage);
+        ImageView send = findViewById(R.id.sendMSGg);
+        user= FirebaseAuth.getInstance().getCurrentUser();
+        readMsg(nodeId);
+        reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    final groupDataModel groupDetails = dataSnapshot.getValue(groupDataModel.class);
+                    groupName=(groupDetails.getName()).substring(0,1).toUpperCase()+(groupDetails.getName()).substring(1);
+                    name.setText((groupDetails.getName()).substring(0,1).toUpperCase()+(groupDetails.getName()).substring(1));
+                    if (groupDetails.getGroupicon() != null) {
+                        Picasso.get().load(Uri.parse(groupDetails.getGroupicon())).into(DP);
+                    }else{
+                        DP.setImageResource(R.drawable.ic_launcher_foreground);
+                    }
+                    name.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(groupChat.this,groupVisit.class);
+                            i.putExtra("name",groupDetails.getName());
+                            i.putExtra("description",groupDetails.getDescription());
+                            i.putExtra("pic",groupDetails.getGroupicon());
+                            i.putExtra("nodeId",groupDetails.getNodeid());
+                            i.putExtra("Type", groupDetails.getType());
+                            startActivity(i);
+                        }
+                    });
+                    DP.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(groupChat.this,groupVisit.class);
+                            i.putExtra("name",groupDetails.getName());
+                            i.putExtra("description",groupDetails.getDescription());
+                            i.putExtra("pic",groupDetails.getGroupicon());
+                            i.putExtra("nodeId",groupDetails.getNodeid());
+                            i.putExtra("Type", groupDetails.getType());
+                            startActivity(i);
+                        }
+                    });
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
         videoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,6 +264,14 @@ public class groupChat extends AppCompatActivity {
                         android.os.Process.killProcess(android.os.Process.myPid());
                     }
                 });
+                sendNotificationFunction notificationFunction = new sendNotificationFunction();
+                int j=0;
+                while (j<= membersList.size()) {
+                    if (!membersList.get(j).getUid().equals(user.getUid())) {
+                        notificationFunction.sendNotification(membersList.get(j).getUid(), user.getUid(), groupChat.this, "Join the "+groupName+" group Audio call", "Group Video Call");
+                    }
+                    j+=1;
+                }
             }
         });
 
@@ -223,57 +296,17 @@ public class groupChat extends AppCompatActivity {
                         android.os.Process.killProcess(android.os.Process.myPid());
                     }
                 });
-            }
-        });
-        messageList = findViewById(R.id.chatPageMessageList);
-        messageList.setHasFixedSize(true);
-        final TextView message = findViewById(R.id.chatPageMessage);
-        ImageView send = findViewById(R.id.sendMSGg);
-        user= FirebaseAuth.getInstance().getCurrentUser();
-        readMsg(nodeId);
-        reference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    final groupDataModel user = dataSnapshot.getValue(groupDataModel.class);
-                    name.setText((user.getName()).substring(0,1).toUpperCase()+(user.getName()).substring(1));
-                    if (user.getGroupicon() != null) {
-                        Picasso.get().load(Uri.parse(user.getGroupicon())).into(DP);
-                    }else{
-                        DP.setImageResource(R.drawable.ic_launcher_foreground);
+                sendNotificationFunction notificationFunction = new sendNotificationFunction();
+                int j=0;
+                while (j<= membersList.size()) {
+                    if (!membersList.get(j).getUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        notificationFunction.sendNotification(membersList.get(j).getUid(), user.getUid(), groupChat.this, "Join the "+groupName+" group Audio call", "Group Audio Call");
                     }
-                    name.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(groupChat.this,groupVisit.class);
-                            i.putExtra("name",user.getName());
-                            i.putExtra("description",user.getDescription());
-                            i.putExtra("pic",user.getGroupicon());
-                            i.putExtra("nodeId",user.getNodeid());
-                            i.putExtra("Type", user.getType());
-                            startActivity(i);
-                        }
-                    });
-                    DP.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(groupChat.this,groupVisit.class);
-                            i.putExtra("name",user.getName());
-                            i.putExtra("description",user.getDescription());
-                            i.putExtra("pic",user.getGroupicon());
-                            i.putExtra("nodeId",user.getNodeid());
-                            i.putExtra("Type", user.getType());
-                            startActivity(i);
-                        }
-                    });
+                    j+=1;
                 }
-
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -352,7 +385,16 @@ public class groupChat extends AppCompatActivity {
         hashMap1.put("lastmsg",""+LastMessageTime);
         databaseReference.updateChildren(hashMap1);
 
+        sendNotificationFunction notificationFunction = new sendNotificationFunction();
+        int j=0;
+        while (j<= membersList.size()-1) {
+            if (!membersList.get(j).getUid().equals(me)) {
+                notificationFunction.sendNotification(membersList.get(j).getUid(), me, groupChat.this, "New message in "+groupName+" group", "New Group Message");
+            }
+            j+=1;
+        }
     }
+
 //    private void readMsgm(final String myuid, final String nodeId){
 //        chatList = new ArrayList<>();
 //        reference = FirebaseDatabase.getInstance().getReference().child("groups").child(nodeId).child("chats");
@@ -424,7 +466,6 @@ public class groupChat extends AppCompatActivity {
         });
     }
 
-        //files sending
     private void sendFile(String me, String nodeId, String fileAddr){
         DatabaseReference fileRef= FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").push();
         HashMap<String,Object> hashMap = new HashMap();
@@ -440,8 +481,16 @@ public class groupChat extends AppCompatActivity {
         HashMap<String , Object> hashMap1 = new HashMap<>();
         hashMap1.put("lastmsg",""+LastMessageTime);
         databaseReference.updateChildren(hashMap1);
-
+        sendNotificationFunction notificationFunction = new sendNotificationFunction();
+        int j=0;
+        while (j<= membersList.size()) {
+            if (!membersList.get(j).getUid().equals(me)) {
+                notificationFunction.sendNotification(membersList.get(j).getUid(), me, groupChat.this, "New message in "+groupName+" group", "New Group Message");
+            }
+            j+=1;
+        }
     }
+
     private void uploadImage(){
         final Intent intent = getIntent();
         final ProgressDialog pd= new ProgressDialog(this);
@@ -472,17 +521,19 @@ public class groupChat extends AppCompatActivity {
                         });
                     }else{
                         pd.dismiss();
-                        Toast.makeText(groupChat.this, "Error : " + task.getException().toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(groupChat.this, "Error : " + Objects.requireNonNull(task.getException()).toString(), Toast.LENGTH_LONG).show();
                     }
                 }
             });
         }
     }
+
     private String getFileExtension(Uri uri){
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
+
     private void openImage() {
         Intent intent=new Intent();
         intent.setType("*/*");
@@ -496,6 +547,7 @@ public class groupChat extends AppCompatActivity {
         startActivity(new Intent(groupChat.this, MainActivity.class));
         finishAffinity();
     }
+
     private String AESEncryptionMethod(String string){
 
         byte[] stringByte = string.getBytes();
@@ -504,11 +556,7 @@ public class groupChat extends AppCompatActivity {
         try {
             cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
             encryptedByte = cipher.doFinal(stringByte);
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
+        } catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
 
@@ -528,17 +576,32 @@ public class groupChat extends AppCompatActivity {
 
         byte[] decryption;
         try {
-            decipher.init(cipher.DECRYPT_MODE, secretKeySpec);
+            decipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
             decryption = decipher.doFinal(EncryptedByte);
             decryptedString = new String(decryption);
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
+        } catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
         return decryptedString;
     }
 
+    private void membersDetail(OnGetObjectListener<ArrayList<groupMemberModel>> callback){
+        ArrayList<groupMemberModel> groupMembers = new ArrayList<>();
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("groups").child(getIntent().getStringExtra("nodeId")).child("members");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    groupMemberModel memberModel = dataSnapshot.getValue(groupMemberModel.class);
+                    groupMembers.add(memberModel);
+                }
+                callback.onGetObject(groupMembers);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onFail(error.toException());
+            }
+        });
+    }
 }

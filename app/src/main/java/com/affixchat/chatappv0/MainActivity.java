@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,8 +26,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.affixchat.chatappv0.Adapter.SectionPagerAdapter;
+import com.affixchat.chatappv0.Adapter.requestsAdapter;
+import com.affixchat.chatappv0.Models.acceptRequestModel;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -44,6 +48,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -52,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     boolean doubleBackToExitPressedOnce = false;
     private int CAMERA_PERMISSION_CODE = 1, MIC_PERMISSION_CODE = 2;
     public static final String SHARED_PREFS = "sharedPrefs";
+    ArrayList<acceptRequestModel> list =new ArrayList<>();
     //    public static final String CHANNEL_MEET = "channelMeet";
     //    public static final String CHANNEL_MSG = "channelMsg";
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -175,11 +182,35 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });}
+    @SuppressLint("SetTextI18n")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.main_menu,menu);
+        MenuItem menuItem = menu.findItem(R.id.requests);
+        View actionView = menuItem.getActionView();
+        allRequest allrequest = new allRequest();
+        allrequest.readusers(new OnGetObjectListener<ArrayList<acceptRequestModel>>() {
+            @Override
+            public void onGetObject(ArrayList<acceptRequestModel> object) {
+                list=object;
+                TextView count = actionView.findViewById(R.id.requestCount);
+                count.setText(list.size()+"");
+            }
 
+            @Override
+            public void onFail(Exception e) {
+                Toast.makeText(MainActivity.this, "check your network connection", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        actionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(menuItem);
+            }
+        });
         return true;
     }
 
@@ -198,7 +229,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this,allusersActivity.class));
         }
         if(item.getItemId() == R.id.requests){
-            startActivity(new Intent(MainActivity.this, allRequest.class));
+            Intent i = new Intent(MainActivity.this, allRequest.class);
+//            Bundle args = new Bundle();
+//            args.putSerializable("ARRAYLIST", list);
+            i.putExtra("BUNDLE",list);
+            startActivity(i);
         }
         if(item.getItemId()==R.id.groupmenu){
             startActivity(new Intent(MainActivity.this, displayUserForGroup.class));
@@ -243,9 +278,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         if (mInterstitialAds != null) {
             mInterstitialAds.show(MainActivity.this);
-            Log.d("ojasadstart","yes");
-        } else {
-            Log.d("ojasnotready", "The interstitial ad wasn't ready yet.");
         }
     }
     private void requestPermissionsCamera() {

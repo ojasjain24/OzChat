@@ -17,7 +17,7 @@ public class OreaNotification extends ContextWrapper {
 
 
     public static final String CHANNELID = "com.affixchat.chatappv0";
-    public static final String NAME = "Messages";
+    public static final String MESSAGES = "All Notifications";
     private NotificationManager notificationManager;
 
 
@@ -34,40 +34,21 @@ public class OreaNotification extends ContextWrapper {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createChannel() {
 
-        NotificationChannel notificationChannel = new NotificationChannel(CHANNELID, NAME, NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel notificationChannel = new NotificationChannel(CHANNELID, MESSAGES, NotificationManager.IMPORTANCE_DEFAULT);
         notificationChannel.enableLights(true);
         notificationChannel.enableVibration(true);
         notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-
         getManager().createNotificationChannel(notificationChannel);
-
-
-
-
     }
 
     public NotificationManager getManager() {
-
-
         if (notificationManager == null) {
-
-
             notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
         }
-
         return  notificationManager;
-
-
     }
-
     @TargetApi(Build.VERSION_CODES.O)
     public Notification.Builder getNotification(String title, String body, PendingIntent pIntent, Uri soundUri, String icon) {
-
-
-
-
-
         return  new Notification.Builder(getApplicationContext(), CHANNELID)
                 .setContentTitle(title)
                 .setContentText(body)
@@ -76,18 +57,12 @@ public class OreaNotification extends ContextWrapper {
                 .setAutoCancel(true)
                 .setSmallIcon(Integer.parseInt(icon));
 
-
-
-
     }
 
 
     // not using
     @TargetApi(Build.VERSION_CODES.O)
     public NotificationCompat.Builder getNotificationShit( String title, String body, PendingIntent pIntent, Uri soundUri, String icon) {
-
-
-
         return  new NotificationCompat.Builder(this, CHANNELID)
                 .setContentIntent(pIntent)
                 .setContentTitle(title)

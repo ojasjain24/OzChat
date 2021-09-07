@@ -12,7 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.affixchat.chatappv0.Models.groupMemberModel;
 import com.affixchat.chatappv0.Models.groupRequestsModel;
+import com.affixchat.chatappv0.Notification.sendNotificationFunction;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -45,11 +48,10 @@ public class sendRequestToJoinGroup extends AppCompatActivity {
         TextView name = findViewById(R.id.groupName);
         Intent intent = getIntent();
         final String nodeId= intent.getStringExtra("nodeId");
-        final String userName= intent.getStringExtra("name");
-        final String userStatus= intent.getStringExtra("status");
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        name.setText(userName);
-        status.setText(userStatus);
+        final String groupName= intent.getStringExtra("name");
+        final String groupStatus= intent.getStringExtra("status");
+        name.setText(groupName);
+        status.setText(groupStatus);
         if(intent.getStringExtra("pic") != null) {
             Picasso.get().load(Uri.parse(intent.getStringExtra("pic"))).into(profilePic);
         }else {
@@ -85,10 +87,28 @@ public class sendRequestToJoinGroup extends AppCompatActivity {
                         send.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                DatabaseReference userdata = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("requests").child(user.getUid());
+                                DatabaseReference userdata = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("requests").child(me.getUid());
                                 HashMap<String, String> usermap = new HashMap<>();
-                                usermap.put("userid",user.getUid());
+                                usermap.put("userid",me.getUid());
                                 userdata.setValue(usermap);
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("members");
+                                databaseReference.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                            groupMemberModel memberModel = dataSnapshot.getValue(groupMemberModel.class);
+                                            if(memberModel.getStatus().equalsIgnoreCase("Creator")||memberModel.getStatus().equalsIgnoreCase("Admin")){
+                                                sendNotificationFunction notificationFunction = new sendNotificationFunction();
+                                                notificationFunction.sendNotification(memberModel.getUid(),me.getUid(),sendRequestToJoinGroup.this,"Group : " + groupName +" has new joining requests","New Group Joining Request");
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                             }
                         });
                     } else {
@@ -98,7 +118,7 @@ public class sendRequestToJoinGroup extends AppCompatActivity {
                         send.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                reference.child(user.getUid()).setValue(null);
+                                reference.child(me.getUid()).setValue(null);
                                 startActivity(new Intent(sendRequestToJoinGroup.this,allGroupActivity.class));
                             }
                         });
