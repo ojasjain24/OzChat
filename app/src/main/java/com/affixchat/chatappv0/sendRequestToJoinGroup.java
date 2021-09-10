@@ -99,7 +99,7 @@ public class sendRequestToJoinGroup extends AppCompatActivity {
                                             groupMemberModel memberModel = dataSnapshot.getValue(groupMemberModel.class);
                                             if(memberModel.getStatus().equalsIgnoreCase("Creator")||memberModel.getStatus().equalsIgnoreCase("Admin")){
                                                 sendNotificationFunction notificationFunction = new sendNotificationFunction();
-                                                notificationFunction.sendNotification(memberModel.getUid(),me.getUid(),sendRequestToJoinGroup.this,"Group : " + groupName +" has new joining requests","New Group Joining Request");
+                                                notificationFunction.sendNotification(memberModel.getUid(),me.getUid(),sendRequestToJoinGroup.this,"Group : " + groupName +" has new joining requests","New Group Joining Request", null);
                                             }
                                         }
                                     }

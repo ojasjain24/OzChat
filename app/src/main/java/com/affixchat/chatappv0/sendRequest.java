@@ -90,7 +90,7 @@ public class sendRequest extends AppCompatActivity {
                                 usermap.put("receveruid", userId);
                                 userdata.push().setValue(usermap);
                                 sendNotificationFunction notificationFunction = new sendNotificationFunction();
-                                notificationFunction.sendNotification(userId,user.getUid(),sendRequest.this,"You have received a new friend request","New Friend Request");
+                                notificationFunction.sendNotification(userId,user.getUid(),sendRequest.this,"You have received a new friend request","New Friend Request", null);
                             }
                         });
                     } else {
