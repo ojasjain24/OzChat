@@ -246,29 +246,31 @@ public class groupChat extends AppCompatActivity {
         videoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i =new Intent(groupChat.this, groupMeetingActivity.class);
-                DatabaseReference meetData = FirebaseDatabase.getInstance().getReference().child("groups").child(nodeId).child("meetings").push();
-                HashMap<String ,String>usermap=new HashMap<>();
-                usermap.put("key",meetData.getKey());
-                usermap.put("endTime","0");
-                usermap.put("hostUid",user.getUid());
-                usermap.put("startTime",System.currentTimeMillis()+"");
-                usermap.put("type","video");
-                meetData.setValue(usermap).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                sendNotificationFunction notificationFunction = new sendNotificationFunction();
+                notificationFunction.sendNotification(membersList.get(0).getUid(), user.getUid(), groupChat.this, "Join the "+groupName+" group Video call", "Group Video Call", new OnGetObjectListener<Boolean>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        i.putExtra("key", meetData.getKey()+"");
-                        i.putExtra("groupUid", nodeId);
-                        i.putExtra("type", "video");
-                        startActivity(i);
-                        android.os.Process.killProcess(android.os.Process.myPid());
+                    public void onGetObject(Boolean object) {
+                        onVideoCallClicked(nodeId);
+                    }
+
+                    @Override
+                    public void onFail(Exception e) {
+                        onVideoCallClicked(nodeId);
                     }
                 });
-                sendNotificationFunction notificationFunction = new sendNotificationFunction();
-                int j=0;
-                while (j<= membersList.size()) {
+                int j=1;
+                while (j<= membersList.size()-1) {
                     if (!membersList.get(j).getUid().equals(user.getUid())) {
-                        notificationFunction.sendNotification(membersList.get(j).getUid(), user.getUid(), groupChat.this, "Join the "+groupName+" group Audio call", "Group Video Call");
+                        notificationFunction.sendNotification(membersList.get(j).getUid(), user.getUid(), groupChat.this, "Join the "+groupName+" group Video call", "Group Video Call", new OnGetObjectListener<Boolean>() {
+                            @Override
+                            public void onGetObject(Boolean object) {
+                            }
+
+                            @Override
+                            public void onFail(Exception e) {
+                            }
+                        });
                     }
                     j+=1;
                 }
@@ -278,32 +280,37 @@ public class groupChat extends AppCompatActivity {
         audioCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i =new Intent(groupChat.this, groupMeetingActivity.class);
-                DatabaseReference meetData = FirebaseDatabase.getInstance().getReference().child("groups").child(nodeId).child("meetings").push();
-                HashMap<String ,String>usermap=new HashMap<>();
-                usermap.put("key",meetData.getKey());
-                usermap.put("endTime","0");
-                usermap.put("hostUid",user.getUid());
-                usermap.put("startTime",System.currentTimeMillis()+"");
-                usermap.put("type","audio");
-                meetData.setValue(usermap).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                sendNotificationFunction notificationFunction = new sendNotificationFunction();
+                notificationFunction.sendNotification(membersList.get(0).getUid(), user.getUid(), groupChat.this, "Join the "+groupName+" group Audio call", "Group Audio Call", new OnGetObjectListener<Boolean>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        i.putExtra("key", meetData.getKey()+"");
-                        i.putExtra("groupUid", nodeId);
-                        i.putExtra("type", "audio");
-                        startActivity(i);
-                        android.os.Process.killProcess(android.os.Process.myPid());
+                    public void onGetObject(Boolean object) {
+                        onAudioCallClicked(nodeId);
+                    }
+
+                    @Override
+                    public void onFail(Exception e) {
+                        onAudioCallClicked(nodeId);
+
                     }
                 });
-                sendNotificationFunction notificationFunction = new sendNotificationFunction();
-                int j=0;
-                while (j<= membersList.size()) {
+                int j=1;
+                while (j<= membersList.size()-1) {
                     if (!membersList.get(j).getUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                        notificationFunction.sendNotification(membersList.get(j).getUid(), user.getUid(), groupChat.this, "Join the "+groupName+" group Audio call", "Group Audio Call");
+                        notificationFunction.sendNotification(membersList.get(j).getUid(), user.getUid(), groupChat.this, "Join the "+groupName+" group Audio call", "Group Audio Call", new OnGetObjectListener<Boolean>() {
+                            @Override
+                            public void onGetObject(Boolean object) {
+                            }
+
+                            @Override
+                            public void onFail(Exception e) {
+                            }
+                        });
                     }
                     j+=1;
                 }
+
+
             }
         });
 
@@ -369,6 +376,47 @@ public class groupChat extends AppCompatActivity {
         }
     }
 
+    private void onAudioCallClicked(String nodeId){
+
+        Intent i =new Intent(groupChat.this, groupMeetingActivity.class);
+        DatabaseReference meetData = FirebaseDatabase.getInstance().getReference().child("groups").child(nodeId).child("meetings").push();
+        HashMap<String ,String>usermap=new HashMap<>();
+        usermap.put("key",meetData.getKey());
+        usermap.put("endTime","0");
+        usermap.put("hostUid",user.getUid());
+        usermap.put("startTime",System.currentTimeMillis()+"");
+        usermap.put("type","audio");
+        meetData.setValue(usermap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                i.putExtra("key", meetData.getKey()+"");
+                i.putExtra("groupUid", nodeId);
+                i.putExtra("type", "audio");
+                startActivity(i);
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        });
+    }
+    private void onVideoCallClicked(String nodeId){
+        Intent i =new Intent(groupChat.this, groupMeetingActivity.class);
+        DatabaseReference meetData = FirebaseDatabase.getInstance().getReference().child("groups").child(nodeId).child("meetings").push();
+        HashMap<String ,String>usermap=new HashMap<>();
+        usermap.put("key",meetData.getKey());
+        usermap.put("endTime","0");
+        usermap.put("hostUid",user.getUid());
+        usermap.put("startTime",System.currentTimeMillis()+"");
+        usermap.put("type","video");
+        meetData.setValue(usermap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                i.putExtra("key", meetData.getKey()+"");
+                i.putExtra("groupUid", nodeId);
+                i.putExtra("type", "video");
+                startActivity(i);
+            }
+        });
+    }
+
     private void sendMsg(String me, String message,String nodeId){
         DatabaseReference fileRef= FirebaseDatabase.getInstance().getReference("groups").child(nodeId).child("chats").push();
         HashMap<String,Object> hashMap = new HashMap();
@@ -389,7 +437,7 @@ public class groupChat extends AppCompatActivity {
         int j=0;
         while (j<= membersList.size()-1) {
             if (!membersList.get(j).getUid().equals(me)) {
-                notificationFunction.sendNotification(membersList.get(j).getUid(), me, groupChat.this, "New message in "+groupName+" group", "New Group Message");
+                notificationFunction.sendNotification(membersList.get(j).getUid(), me, groupChat.this, "New message in "+groupName+" group", "New Group Message", null);
             }
             j+=1;
         }
@@ -483,9 +531,9 @@ public class groupChat extends AppCompatActivity {
         databaseReference.updateChildren(hashMap1);
         sendNotificationFunction notificationFunction = new sendNotificationFunction();
         int j=0;
-        while (j<= membersList.size()) {
+        while (j<= membersList.size()-1) {
             if (!membersList.get(j).getUid().equals(me)) {
-                notificationFunction.sendNotification(membersList.get(j).getUid(), me, groupChat.this, "New message in "+groupName+" group", "New Group Message");
+                notificationFunction.sendNotification(membersList.get(j).getUid(), me, groupChat.this, "New message in "+groupName+" group", "New Group Message", null);
             }
             j+=1;
         }

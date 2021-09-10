@@ -1,10 +1,12 @@
 package com.affixchat.chatappv0.Notification;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.affixchat.chatappv0.OnGetObjectListener;
 import com.affixchat.chatappv0.R;
 import com.affixchat.chatappv0.chatPage;
 import com.google.firebase.database.DataSnapshot;
@@ -21,7 +23,7 @@ import retrofit2.Response;
 public class sendNotificationFunction {
     APISERVICESHIT apiService = Client.getRetrofit("https://fcm.googleapis.com/").create(APISERVICESHIT.class);
 
-    public void sendNotification(String receiver, String me, Context context, String Message, String Title){
+    public void sendNotification(String receiver, String me, Context context, String Message, String Title, OnGetObjectListener<Boolean> callback){
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Token");
         Query query = tokens.orderByKey().equalTo(receiver);
         query.addValueEventListener(new ValueEventListener() {
@@ -37,16 +39,16 @@ public class sendNotificationFunction {
                             .enqueue(new Callback<MyResponse>() {
                                 @Override
                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-//                                    if (response.code() == 200){
-//                                        if (response.body().success != 1){
-//                                            Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    }
+                                    if (response.code() == 200){
+                                        if(callback != null) callback.onGetObject(true);
+                                    }else{
+                                        if(callback != null) callback.onGetObject(false);
+                                    }
                                 }
 
                                 @Override
                                 public void onFailure(Call<MyResponse> call, Throwable t) {
-
+                                    if(callback != null) callback.onGetObject(false);
                                 }
                             });
                 }
@@ -54,7 +56,7 @@ public class sendNotificationFunction {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                if(callback != null) callback.onGetObject(false);
             }
         });
     }

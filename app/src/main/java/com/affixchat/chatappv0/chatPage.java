@@ -148,6 +148,8 @@ public class chatPage extends AppCompatActivity {
         videoCall=findViewById(R.id.videoCall);
         audioCall=findViewById(R.id.call);
         back=findViewById(R.id.imageView6);
+        user= FirebaseAuth.getInstance().getCurrentUser();
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,24 +199,16 @@ public class chatPage extends AppCompatActivity {
         videoCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i =new Intent(chatPage.this, meetingActivity.class);
-                DatabaseReference meetData = FirebaseDatabase.getInstance().getReference().child("meetings").push();
-                HashMap<String ,String>usermap=new HashMap<>();
-                usermap.put("key",meetData.getKey());
-                usermap.put("endTime","0");
-                usermap.put("hostUid",user.getUid());
-                usermap.put("partnerUid",userId);
-                usermap.put("startTime",System.currentTimeMillis()+"");
-                usermap.put("type","video");
-                meetData.setValue(usermap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                sendNotificationFunction notificationFunction = new sendNotificationFunction();
+                notificationFunction.sendNotification(userId, user.getUid(), chatPage.this, "Video call has started. Join quickly", "Video Call", new OnGetObjectListener<Boolean>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        i.putExtra("key", meetData.getKey()+"");
-                        i.putExtra("type", "video");
-                        startActivity(i);
-                        sendNotificationFunction notificationFunction = new sendNotificationFunction();
-                        notificationFunction.sendNotification(userId,user.getUid(),chatPage.this,"Video call has started. Join quickly","Video Call");
-                        android.os.Process.killProcess(android.os.Process.myPid());
+                    public void onGetObject(Boolean object) {
+                        OnVideoCallClicked();
+                    }
+
+                    @Override
+                    public void onFail(Exception e) {
+                        OnVideoCallClicked();
                     }
                 });
             }
@@ -222,33 +216,27 @@ public class chatPage extends AppCompatActivity {
         audioCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i =new Intent(chatPage.this, meetingActivity.class);
-                DatabaseReference meetData = FirebaseDatabase.getInstance().getReference().child("meetings").push();
-                HashMap<String ,String>usermap=new HashMap<>();
-                usermap.put("key",meetData.getKey());
-                usermap.put("endTime","0");
-                usermap.put("hostUid",user.getUid());
-                usermap.put("partnerUid",userId);
-                usermap.put("startTime",System.currentTimeMillis()+"");
-                usermap.put("type","audio");
-                meetData.setValue(usermap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                sendNotificationFunction notificationFunction = new sendNotificationFunction();
+                notificationFunction.sendNotification(userId, user.getUid(), chatPage.this, "Audio call has started. Join quickly", "Audio Call", new OnGetObjectListener<Boolean>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        i.putExtra("key", meetData.getKey()+"");
-                        i.putExtra("type", "audio");
-                        startActivity(i);
-                        sendNotificationFunction notificationFunction = new sendNotificationFunction();
-                        notificationFunction.sendNotification(userId,user.getUid(),chatPage.this,"Audio call has started. Join quickly","Audio Call");
-                        android.os.Process.killProcess(android.os.Process.myPid());
+                    public void onGetObject(Boolean object) {
+                        OnAudioCallClicked();
+                    }
+
+                    @Override
+                    public void onFail(Exception e) {
+                        OnAudioCallClicked();
+
                     }
                 });
+
+
             }
         });
         messageList = findViewById(R.id.messageList);
         messageList.setHasFixedSize(true);
         final TextView message = findViewById(R.id.message);
         ImageView send = findViewById(R.id.sendMSG);
-        user= FirebaseAuth.getInstance().getCurrentUser();
         readMsg(user.getUid(),userId);
         name.setText((intent.getStringExtra("name")).substring(0,1).toUpperCase()+(intent.getStringExtra("name")).substring(1));
         if (intent.getStringExtra("dp") != null) {
@@ -308,6 +296,47 @@ public class chatPage extends AppCompatActivity {
         manager.setStackFromEnd(true);
         messageList.setLayoutManager(manager);
         messageList.setAdapter(adapter);
+    }
+
+    private void OnVideoCallClicked(){
+        Intent i =new Intent(chatPage.this, meetingActivity.class);
+        DatabaseReference meetData = FirebaseDatabase.getInstance().getReference().child("meetings").push();
+        HashMap<String ,String>usermap=new HashMap<>();
+        usermap.put("key",meetData.getKey());
+        usermap.put("endTime","0");
+        usermap.put("hostUid",user.getUid());
+        usermap.put("partnerUid",userId);
+        usermap.put("startTime",System.currentTimeMillis()+"");
+        usermap.put("type","video");
+        meetData.setValue(usermap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                i.putExtra("key", meetData.getKey()+"");
+                i.putExtra("type", "video");
+                startActivity(i);
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        });
+    }
+    private void OnAudioCallClicked(){
+        Intent i =new Intent(chatPage.this, meetingActivity.class);
+        DatabaseReference meetData = FirebaseDatabase.getInstance().getReference().child("meetings").push();
+        HashMap<String ,String>usermap=new HashMap<>();
+        usermap.put("key",meetData.getKey());
+        usermap.put("endTime","0");
+        usermap.put("hostUid",user.getUid());
+        usermap.put("partnerUid",userId);
+        usermap.put("startTime",System.currentTimeMillis()+"");
+        usermap.put("type","audio");
+        meetData.setValue(usermap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                i.putExtra("key", meetData.getKey()+"");
+                i.putExtra("type", "audio");
+                startActivity(i);
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -375,7 +404,7 @@ public class chatPage extends AppCompatActivity {
         map.put("lastmsg",""+System.currentTimeMillis());
         databaseReference1.updateChildren(map);
         sendNotificationFunction notificationFunction = new sendNotificationFunction();
-        notificationFunction.sendNotification(receiver,me,chatPage.this,"You have received a new message","New Message");
+        notificationFunction.sendNotification(receiver,me,chatPage.this,"You have received a new message","New Message", null);
     }
 
     private void readMsg(final String myuid, final String receiveruid){
@@ -500,7 +529,7 @@ public class chatPage extends AppCompatActivity {
         map.put("lastmsg",""+System.currentTimeMillis());
         databaseReference1.updateChildren(map);
         sendNotificationFunction notificationFunction = new sendNotificationFunction();
-        notificationFunction.sendNotification(receiver,me,chatPage.this,"You have received a new message","New Message");
+        notificationFunction.sendNotification(receiver,me,chatPage.this,"You have received a new message","New Message", null);
     }
 
     private void uploadImage(){

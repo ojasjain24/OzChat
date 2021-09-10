@@ -91,7 +91,7 @@ public class acceptRequest extends AppCompatActivity {
                     }
                 });
                 sendNotificationFunction notificationFunction = new sendNotificationFunction();
-                notificationFunction.sendNotification(intent.getStringExtra("userId"),me.getUid(),acceptRequest.this,intent.getStringExtra("name")+" has accepted your friend request","Request accepted");
+                notificationFunction.sendNotification(intent.getStringExtra("userId"),me.getUid(),acceptRequest.this,intent.getStringExtra("name")+" has accepted your friend request","Request accepted", null);
             }
         });
         declineBtn.setOnClickListener(new View.OnClickListener() {
