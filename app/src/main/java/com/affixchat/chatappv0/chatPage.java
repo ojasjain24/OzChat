@@ -9,7 +9,6 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -26,13 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.affixchat.chatappv0.Adapter.chatAdapter;
 import com.affixchat.chatappv0.Models.chatModel;
 import com.affixchat.chatappv0.Models.usersModel;
-import com.affixchat.chatappv0.Notification.APISERVICESHIT;
-import com.affixchat.chatappv0.Notification.Client;
-import com.affixchat.chatappv0.Notification.Data;
 import com.affixchat.chatappv0.Notification.FirebaseMessaging;
-import com.affixchat.chatappv0.Notification.MyResponse;
-import com.affixchat.chatappv0.Notification.Sender;
-import com.affixchat.chatappv0.Notification.Token;
 import com.affixchat.chatappv0.Notification.sendNotificationFunction;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,9 +40,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -66,21 +56,13 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static android.content.ContentValues.TAG;
 import static java.lang.Float.parseFloat;
 
 public class chatPage extends AppCompatActivity {
-    FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
     private TextView name;
     private FirebaseUser user;
     private RecyclerView messageList;
     private DatabaseReference reference;
-    private ArrayList<chatModel> chatList;
     private ImageView attach;
     private CardView meetingCard;
     private Button joinMeetBtn;
@@ -114,9 +96,7 @@ public class chatPage extends AppCompatActivity {
         try {
             cipher = Cipher.getInstance("AES");
             decipher = Cipher.getInstance("AES");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
         }
         secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
