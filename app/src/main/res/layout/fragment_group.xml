@@ -14,7 +14,7 @@
         android:elevation="1dp"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/adViewgf"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,29 +25,13 @@
         android:layout_height="0dp"
         android:rotationY="-180"
         android:scaleType="fitXY"
-        app:layout_constraintBottom_toTopOf="@+id/adViewgf"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/train" />
-
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adViewgf"
-        android:layout_width="0dp"
-        android:elevation="10dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        app:adSize="SMART_BANNER"
-        app:adUnitId="ca-app-pub-1155879823920026/8433392121"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/loadinggf"
@@ -69,7 +53,7 @@
         android:layout_height="wrap_content"
         android:text="Loading..."
         android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="@+id/adViewgf"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/loadinggf"

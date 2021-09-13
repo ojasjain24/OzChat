@@ -27,10 +27,6 @@ import com.affixchat.chatappv0.Models.groupDataModel;
 import com.affixchat.chatappv0.Models.groupMemberModel;
 import com.affixchat.chatappv0.Models.groupRequestsModel;
 import com.affixchat.chatappv0.Models.usersModel;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
@@ -57,7 +53,6 @@ public class groupVisit extends AppCompatActivity {
     private Uri imageUri;
     private DatabaseReference userdata;
     private FirebaseUser user;
-    private AdView mAdView;
     private ImageView pic,settingsIcon,leaveIcon, addMember,changeName,changeDescription;
     private TextView name, description,leave,settings, requestText;
     ArrayList<usersModel> userList = new ArrayList<>();
@@ -77,44 +72,6 @@ public class groupVisit extends AppCompatActivity {
         MobileAds.initialize(groupVisit.this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-        mAdView = findViewById(R.id.adView4);
-        final AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        mAdView.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-            }
-
-            @Override
-            public void onAdFailedToLoad(LoadAdError adError) {
-                // Code to be executed when an ad request fails.
-                super.onAdFailedToLoad(adError);
-                mAdView.loadAd(adRequest);
-            }
-
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-            }
-
-            @Override
-            public void onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-            }
-
-//            @Override
-//            public void onAdLeftApplication() {
-//                // Code to be executed when the user has left the app.
-//            }
-
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when the user is about to return
-                // to the app after tapping on an ad.
             }
         });
         final Intent i =getIntent();

@@ -21,8 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.affixchat.chatappv0.Models.acceptRequestModel;
 import com.affixchat.chatappv0.Models.groupMemberModel;
 import com.affixchat.chatappv0.Notification.sendNotificationFunction;
 import com.airbnb.lottie.LottieAnimationView;
@@ -30,10 +28,6 @@ import com.affixchat.chatappv0.Adapter.groupChatAdapter;
 import com.affixchat.chatappv0.Models.groupChatModel;
 import com.affixchat.chatappv0.Models.groupDataModel;
 import com.affixchat.chatappv0.Models.usersModel;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -77,7 +71,6 @@ public class groupChat extends AppCompatActivity {
     private ImageView attach,back;
     private static final int imageRequest = 1;
     private Uri imageUri;
-    private AdView mAdView;
     private CardView meetingCard;
     private Button joinMeetBtn;
     private TextView meetHostName, meetType;

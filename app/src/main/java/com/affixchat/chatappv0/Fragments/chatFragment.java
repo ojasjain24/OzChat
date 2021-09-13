@@ -3,6 +3,7 @@ package com.affixchat.chatappv0.Fragments;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,14 +20,6 @@ import com.affixchat.chatappv0.Models.friendsModel;
 import com.affixchat.chatappv0.R;
 import com.affixchat.chatappv0.Adapter.acceptedUserAdapter;
 import com.affixchat.chatappv0.allusersActivity;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,8 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -46,7 +39,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Use the {@link rewardsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class  chatFragment extends Fragment {
+public class chatFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,9 +51,8 @@ public class  chatFragment extends Fragment {
     private String mParam2;
     private com.affixchat.chatappv0.Adapter.acceptedUserAdapter acceptedUserAdapter;
     private RecyclerView recyclerView;
-    private AdView mAdView;
-    private LottieAnimationView empty,loading;
-    private TextView noFriends,loadingText;
+    private LottieAnimationView empty, loading;
+    private TextView noFriends, loadingText;
     ArrayList<friendsModel> userList = new ArrayList<>();
 
     public chatFragment() {
@@ -85,6 +77,7 @@ public class  chatFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,75 +92,33 @@ public class  chatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_chat,container,false);
-        recyclerView= view.findViewById(R.id.recyclerView);
+        View view = inflater.inflate(R.layout.fragment_chat, container, false);
+        recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         String text = sharedPreferences.getString("Theme", "Default");
         LottieAnimationView bgAnimation = view.findViewById(R.id.bgAnimation);
-        if(!text.equals("Default")){
+        if (!text.equals("Default")) {
             bgAnimation.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             bgAnimation.setVisibility(View.VISIBLE);
         }
 
-        noFriends=view.findViewById(R.id.noFriendsText);
-        empty=view.findViewById(R.id.empty);
-        loading=view.findViewById(R.id.loading);
-        loadingText=view.findViewById(R.id.loadingText);
+        noFriends = view.findViewById(R.id.noFriendsText);
+        empty = view.findViewById(R.id.empty);
+        loading = view.findViewById(R.id.loading);
+        loadingText = view.findViewById(R.id.loadingText);
         readusers();
-        MobileAds.initialize(getContext(), new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-        mAdView = view.findViewById(R.id.adView);
-        final AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        mAdView.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-            }
-
-            @Override
-            public void onAdFailedToLoad(LoadAdError adError) {
-                // Code to be executed when an ad request fails.
-                super.onAdFailedToLoad(adError);
-                mAdView.loadAd(adRequest);
-            }
-
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-            }
-
-            @Override
-            public void onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-            }
-
-//            @Override
-//            public void onAdLeftApplication() {
-//                // Code to be executed when the user has left the app.
-//            }
-
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when the user is about to return
-                // to the app after tapping on an ad.
-            }
-        });
         return view;
     }
+
     public void readusers() {
         loading.setSpeed(1);
         loading.playAnimation();
         FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("users").child(me.getUid()).child("friends");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(me.getUid()).child("friends");
 //        databaseReference.keepSynced(true);
         Query query = databaseReference.orderByChild("lastmsg");
         query.addValueEventListener(new ValueEventListener() {
@@ -181,7 +132,7 @@ public class  chatFragment extends Fragment {
                 loadingText.setVisibility(View.INVISIBLE);
                 loading.setVisibility(View.INVISIBLE);
                 acceptedUserAdapter = new acceptedUserAdapter(getContext(), userList);
-                LinearLayoutManager manager =new LinearLayoutManager(getContext());
+                LinearLayoutManager manager = new LinearLayoutManager(getContext());
                 manager.setReverseLayout(true);
                 manager.setStackFromEnd(true);
                 recyclerView.setLayoutManager(manager);
@@ -189,6 +140,7 @@ public class  chatFragment extends Fragment {
                 EmptyListAnimation();
 
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(getContext(), "check your network connection", Toast.LENGTH_SHORT).show();
